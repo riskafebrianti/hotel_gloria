@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Search View -->
+    <record model="ir.ui.view" id="room_booking_search">
+        <field name="name">room.booking.search</field>
+        <field name="model">room.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ktp"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+                <!-- <filter name="fl_draft" string="Draft" domain="[('state','=', 'draft')]"/>
+                <group>
+                    <filter name="gr_pay" string="Bayar Via" context="{'group_by':'payment_method'}"/>
+                </group> -->
+            </search>
+        </field>
+    </record>
+
+
+   <record model="ir.ui.view" id="room_booking_tree">
+            <field name="name">room.booking.tree</field>
+            <field name="model">room.booking</field>
+            <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <!-- <field name="ktp" invisible="1"/> -->
+                    
+                </xpath>
+            </field>
+    </record>
+
+    <record model="ir.ui.view" id="room_booking_line">
+        <field name="name">room.booking.form</field>
+        <field name="model">room.booking</field>
+        <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_form"/>
+        <field name="arch" type="xml">
+         
+            <xpath expr="//field[@name='uom_qty']" position="before">
+                <field name="jumlah" />
+                <field name="jumlahanak" width="150px" optional="hide"/>                
+            </xpath>
+
+            <xpath expr="//field[@name='uom_id']" position="after">
+                <field name="charge"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="deposit_sisa"/>
+            </xpath>
+
+            <xpath expr="//field[@name='room_id']" position="replace">
+                <field name="room_id" string="Room"
+                                           required="1"
+                                           options="{'no_open': True, 'no_create': False}"
+                                           />
+            </xpath>
+
+            <xpath expr="//field[@name='booking_line_visible']" position="replace">
+                <field name="booking_line_visible" optional="hide"/>
+            </xpath>
+
+            <xpath expr="//field[@name='pricelist_id']" position="after">
+                <field name="roomsugest" invisible="1"/>
+                <field name="deposit_in"  invisible="1"/>
+                <field name="deposit_out"  invisible="1"/>
+            </xpath>
+
+            <!-- <xpath expr="//form//header//button[@name='action_checkin']" position="att">
+                 attrs="{'invisible':[('state', '=', 'open')]}"
+            </xpath> -->
+            <xpath expr="//button[@name='action_invoice']" position="replace">
+                <button name="action_invoice" string="Create Invoice"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('check_in', 'check_out') or invoice_button_visible == True"/>
+                
+            </xpath>
+            
+            <xpath expr="//button[@name='action_checkout']" position="replace">
+                <button name="action_checkout" string="Check-Out"
+                            class="btn-primary" invisible="state != 'check_in' or deposit_in != True" 
+                            type="object"/>
+                
+            </xpath>
+            
+            <xpath expr="//form//header" position="inside">
+               <button name="action_deposit_in" string="in Deposit" class="btn-primary" type="object" invisible="state == 'draft' or deposit_in == True" />
+               <button name="action_deposit_out" string="out Deposit" class="btn-primary" type="object" invisible="state in ('draft','done', 'check_in') or deposit_out == True"/>
+            </xpath>
+<!--             
+            <xpath expr="//form" position="inside">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </xpath> -->
+
+            <!-- <xpath expr="//field[@name='kasir_id']" position="replace">
+                <field name="kasir_id" required="1"/>
+            </xpath> -->
+        
+        </field>
+    </record>
+
+
+
+
+   <!-- <template id="template_id" name="tes" inherit_id="hotel_management_odoo.room_booking_view_form">
+    <xpath expr="" position="inside">
+         <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+    </xpath>
+   </template>
+     -->
+       
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_room_booking" model="ir.actions.report">
+        <field name="name">Follow-up Report</field>
+        <field name="model">room.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">addon_hotel.report_room_booking</field>
+        <field name="report_file">addon_hotel.report_room_booking</field>
+        <!-- <field name="domain">[('to_check', '=', 'true')]</field> -->
+        <field name="print_report_name">'Follow-up Report'</field>
+        <field name="binding_model_id" ref="model_room_booking"/>
+    </record> 
+
+    <template id="report_room_booking">
+        <t t-call="web.html_container">
+        <!-- <div t-attf-class="o_company_#{company_id}_layout header" t-att-style="report_header_style" > -->
+            <t t-call="web.external_layout">
+            
+                <div class="page" style="margin-top:-49px;">
+                <h2>Booking Report</h2>
+                    <br/>
+                    <span>periode :<t t-esc="docs.periode().strftime('%d %B %Y [%I:%M]')"/> </span>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode Booking</th>
+                                <th>Room</th>
+                                <th>Guest Name</th>
+                                <th>Check-In</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                                <th>Deeposit</th>
+                            </tr>
+                        </thead>
+                        <t t-set="i" t-value="0"/>
+                        <t t-foreach="docs.room_line_ids" t-as="line">
+                            <t t-set="i" t-value="i+1"/>
+                            
+                            <tr>
+                                <td>
+                                    <t t-esc="i"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.booking_id.name"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.room_id.name"/>
+                                </td>
+                                 <td>
+                                    <t t-esc="line.booking_id.partner_id.name"/>
+                                </td>
+                               <td>
+                                    <t t-esc="line.checkin_date"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.state"/>
+                                </td> 
+                                <td>
+                                    <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.price_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                </td>
+                                 <td>
+                                    <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.deposit_sisa))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+
+                                </td>
+                                 
+                            </tr>
+                        </t>
+                       <tr>
+                            <td colspan="6" align="right">Amount</td>
+                            <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.price_total for line in docs.room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                       </tr>
+                        <tr>
+                            <td colspan="6" align="right">Deposit</td>
+                            <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line_dpo.deposit_sisa for line_dpo in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                       </tr> 
+                       <strong>
+                        <tr>
+                            <td colspan="6" align="right">Total :</td>
+                            <!-- <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="docs.total_semua() " /></td> -->
+                            <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: 900;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(docs.total_semua()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+
+                       </tr> 
+                      </strong>
+                    </table>
+                    <!-- <div class="row" name="total">
+                        <div class="col-xs-4 pull-left">
+                            <table class="table table-condensed">
+                                <tr class="border-black">
+                                    <td><strong>Total:</strong></td>
+                                    <t t-esc="sum(l.price_total for l in customer_details.order_line) " />
+                                </tr>
+                            </table>
+                        </div>
+                    </div> -->
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

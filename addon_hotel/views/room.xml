@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_task_kanban" model="ir.ui.view">
+        <field name="name">project.task.kanban</field>
+        <field name="model">hotel.room</field>
+        
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="status"/>
+                <field name="maintenance"/>
+                <field name="room_type"/>
+                <field name="status"/>
+                <templates>
+                    <t t-name="kanban-box">
+                       <!-- <div t-attf-class="{{'oe_kanban_color_red' if record.status == 'available' else 'oe_kanban_color_green'}} oe_kanban_card oe_kanban_global_click oe_semantic_html_override"> -->
+                        <!-- <div t-att-style= record.status.raw_value == 'available' and 'background-color: #0adbf4;'di> -->
+                            
+                            <div class="oe_kanban_card oe_kanban_global_click " style="border-radius: 8px;">
+                        
+                                    <div class="o_kanban_record_header">
+                                        <strong><field name="name" style ="font-size:25px;"/></strong>
+                                    </div>
+
+                                    <div class="o_kanban_record_body" >
+                                        <div>
+                                            Room Type : <field name="room_type"/>
+                                        </div>
+                                        <div>Stage: 
+                                            <field name="status"  widget="badge"
+                                                decoration-success = "status == 'available'" 
+                                                decoration-danger = "status == 'occupied','reserved'"
+                                                />  
+                                        </div>
+                                        <div t-if="record.maintenance.raw_value != 'Done Maintenance'">
+                                            <field name="maintenance"  widget="badge"/>  
+                                        </div>
+                                      
+                                        <div>
+                                            <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" attrs="{'invisible':[('status', 'in',('reserved','occupied'))]}"/>
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" attrs="{'invisible':[('status', '=','available')]}" /> -->
+                                        </div>
+                                    </div>
+
+                                    <div class="o_kanban_record_bottom mt-3">
+                                        <div class="oe_kanban_bottom_left">
+                                            <div class="o_project_kanban_boxes d-flex align-items-baseline">
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                        
+                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available'" />
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available'" />
+                                        </div>
+                                    </div> 
+                            </div> 
+                        <!-- </div> -->
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="nama_model_action" model="ir.actions.act_window">
+        <field name="name">boking</field>
+        <field name="res_model">hotel.room</field>
+        <field name="view_mode">form,tree</field> 
+    </record>
+
+    <record model="ir.ui.view" id="room_hotel_search">
+        <field name="name">hotel.room.search</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="status"/>
+               
+                <filter name="fl_occupied" string="Terisi" domain="[('status','=', 'occupied')]"/>
+                <filter name="fl_reserved" string="Terpesan" domain="[('status','=', 'reserved')]"/>
+                <filter name="fl_available" string="Tersedia" domain="[('status','=', 'available')]"/>
+                <group>
+                    <filter name="status" string="Status" context="{'group_by':'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="room_booking_action" model="ir.actions.act_window">
+         <field name="name">Front Office</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.room</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="view_project_task_kanban"/>
+        <field name="search_view_id" ref="hotel_management_odoo.hotel_room_view_form"/>
+        <field name="view_id" ref="view_project_task_kanban"/>
+    </record>
+
+    <menuitem id="room_booking_menu_homeeee"
+       name="Room"
+       sequence="5"
+       parent="hotel_management_odoo.hotel_management_menu_root"
+       action="room_booking_action"/>
+
+
+    <record model="ir.ui.view" id="hotel_room_inherit_form">
+        <field name="name">hotel.room.form</field>
+        <field name="model">hotel.room</field>
+        <field name="inherit_id" ref="hotel_management_odoo.hotel_room_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='num_person']" position="after">
+                <field name="maintenance"/>
+            </xpath>
+        </field>
+    </record>
+      
+</odoo>
