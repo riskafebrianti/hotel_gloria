@@ -16,14 +16,50 @@ class room(models.Model):
                                 tracking=True,
                                 default="twin")
     
-    mentenance_id = fields.Many2one(
-        string='mentenance',
-        comodel_name='maintenance.request',
-        
+    mentenance_id = fields.Char(string='Status Kerusakan', 
+                                # compute='_maintenance',
+                                )
+    
+    status_kerusakan = fields.Char(
+        string='status_kerusakan',
+        store=True,
+        compute='_maintenance',
     )
     
+    # mentenance_id = fields.Many2many('maintenance.request',
+    #                                         string="ID Maintenance",
+    #                                         help="Choose Room Maintenance",
+    #                                         compute='_maintenance'
+    #                                         )
+    
+    
+    mentenance_ids = fields.One2many('maintenance.request', 'room_maintenance_ids', string='field_name')
+    booking_line_id = fields.One2many('room.booking.line', 'room_id', string='field_name')
+  
+    terbooking = fields.Char(string='Jumlah Terpesan', compute='_terbooking',store=True,)
     
     maintenance = fields.Char(string='Maintenance',tracking=True, store=True, readonly=True)
+
+    @api.depends('booking_line_id','terbooking')
+    def _terbooking(self):
+            
+        for order in self:
+            jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id)])
+            order.terbooking = len(jumpes)
+            print(order)
+        
+    
+    @api.depends('mentenance_ids','status_kerusakan')
+    def _maintenance(self):
+
+        for tea in self:
+            search = self.env['maintenance.request'].sudo().search([('room_maintenance_ids','=', self.id),('state','!=','done'),('kerusakan_berat','=', True)])
+            if search:
+                tea.status_kerusakan = 'Berat'
+    
+  
+    
+    
 
     @api.depends('status')
     def set_kanban_color(self):

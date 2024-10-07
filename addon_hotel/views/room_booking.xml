@@ -42,7 +42,7 @@
             </xpath>
 
             <xpath expr="//field[@name='uom_id']" position="after">
-                <field name="charge"/>
+                <field name="deposit"/>
             </xpath>
 
             <xpath expr="//field[@name='partner_id']" position="after">
@@ -54,6 +54,10 @@
                                            required="1"
                                            options="{'no_open': True, 'no_create': False}"
                                            />
+            </xpath>
+
+            <xpath expr="//field[@name='tax_ids']" position="after">
+                <field name="diskon" optional="hide"/>
             </xpath>
 
             <xpath expr="//field[@name='booking_line_visible']" position="replace">

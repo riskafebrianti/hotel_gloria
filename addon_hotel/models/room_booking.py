@@ -58,6 +58,13 @@ class RoomBookingTree(models.Model):
         for a in self:
             per.append(a.date_order)
         return per[0]
+    
+    def periodee(self):
+
+        per = []
+        for a in self:
+            per.append(a.date_order)
+        return per[-1]
 
         
     
@@ -148,6 +155,7 @@ class RoomBookingTree(models.Model):
                 booking_dict = {'name': room.room_id.name,
                                 'tax_ids': room.tax_ids,
                                 'quantity': room.uom_qty,
+                                'diskon': room.diskon,
                                 'price_unit': room.price_unit,
                                 'product_type': 'room'}
                 if booking_dict not in account_move_line:
@@ -259,29 +267,6 @@ class RoomBookingTree(models.Model):
                 'context': "{'create': False}"
             }
 
-class RoomBookingline(models.Model):
-    _inherit = 'room.booking.line'
-
-    
-    jumlah = fields.Integer(string='Dewasa',store=True,)
-    jumlahanak = fields.Integer(string='Anak',store=True,)
-    charge = fields.Float(string='Deposit',required=True,store=True,)
-
-
-    @api.onchange('room_id','booking_id.room_line_ids')
-    def get_room_request(self):
-        for line in self:
-            if line == line.booking_id.room_line_ids[:1]:
-                line.room_id = line.booking_id.roomsugest
-                line.jumlah = line.room_id.num_person
-            else:
-                line.jumlah = line.room_id.num_person
-           
-    
-
-   
-    
-    
 
     
     

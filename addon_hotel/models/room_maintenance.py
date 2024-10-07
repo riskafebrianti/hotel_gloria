@@ -5,6 +5,9 @@ from odoo.exceptions import ValidationError
 class Maintenance(models.Model):
     _inherit = 'maintenance.request'
 
+    kerusakan_berat = fields.Boolean(string='Kerusakan Berat', 
+                                     help="Centang jika jenis maintenance berat maka FO tidak akan bisa membuat reservasi atas kamar ini")
+
 
     def action_assign_team(self):
         """Button action for changing the state to team_leader_approve"""

@@ -2,13 +2,13 @@
 <odoo>
 
     <record id="action_report_room_booking" model="ir.actions.report">
-        <field name="name">Follow-up Report</field>
+        <field name="name">Laporan Rekap Booking</field>
         <field name="model">room.booking</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">addon_hotel.report_room_booking</field>
         <field name="report_file">addon_hotel.report_room_booking</field>
         <!-- <field name="domain">[('to_check', '=', 'true')]</field> -->
-        <field name="print_report_name">'Follow-up Report'</field>
+        <field name="print_report_name">'Laporan Pemesanan Kamar'</field>
         <field name="binding_model_id" ref="model_room_booking"/>
     </record> 
 
@@ -20,8 +20,9 @@
                 <div class="page" style="margin-top:-49px;">
                 <h2>Booking Report</h2>
                     <br/>
-                    <span>periode :<t t-esc="docs.periode().strftime('%d %B %Y [%I:%M]')"/> </span>
-                    <table class="table">
+                    <span>Periode :<t t-esc="docs.periode().strftime('%d %B %Y [%I:%M]')"/> - <t t-esc="docs.periodee().strftime('%d %B %Y [%I:%M]')"/> </span>
+                    <br/>
+                    <br/><table class="table">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -95,6 +96,21 @@
                         </div>
                     </div> -->
 
+                </div>
+                <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ;"> 
+                   Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><br/><br/>
+                    <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
+                        <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
+                    <center><p style="margin:top;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center>
+                </div>
+
+                <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;"> 
+                    <center> 
+                     <br/><br/>
+                        <p>Mengetahui</p><br/><br/><br/><br/><br/><br/><br/>
+                            <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
+                        <p style="margin:top;"><u>Lorem Ipsum</u><br/> Manager</p>
+                    </center>
                 </div>
             </t>
         </t>
