@@ -4,7 +4,9 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    
+    company_type = fields.Selection(string='Company Type',
+        selection=[('person', 'Individual'), ('company', 'Company')],
+        compute='_compute_company_type', inverse='_write_company_type', default='person')
     ktp = fields.Char(string='No KTP',store=True,)
     sim = fields.Char(string='No SIM',store=True,)
 

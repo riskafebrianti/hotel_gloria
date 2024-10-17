@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_pemasukan">
+        <t t-call="web.html_container" style="border:1px solid">
+        <!-- <div t-attf-class="o_company_#{company_id}_layout header" t-att-style="report_header_style" > -->
+            <t t-call="web.external_layout">
+                <div class="float-left" style="border:0px solid; margin-top:-45px;">
+                    <div class="details">
+                            <b><span style="color:black; font-size:29px;"><t t-esc="docs.company_id.name"/></span></b>
+                                <br></br>
+                            <t t-if="docs.company_id.street">
+                                <span  t-esc="docs.company_id.street"/>
+                            </t>
+                                <br></br>
+                            <t t-if="docs.company_id">
+                                <span t-esc="docs.company_id.city"/> 
+                            </t>   
+                                <br></br>
+                            <t t-if="docs.company_id.mobile">
+                                Whatsapp. <span t-esc="docs.company_id.mobile"/> / Telp. <span t-esc="docs.company_id.phone"/> 
+                            </t>   
+                                <br></br>  
+                    </div>
+                </div>     
+                   
+                <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
+
+            <br/>
+            
+                <!-- <h2>Booking Report</h2> -->
+               <div class="page" style="border:0px solid;">
+                    <div class="oe_structure"/>
+                    <h2>Report Penjualan Kamar Hotel Gloria</h2>
+                    <br/>
+                    <span>Periode: <t t-esc="docs.periode().strftime('%d %B %Y')"/> s/d <t t-esc="docs.periodee().strftime('%d %B %Y')"/> </span>
+                    <table class="table table-bordered" style="page-break-inside: avoid; position:relative;">
+                        <thead>
+                            <tr>
+                                <th style="width:1%;">No.</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <t t-set="i" t-value="0"/>
+                        <t t-foreach="docs.nama()" t-as="line" >
+                            <t t-set="i" t-value="i+1"/>
+                            <tr>
+                                <td>
+                                    <t t-esc="i"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line[0]"/>
+                                </td>
+                                  <td>
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1]))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    <!-- <t t-esc="line[1]"/> -->
+                                </td>
+                           </tr>
+                        </t>
+                        
+                       <strong>
+                       <tr>
+                            <td colspan="2" align="center">Amount</td>
+                            <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+
+                       </tr>
+                        <!-- <tr>
+                            <td colspan="5" align="right">Total</td>
+                            <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.amount for line in docs.filtered(lambda pay: pay.room_booking_id and pay.journal_id.name in ('Cash','Deposit') and pay.payment_type == 'inbound'))-sum(line.amount for line in docs.filtered(lambda pay: pay.room_booking_id and pay.journal_id.name in ('Cash','Deposit') and pay.payment_type == 'outbound'))))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                       </tr>  -->
+                       
+                      </strong>
+                    </table>
+               
+
+                </div>
+                <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ;"> 
+                   Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><br/><br/>
+                    <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
+                        <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
+                    <center><p style="margin:top;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center>
+                </div>
+
+                <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;"> 
+                    <center> 
+                     <br/><br/>
+                        <p>Mengetahui</p><br/><br/><br/><br/><br/><br/><br/>
+                            <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
+                        <p style="margin:top;"><u>Lorem Ipsum</u><br/> Manager</p>
+                    </center>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

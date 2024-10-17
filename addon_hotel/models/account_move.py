@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from collections import OrderedDict
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -12,29 +13,47 @@ class AccountMove(models.Model):
                                                         compute='_compute_field' )
     
         
+    def nama(self):
+        loop = self.filtered(lambda pay: pay.move_type == 'out_invoice' and pay.journal_id.id == 1)
+        data_kamar =[]
+        
+        for a in loop:
+            datanya = a.line_ids.filtered(lambda pay: pay.display_type == 'product')
+            for z in datanya:
+                room= z.name
+                amountnya =z.credit
+                testing = (room,amountnya)
+                data_kamar.append(testing)
+            
+        result = {}
+        for card, value in data_kamar:
+                total = result.get(card, 0) + value
+                result[card] = total 
+        
+        return list(result.items())
+
+    def periode(self):
+
+        per = []
+        for a in self:
+            per.append(a.date)
+        return per[0]
     
-    # @api.depends('depends')
-    # def _compute_field(self):
-    #      if self.payment_id:
-    #         self.update({
-    #             'hotel_booking_id': self.payment_id.hotel_booking_id,
-    #         })
-    #         print()
-        # if self.payment_id:
-        #     self.hotel_booking_id = self.payment_id.hotel_booking_id
-            # for record in self:
-            #     record.field = something
+    def periodee(self):
+
+        per = []
+        for a in self:
+            per.append(a.date)
+        return per[-1]
     
-    # @api.onchange('ref')
-    # def _compute_field(self):
-    #     if not self.hotel_booking_id:
-    #         self.hotel_booking_id = self.payment_id.room_booking_id
+    # batas py untuk qweb (up)
+
     @api.depends('move_id', 'ref')
     def get_price_total(self):
         if not self.hotel_booking_id:
             self.hotel_booking_id = self.payment_id.room_booking_id
-    
-    
-    
-    
+
+
+  
+   
     

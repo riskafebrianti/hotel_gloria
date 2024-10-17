@@ -76,7 +76,7 @@
             <xpath expr="//button[@name='action_invoice']" position="replace">
                 <button name="action_invoice" string="Create Invoice"
                             type="object" class="btn-primary"
-                            invisible="state not in ('check_in', 'check_out') or invoice_button_visible == True"/>
+                            invisible="state not in ('check_in', 'check_out') or invoice_button_visible == True or deposit_in != True"/>
                 
             </xpath>
             
@@ -88,8 +88,19 @@
             </xpath>
             
             <xpath expr="//form//header" position="inside">
-               <button name="action_deposit_in" string="in Deposit" class="btn-primary" type="object" invisible="state == 'draft' or deposit_in == True" />
-               <button name="action_deposit_out" string="out Deposit" class="btn-primary" type="object" invisible="state in ('draft','done', 'check_in') or deposit_out == True"/>
+               <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in == True" />
+               <button name="action_deposit_out" string="Out Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved','done', 'check_in') or deposit_out == True"/>
+               <button name="action_charge" string="Charge" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in != True"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']//button[@name='action_view_invoices']" position="after">
+                <button class="oe_stat_button" type="object"
+                        name="action_view_depo"
+                        invisible="deposit_in != True"
+                        icon="fa-edit">
+                    <field string="Deposit" name="depo_count"
+                            widget="statinfo"/>
+                </button>
             </xpath>
 <!--             
             <xpath expr="//form" position="inside">

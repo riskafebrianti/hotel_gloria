@@ -29,6 +29,11 @@ class RoomBookingTree(models.Model):
     deposit_out = fields.Boolean(string='deposit_out', )
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
     
+    depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
+    )
+    
+
+    
     payment_ids = fields.One2many(
         string='payment',
         comodel_name='account.payment',
@@ -44,6 +49,12 @@ class RoomBookingTree(models.Model):
                                             help="sets to True if the "
                                                 "maintenance request send "
                                                 "once" )
+    
+    def _compute_depo_count(self):
+        """Compute the invoice count"""
+        for record in self:
+            record.depo_count = self.env['account.payment'].search_count(
+                [('room_booking_id','=', self.id)])
     
     def total_semua(self):
         total = sum(self.room_line_ids.mapped('price_total'))
@@ -83,6 +94,10 @@ class RoomBookingTree(models.Model):
     def action_deposit_in(self):
        self.ensure_one()
        print(self)
+       if not self.room_line_ids.deposit:
+           raise ValidationError(
+                _("Masukkan Nilai Deposit"))
+       
        self.deposit_in = True
        return{
            'type' : 'ir.actions.act_window',
@@ -93,7 +108,7 @@ class RoomBookingTree(models.Model):
            'context' : {
                         'default_partner_id': self.partner_id.id,
                         'default_journal_id': self.env['account.journal'].sudo().search([('code','=', 'CSH1')]).id,
-                        'default_amount': sum(self.room_line_ids.mapped('charge')),
+                        'default_amount': sum(self.room_line_ids.mapped('deposit')),
                         'default_room_booking_id' : self.id,
                         'default_ref': 'Deposit Booking: '+ str(self.name)
                         }
@@ -112,12 +127,44 @@ class RoomBookingTree(models.Model):
                         'default_partner_id': self.partner_id.id,
                         'default_journal_id': self.env['account.journal'].sudo().search([('code','=', 'CSH1')]).id,
                         'default_payment_type': 'outbound',
-                        'default_amount': sum(self.room_line_ids.mapped('charge')),
+                        'default_amount': sum(self.room_line_ids.mapped('deposit')),
                          'default_room_booking_id' : self.id,
                         'default_ref': 'Deposit Booking Out: '+ str(self.name),
                          'create': False
                         },
        }
+    def action_charge(self):
+        self.ensure_one()
+       
+        print(self)
+        """Method for creating invoice"""
+        journal = self.env['account.journal'].sudo().search([('name','=','CHARGE')]).id
+        if not self.room_line_ids:
+            raise ValidationError(_("Please Enter Room Details"))
+        booking_list = self._compute_amount_untaxed(True)
+        if booking_list:
+            account_move = self.env["account.move"].create([{
+                'move_type': 'out_invoice',
+                'invoice_date': fields.Date.today(),
+                'hotel_booking_id' : self.id,
+                'partner_id': self.partner_id.id,
+                'ref': self.name,
+                'journal_id': journal,
+            }])
+           
+            self.write({'invoice_status': "invoiced"})
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Invoices',
+                'view_mode': 'form',
+                'res_model': 'account.move',
+                'view_id': self.env.ref('account.view_move_form').id,
+                'res_id': account_move.id,
+                
+            }
+
+
+
     def _compute_amount_untaxed(self, flag=False):
         """Compute the total amounts of the Sale Order"""
         amount_untaxed_room = 0.0
@@ -232,6 +279,7 @@ class RoomBookingTree(models.Model):
         return booking_list
     
     def action_invoice(self):
+
         """Method for creating invoice"""
         if not self.room_line_ids:
             raise ValidationError(_("Please Enter Room Details"))
@@ -267,7 +315,17 @@ class RoomBookingTree(models.Model):
                 'context': "{'create': False}"
             }
 
-
+    def action_view_depo(self):
+        """Method for Returning invoice View"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Deposit',
+            'view_mode': 'tree,form',
+            'view_type': 'tree,form',
+            'res_model': 'account.payment',
+            'domain': [('room_booking_id','=', self.id)],
+            'context': "{'create': False}"
+        }
     
     
 

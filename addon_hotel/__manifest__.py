@@ -33,6 +33,12 @@
         'views/account_payment.xml',
         'views/room_booking.xml',
         'report/shift.xml',
+        'report/deposit.xml',
+        'report/report.xml',
+        'report/pemasukan.xml',
+        'report/pengeluaran.xml',
+        'report/struk.xml',
+        'report/template_inherit.xml'
     ],
     'assets': {
         'web.assets_backend': [

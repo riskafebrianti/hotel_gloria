@@ -1,6 +1,6 @@
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError
-
+from datetime import datetime, timedelta
 class room(models.Model):
     _inherit = 'hotel.room'
 
@@ -8,6 +8,7 @@ class room(models.Model):
     room_type = fields.Selection([('single', 'Single'),
                                 ('double', 'Double'),
                                 ('twin', 'Room Twin'),
+                                ('grand_deluxe_balkon', 'Grand Deluxe Balkon'),
                                 ('grand_deluxe', 'Grand Deluxe'),
                                 ('single_deluxe', 'Single Deluxe'),
                                 ('dormitory', 'Dormitory')],
@@ -25,6 +26,12 @@ class room(models.Model):
         store=True,
         compute='_maintenance',
     )
+    
+    deposit = fields.Float(
+        string='Deposit',
+         store=True,
+    )
+    
     
     # mentenance_id = fields.Many2many('maintenance.request',
     #                                         string="ID Maintenance",
@@ -44,7 +51,8 @@ class room(models.Model):
     def _terbooking(self):
             
         for order in self:
-            jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id)])
+            date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else (12, datetime.now().year-1)
+            jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('checkin_date','>',date_begin), ('checkin_date','<',datetime.now())])
             order.terbooking = len(jumpes)
             print(order)
         

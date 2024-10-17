@@ -23,7 +23,7 @@
                                         
                                         <div style="border:0px solid; width:118px; margin-top: 5px; float:right;">
                                             <t t-if="record.status.raw_value == 'available'">
-                                                <field name="status"  class="badge rounded-pill" style="font-size: 20px; color:white; background-color: #09B657;"/>
+                                                <field name="status" class="badge rounded-pill" style="font-size: 20px; color:white; background-color: #09B657;"/>
                                             </t>
                                             <t t-else="">
                                                 <field name="status"  class="badge rounded-pill" style="font-size: 20px; background-color: #E12D3C; color:white;"/>
@@ -39,25 +39,17 @@
                                          <div>
                                            <field name="terbooking"/>x Terpesan
                                         </div>
-<!--                                        
-                                        <div t-if="record.maintenance.raw_value != 'Done Maintenance'">
-                                            <field name="maintenance" class="badge rounded-pill" style="font-size: 15px; background-color: #FCCD2A; color:white;"/>  
-                                        </div> -->
-                                        <!-- <div t-if="record.maintenance.raw_value != 'Done Maintenance'"> -->
-                                            <!-- <field name="maintenance"  widget="badge"/>   -->
-                                        <!-- </div> -->
+                                      
+                                      
                                         <div>
-                                            <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" attrs="{'invisible':[('status', 'in',('reserved','occupied'))]}"/>
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" attrs="{'invisible':[('status', '=','available')]}" /> -->
+                                        
                                         </div>
                                     </div>
 
                                     <div class="o_kanban_record_bottom mt-3">
                                         <div class="oe_kanban_bottom_left">
-                                            <div class="o_project_kanban_boxes d-flex align-items-baseline">
-                                                 <div t-if="record.maintenance.raw_value != 'Done Maintenance'">
-                                                    <field name="maintenance" class="badge rounded-pill" style="font-size: 15px; background-color: #FCCD2A; color:black;"/>  
-                                                </div>
+                                            <div t-if="record.maintenance.raw_value != 'Done Maintenance' and record.maintenance.raw_value != ''" class="o_project_kanban_boxes d-flex align-items-baseline">
+                                                <a name="addroom" icon="fa-solid fa-exclamation-circle fa-2x" style="color: #e63333;" type="object"> <span style="font-size: 15px; font-weight: bold; color:black;"><field name="maintenance"/></span></a>    
                                             </div>
                                             
                                         </div>
@@ -124,6 +116,9 @@
                 <field name="maintenance"/>
                 <field name="status_kerusakan"/>
                 <field name="terbooking"/>
+            </xpath>
+            <xpath expr="//field[@name='taxes_ids']" position="after">
+                <field name="deposit"/>
             </xpath>
         </field>
     </record>

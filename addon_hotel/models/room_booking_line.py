@@ -19,8 +19,10 @@ class RoomBookingline(models.Model):
             if line == line.booking_id.room_line_ids[:1]:
                 line.room_id = line.booking_id.roomsugest
                 line.jumlah = line.room_id.num_person
+                line.deposit = line.room_id.deposit
             else:
                 line.jumlah = line.room_id.num_person
+                line.deposit = line.room_id.deposit
 
     @api.depends('uom_qty', 'price_unit', 'tax_ids')
     def _compute_price_subtotal(self):

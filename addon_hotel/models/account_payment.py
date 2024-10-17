@@ -54,4 +54,12 @@ class AccountPayment(models.Model):
             lambda pay: pay.is_internal_transfer and not pay.paired_internal_transfer_payment_id
         )._create_paired_internal_transfer_payment()
 
-        
+    
+    def periode(self):
+        print(self)
+        per = []
+        for a in self:
+            per.append(a.date_order)
+        return per[0]
+
+    
