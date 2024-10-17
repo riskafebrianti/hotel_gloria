@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    
         <record model="ir.ui.view" id="maintenance_request_form">
             <field name="name">maintenance.request.form</field>
             <field name="model">maintenance.request</field>
@@ -9,7 +9,25 @@
                 <xpath expr="//field[@name='room_maintenance_ids']" position="after">
                     <field name="kerusakan_berat" invisible="type != 'room'"/>
                 </xpath>
+                
             </field>
         </record>
-    </data>
+
+        <record id="maintenance_view_tree" model="ir.ui.view">
+            <field name="name">maintenance.request.view.tree</field>
+            <field name="model">maintenance.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence"/>
+                    <field name="state"/>
+                    <field name="kerusakan_berat"/>
+                    <!-- <t t-if="kerusakan_berat == True">
+                        <span>Kerusakan berat</span>
+                    </t> -->
+                    
+                    
+                </tree>
+            </field>
+        </record>
+    
 </odoo>

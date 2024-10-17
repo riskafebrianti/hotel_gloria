@@ -49,7 +49,7 @@
                                     <div class="o_kanban_record_bottom mt-3">
                                         <div class="oe_kanban_bottom_left">
                                             <div t-if="record.maintenance.raw_value != 'Done Maintenance' and record.maintenance.raw_value != ''" class="o_project_kanban_boxes d-flex align-items-baseline">
-                                                <a name="addroom" icon="fa-solid fa-exclamation-circle fa-2x" style="color: #e63333;" type="object"> <span style="font-size: 15px; font-weight: bold; color:black;"><field name="maintenance"/></span></a>    
+                                                <a name="action_show_maintenance" icon="fa-solid fa-exclamation-circle fa-2x" style="color: #e63333;" type="object"> <span style="font-size: 15px; font-weight: bold; color:black;"><field name="maintenance"/></span></a>    
                                             </div>
                                             
                                         </div>

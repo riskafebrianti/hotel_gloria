@@ -93,6 +93,22 @@ class room(models.Model):
         #    'domain': [('room_line_ids.room_id', '=', self.id)],
         #    'domain' : [('room_line_ids.room_id', '=', self.id)],
        }
+    
+    def action_show_maintenance(self):
+        print(self)
+        # cari = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['reserved','check_in'])])[-1].id
+        #   """Method for Returning invoice View"""
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Room Maintenance',
+            'view_mode': 'tree,form',
+            'view_type': 'tree,form',
+            'res_model': 'maintenance.request',
+            'domain': [('room_maintenance_ids.id','=', self.id),('state','!=','done')],
+            'context': "{'create': False}"
+        }
+        
         
 
     def room(self):
