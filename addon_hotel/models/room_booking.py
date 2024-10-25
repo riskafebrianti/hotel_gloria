@@ -31,7 +31,15 @@ class RoomBookingTree(models.Model):
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
     )
-    
+    pricelist_id = fields.Many2one(comodel_name='product.pricelist',
+                                string="Pricelist",
+                                compute='_compute_pricelist_id',
+                                store=True, readonly=False,
+                                # required=True,
+                                tracking=1,
+                                help="If you change the pricelist,"
+                                    " only newly added lines"
+                                    " will be affected.")
 
     
     payment_ids = fields.One2many(
