@@ -30,7 +30,7 @@
             </field>
     </record>
 
-    <record model="ir.ui.view" id="room_booking_line">
+    <!-- <record model="ir.ui.view" id="room_booking_line">
         <field name="name">room.booking.form</field>
         <field name="model">room.booking</field>
         <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_form"/>
@@ -75,9 +75,6 @@
                 <field name="deposit_out"  invisible="1"/>
             </xpath>
 
-            <!-- <xpath expr="//form//header//button[@name='action_checkin']" position="att">
-                 attrs="{'invisible':[('state', '=', 'open')]}"
-            </xpath> -->
             <xpath expr="//button[@name='action_invoice']" position="replace">
                 <button name="action_invoice" string="Create Invoice"
                             type="object" class="btn-primary"
@@ -107,22 +104,20 @@
                             widget="statinfo"/>
                 </button>
             </xpath>
-<!--             
+            
             <xpath expr="//form" position="inside">
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
                     <field name="activity_ids"/>
                     <field name="message_ids"/>
                 </div>
-            </xpath> -->
+            </xpath>
 
-            <!-- <xpath expr="//field[@name='kasir_id']" position="replace">
-                <field name="kasir_id" required="1"/>
-            </xpath> -->
+    
         
         </field>
     </record>
-
+ -->
 
 
 
