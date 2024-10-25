@@ -85,12 +85,12 @@
                 
             </xpath>
             
-            <!-- <xpath expr="//button[@name='action_checkout']" position="replace">
+            <xpath expr="//button[@name='action_checkout']" position="replace">
                 <button name="action_checkout" string="Check-Out"
                             class="btn-primary" invisible="state != 'check_in' or deposit_in != True" 
                             type="object"/>
                 
-            </xpath> -->
+            </xpath>
             
             <xpath expr="//form//header" position="inside">
                <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in == True" />

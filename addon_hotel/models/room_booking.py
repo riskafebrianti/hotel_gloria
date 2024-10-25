@@ -139,25 +139,25 @@ class RoomBookingTree(models.Model):
                          'create': False
                         },
        }
-    # def action_deposit_out(self):
+    def action_deposit_out(self):
        
-    #    self.deposit_out = True
-    #    print(self)
-    #    return{
-    #        'type' : 'ir.actions.act_window',
-    #        'view_id' : self.env.ref('account.view_account_payment_form').id,
-    #        'res_model' :'account.payment',
-    #        'view_mode':'form',
-    #        'context' : {
-    #                     'default_partner_id': self.partner_id.id,
-    #                     'default_journal_id': self.env['account.journal'].sudo().search([('code','=', 'CSH1')]).id,
-    #                     'default_payment_type': 'outbound',
-    #                     'default_amount': sum(self.room_line_ids.mapped('deposit')),
-    #                      'default_room_booking_id' : self.id,
-    #                     'default_ref': 'Deposit Booking Out: '+ str(self.name),
-    #                      'create': False
-    #                     },
-    #    }
+       self.deposit_out = True
+       print(self)
+       return{
+           'type' : 'ir.actions.act_window',
+           'view_id' : self.env.ref('account.view_account_payment_form').id,
+           'res_model' :'account.payment',
+           'view_mode':'form',
+           'context' : {
+                        'default_partner_id': self.partner_id.id,
+                        'default_journal_id': self.env['account.journal'].sudo().search([('code','=', 'CSH1')]).id,
+                        'default_payment_type': 'outbound',
+                        'default_amount': sum(self.room_line_ids.mapped('deposit')),
+                         'default_room_booking_id' : self.id,
+                        'default_ref': 'Deposit Booking Out: '+ str(self.name),
+                         'create': False
+                        },
+       }
     def action_charge(self):
         self.ensure_one()
        
