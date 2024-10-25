@@ -6,7 +6,7 @@
             <t t-call="web.external_layout">
 
             
-                <div class="float-left" style="border:0px solid; margin-top:-45px;">
+                 <div class="float-left" style="border:0px solid; margin-top:-45px;width:50%;">
                     <div class="details">
                             <b><span style="color:black; font-size:29px;"><t t-esc="docs.company_id.name"/></span></b>
                                 <br></br>
@@ -23,7 +23,11 @@
                             </t>   
                                 <br></br>  
                     </div>
+
                 </div>     
+                    <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:700px;">
+                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
+                    </div>
                    
                 <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
 
@@ -31,9 +35,10 @@
                 <!-- <h2>Booking Report</h2> -->
                <div class="page" style="border:0px solid;">
                     
-                    <h2>Transaction Room</h2>
+                    <h2>Transaction Room <t t-esc="docs.name"/></h2>
                     <br/>
                    <div style="border:0px solid; width:100%; ">
+                   
                     <table class="table-borderless">
                         <!-- <table style="float:left;"> -->
                         

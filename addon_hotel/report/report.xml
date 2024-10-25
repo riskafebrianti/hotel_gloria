@@ -72,7 +72,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">addon_hotel.report_pengeluaran</field>
         <field name="report_file">addon_hotel.report_pengeluaran</field>
-        <field name="paperformat_id" ref="addon_hotel.paperformat_custom"/>
+        <field name="paperformat_id" ref="addon_hotel.paperformat_custom_landscape"/>
         <field name="print_report_name">'Laporan Pengeluaran Hotel'</field>
         <field name="binding_model_id" ref="model_account_move"/>
     </record> 
@@ -80,7 +80,7 @@
     <record id="action_report_strukk" model="ir.actions.report">
         <field name="name">Cetak Struk</field>
         <field name="model">room.booking</field>
-        <field name="report_type">qweb-html</field>
+        <field name="report_type">qweb-pdf</field>
         <field name="report_name">addon_hotel.report_struk</field>
         <field name="report_file">addon_hotel.report_struk</field>
         <field name="paperformat_id" ref="addon_hotel.paperformat_custom"/>

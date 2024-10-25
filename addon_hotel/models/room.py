@@ -1,6 +1,7 @@
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError
 from datetime import datetime, timedelta
+from odoo.exceptions import ValidationError
 class room(models.Model):
     _inherit = 'hotel.room'
 
@@ -27,9 +28,10 @@ class room(models.Model):
         compute='_maintenance',
     )
     
-    deposit = fields.Float(
+    deposit = fields.Char(
         string='Deposit',
          store=True,
+          required=True, 
     )
     
     
@@ -61,10 +63,11 @@ class room(models.Model):
     def _maintenance(self):
 
         for tea in self:
-            search = self.env['maintenance.request'].sudo().search([('room_maintenance_ids','=', self.id),('state','!=','done'),('kerusakan_berat','=', True)])
+            search = self.env['maintenance.request'].sudo().search([('room_maintenance_ids','=', tea.id),('state','!=','done'),('kerusakan_berat','=', True)])
             if search:
                 tea.status_kerusakan = 'Berat'
     
+   
   
     
     

@@ -113,12 +113,18 @@ class RoomBookingTree(models.Model):
                         'default_ref': 'Deposit Booking: '+ str(self.name)
                         }
        }
-    
-    def action_deposit_out(self):
-       self.ensure_one()
-       self.deposit_out = True
-       print(self)
-       return{
+    def action_checkout(self):
+        """Button action_heck_out function"""
+        self.write({"state": "check_out"})
+        for room in self.room_line_ids:
+            room.room_id.write({
+                'status': 'available',
+                'is_room_avail': True
+            })
+            room.write({'checkout_date': datetime.today()})
+        self.deposit_out = True
+        # print(self)
+        return{
            'type' : 'ir.actions.act_window',
            'view_id' : self.env.ref('account.view_account_payment_form').id,
            'res_model' :'account.payment',
@@ -133,6 +139,25 @@ class RoomBookingTree(models.Model):
                          'create': False
                         },
        }
+    # def action_deposit_out(self):
+       
+    #    self.deposit_out = True
+    #    print(self)
+    #    return{
+    #        'type' : 'ir.actions.act_window',
+    #        'view_id' : self.env.ref('account.view_account_payment_form').id,
+    #        'res_model' :'account.payment',
+    #        'view_mode':'form',
+    #        'context' : {
+    #                     'default_partner_id': self.partner_id.id,
+    #                     'default_journal_id': self.env['account.journal'].sudo().search([('code','=', 'CSH1')]).id,
+    #                     'default_payment_type': 'outbound',
+    #                     'default_amount': sum(self.room_line_ids.mapped('deposit')),
+    #                      'default_room_booking_id' : self.id,
+    #                     'default_ref': 'Deposit Booking Out: '+ str(self.name),
+    #                      'create': False
+    #                     },
+    #    }
     def action_charge(self):
         self.ensure_one()
        
@@ -302,7 +327,8 @@ class RoomBookingTree(models.Model):
                     'price_subtotal': rec['quantity'] * rec['price_unit'],
                     'product_type': rec['product_type'],
                 }])
-            self.write({'invoice_status': "invoiced"})
+            self.write({'invoice_status': "invoiced",
+                        'hotel_invoice_id': account_move.id })
             self.invoice_button_visible = True
             return {
                 'type': 'ir.actions.act_window',
@@ -327,6 +353,4 @@ class RoomBookingTree(models.Model):
             'context': "{'create': False}"
         }
     
-    
-
     

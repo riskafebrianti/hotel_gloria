@@ -42,7 +42,12 @@
             </xpath>
 
             <xpath expr="//field[@name='uom_id']" position="after">
+                <field name="ket" optional="hide"/>
                 <field name="deposit"/>
+            </xpath>
+
+            <xpath expr="//field[@name='price_total']" position="after">
+                <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" class="btn btn-info"/>
             </xpath>
 
             <xpath expr="//field[@name='partner_id']" position="after">
@@ -80,12 +85,12 @@
                 
             </xpath>
             
-            <xpath expr="//button[@name='action_checkout']" position="replace">
+            <!-- <xpath expr="//button[@name='action_checkout']" position="replace">
                 <button name="action_checkout" string="Check-Out"
                             class="btn-primary" invisible="state != 'check_in' or deposit_in != True" 
                             type="object"/>
                 
-            </xpath>
+            </xpath> -->
             
             <xpath expr="//form//header" position="inside">
                <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in == True" />
@@ -131,5 +136,40 @@
     </xpath>
    </template>
      -->
+
+     <record id="view_wizard_example_form" model="ir.ui.view">
+        <field name="name">wizard.example.form</field>
+        <field name="model">wizard.example</field>
+        <field name="arch" type="xml">
+            <form string="Wizard Example">
+                <group>
+                    <field name="checkout_date"/>
+                    <field name="uom_qty"/>
+                    <field name="room_id"/>
+                    
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_wizard_example" model="ir.actions.act_window">
+        <field name="name">Wizard Example</field>
+        <field name="res_model">wizard.example</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="wizard_example_access" model="ir.model.access">
+        <field name="name">wizard.example access</field>
+        <field name="model_id" ref="model_wizard_example"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
        
 </odoo>

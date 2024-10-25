@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="oe_kanban_bottom_right">
                                         
-                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available' or status_kerusakan == 'Berat'"/>
+                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available' "/>
                                         <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available'" />
                                         </div>
                                     </div> 

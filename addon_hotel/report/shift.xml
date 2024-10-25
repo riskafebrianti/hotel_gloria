@@ -7,24 +7,28 @@
         <!-- <div t-attf-class="o_company_#{company_id}_layout header" t-att-style="report_header_style" > -->
             <t t-call="web.external_layout">
             
-                <div class="float-left" style="border:0px solid; margin-top:-45px;">
+                <div class="float-left" style="border:0px solid; margin-top:-45px;width:50%;">
                     <div class="details">
-                            <b><span style="color:black; font-size:29px;"><t t-esc="docs.company_id.name"/></span></b>
+                            <b><span style="color:black; font-size:35px;"><t t-esc="docs.company_id.name"/></span></b>
                                 <br></br>
                             <t t-if="docs.company_id.street">
-                                <span  t-esc="docs.company_id.street"/>
+                                <span  t-esc="docs.company_id.street" style="font-size:30px;"/>
                             </t>
                                 <br></br>
                             <t t-if="docs.company_id">
-                                <span t-esc="docs.company_id.city"/> 
+                                <span t-esc="docs.company_id.city" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>
                             <t t-if="docs.company_id.mobile">
-                                Whatsapp. <span t-esc="docs.company_id.mobile"/> / Telp. <span t-esc="docs.company_id.phone"/> 
+                                Whatsapp. <span t-esc="docs.company_id.mobile" style="font-size:30px;"/> / Telp. <span t-esc="docs.company_id.phone" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>  
                     </div>
+
                 </div>     
+                    <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:2000px;">
+                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
+                    </div>
                    
                 <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
 
@@ -41,14 +45,14 @@
                                 <th  style="font-size:30px">No.</th>
                                 <th  style="font-size:30px">Kode Booking</th>
                                 <th  style="font-size:30px">Room</th>
-                                <th  style="font-size:30px">Type</th>
+                                <th  style="font-size:30px">Date</th>
                                 <th  style="font-size:30px">Check-In</th>
                                 <th  style="font-size:30px">Check-Out</th>
-                                <th  style="font-size:30px">Duration</th>
-                                <th  style="font-size:30px">Name</th>
+                                <th  style="font-size:30px">Customer</th>
                                 <th  style="font-size:30px">Status</th>
                                 <th  style="font-size:30px">Amount</th>
-                                <th  style="font-size:30px">Deposit</th>
+                                <th  style="font-size:30px"></th>
+                                <th  style="font-size:30px">Dibuat Oleh</th>
                             </tr>
                         </thead>
                         <t t-set="i" t-value="0"/>
@@ -65,8 +69,9 @@
                                 <td style="font-size:25px">
                                     <t t-esc="line.room_id.name"/>
                                 </td>
+                               
                                 <td style="font-size:25px">
-                                    <t t-esc="line.room_id.room_type"/>
+                                    <t t-esc="line.booking_id.date_order.strftime('%d/%m/%Y')"/>
                                 </td>
                                <td style="font-size:25px">
                                     <t t-esc="line.checkin_date.strftime('%d/%m/%Y')"/>
@@ -74,9 +79,7 @@
                                 <td style="font-size:25px">
                                     <t t-esc="line.checkout_date.strftime('%d/%m/%Y')"/>
                                 </td>
-                                <td style="font-size:25px">
-                                    <t t-esc="line.uom_qty"/>
-                                </td>
+              
                                  <td style="font-size:25px">
                                     <t t-esc="line.booking_id.partner_id.name"/>
                                 </td>
@@ -86,28 +89,23 @@
                                 <td style="font-size:25px">
                                     <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.price_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                 </td>
-                                 <td style="font-size:25px">
-                                    <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.deposit_sisa))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
-
-                                </td>
+                                <td style="font-size:25px">
+                                    <t t-esc="line.booking_id.message_follower_ids.name "/>
+                                </td> 
+                                <td style="font-size:25px">
+                                    <t t-esc="line.booking_id.message_follower_ids.name "/>
+                                </td> 
+                                
                                  
                             </tr>
                         </t>
                        <tr>
-                            <td colspan="9" align="right"  style= "font-size:30px;">Amount</td>
+                            <td colspan="9" align="right"  style= "font-size:30px;">Total</td>
                             <td colspan="2" align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.price_total for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                        </tr>
-                        <tr>
-                            <td colspan="9" align="right"  style= "font-size:30px;">Deposit</td>
-                            <td colspan="2" align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line_dpo.deposit_sisa for line_dpo in docs.filtered(lambda pay: pay.state not in('draft','cancel')))))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
-                       </tr> 
+                       
                        <strong>
-                        <tr>
-                            <td colspan="9" align="right" style= "font-size:30px;">Total :</td>
-                            <!-- <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="docs.total_semua() " /></td> -->
-                            <td colspan="2" align="center" style= "font-size:25px; color:black; font-weight: 900;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(docs.total_semua()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
-
-                       </tr> 
+                       
                       </strong>
                     </table>
                     <!-- <div class="row" name="total">
