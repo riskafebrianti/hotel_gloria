@@ -605,7 +605,8 @@ class RoomBooking(models.Model):
                     'price_subtotal': rec['quantity'] * rec['price_unit'],
                     'product_type': rec['product_type'],
                 }])
-            self.write({'invoice_status': "invoiced"})
+            self.write({'invoice_status': "invoiced",
+                        'hotel_invoice_id' : account_move.id})
             self.invoice_button_visible = True
             return {
                 'type': 'ir.actions.act_window',

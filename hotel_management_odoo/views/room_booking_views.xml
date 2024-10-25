@@ -90,7 +90,7 @@
                                 <tree editable="bottom">
                                     <field name="room_id" string="Room"
                                            required="1"
-                                           options="{'no_open': True, 'no_create': True}"/>
+                                           options="{'no_open': False, 'no_create': False}"/>
                                     <field name="checkin_date"/>
                                     <field name="booking_line_visible"
                                            invisible="1"/>

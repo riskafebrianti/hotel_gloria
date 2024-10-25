@@ -45,9 +45,9 @@ class RoomBookingLine(models.Model):
                                          " Otherwise sets to current Date",
                                     required=True)
     room_id = fields.Many2one('hotel.room', string="Room",
-
+                              domain=[('status', '=', 'available')],
                               help="Indicates the Room",
-                              required=True)
+                              required=True, select=True)
     uom_qty = fields.Float(string="Duration",
                            help="The quantity converted into the UoM used by "
                                 "the product", readonly=True)
