@@ -35,7 +35,7 @@ class RoomBookingTree(models.Model):
                                 string="Pricelist",
                                 compute='_compute_pricelist_id',
                                 store=True, readonly=False,
-                                # required=True,
+                                required=False,
                                 tracking=1,
                                 help="If you change the pricelist,"
                                     " only newly added lines"
