@@ -57,6 +57,15 @@ class RoomBookingTree(models.Model):
                                             help="sets to True if the "
                                                 "maintenance request send "
                                                 "once" )
+    def default_CO(self):
+        tes = fields.Datetime.now().replace(hour=4, minute= 00) + timedelta(days=1)
+        
+        return tes
+    
+    
+    checkout_date = fields.Datetime(string="Check Out",
+                                help="Date of Checkout",
+                                default=default_CO)
     
     def _compute_depo_count(self):
         """Compute the invoice count"""
@@ -221,10 +230,12 @@ class RoomBookingTree(models.Model):
         fleet_lines = self.vehicle_line_ids
         event_lines = self.event_line_ids
         booking_list = []
-        account_move_line = self.env['account.move.line'].search_read(
-            domain=[('ref', '=', self.name),
-                    ('display_type', '!=', 'payment_term')],
-            fields=['name', 'quantity', 'price_unit', 'product_type'], )
+        for loop in self:
+
+            account_move_line = self.env['account.move.line'].search_read(
+                domain=[('ref', '=', loop.name),
+                        ('display_type', '!=', 'payment_term')],
+                fields=['name', 'quantity', 'price_unit', 'product_type'], )
         for rec in account_move_line:
             del rec['id']
         if room_lines:

@@ -26,31 +26,31 @@ class RoomBookingline(models.Model):
                 line.jumlah = line.room_id.num_person
                 line.deposit = line.room_id.deposit
 
-    @api.depends('uom_qty', 'price_unit', 'tax_ids')
-    def _compute_price_subtotal(self):
-        """Compute the amounts of the room booking line."""
-        for line in self:
-            tax_results = self.env['account.tax']._compute_taxes(
-                [line._convert_to_tax_base_line_dict()])
-            totals = list(tax_results['totals'].values())[0]
-            amount_untaxed = totals['amount_untaxed'] 
-            amount_tax = totals['amount_tax']
-            line.update({
-                'price_subtotal': amount_untaxed - self.diskon,
-                'price_tax': amount_tax,
-                'price_total': amount_untaxed - self.diskon + amount_tax,
-            })
-            if self.env.context.get('import_file',
-                                    False) and not self.env.user. \
-                    user_has_groups('account.group_account_manager'):
-                line.tax_id.invalidate_recordset(
-                    ['invoice_repartition_line_ids'])
+    # @api.depends('uom_qty', 'price_unit', 'tax_ids')
+    # def _compute_price_subtotal(self):
+    #     """Compute the amounts of the room booking line."""
+    #     for line in self:
+    #         tax_results = self.env['account.tax']._compute_taxes(
+    #             [line._convert_to_tax_base_line_dict()])
+    #         totals = list(tax_results['totals'].values())[0]
+    #         amount_untaxed = totals['amount_untaxed'] 
+    #         amount_tax = totals['amount_tax']
+    #         line.update({
+    #             'price_subtotal': amount_untaxed - self.diskon,
+    #             'price_tax': amount_tax,
+    #             'price_total': amount_untaxed - self.diskon + amount_tax,
+    #         })
+    #         if self.env.context.get('import_file',
+    #                                 False) and not self.env.user. \
+    #                 user_has_groups('account.group_account_manager'):
+    #             line.tax_id.invalidate_recordset(
+    #                 ['invoice_repartition_line_ids'])
     
-    @api.onchange('diskon','price_subtotal','booking_id.room_line_ids')
-    def get_diskon(self):
-       if self.diskon:
-           self.price_subtotal = (self.price_unit * self.uom_qty) - self.diskon
-           print(self)
+    # @api.onchange('diskon','price_subtotal','booking_id.room_line_ids')
+    # def get_diskon(self):
+    #    if self.diskon:
+    #        self.price_subtotal = (self.price_unit * self.uom_qty) - self.diskon
+    #        print(self)
     
     
 

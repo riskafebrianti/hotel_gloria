@@ -50,8 +50,10 @@
                                 <th  style="font-size:30px">Check-Out</th>
                                 <th  style="font-size:30px">Customer</th>
                                 <th  style="font-size:30px">Status</th>
-                                <th  style="font-size:30px">Amount</th>
-                                <th  style="font-size:30px"></th>
+                                <th  style="font-size:30px">Harga</th>
+                                <th  style="font-size:30px">Total</th>
+                                <th  style="font-size:30px">Bayar</th>
+                                <th  style="font-size:30px">Status Invoice</th>
                                 <th  style="font-size:30px">Dibuat Oleh</th>
                             </tr>
                         </thead>
@@ -93,10 +95,14 @@
                                     <t t-esc="line.booking_id.message_follower_ids.name "/>
                                 </td> 
                                 <td style="font-size:25px">
-                                    <t t-esc="line.booking_id.message_follower_ids.name "/>
+                                    <t t-esc="line.price_unit"/>
                                 </td> 
-                                
-                                 
+                                <td style="font-size:25px">
+                                    <t t-esc="line.price_total"/>
+                                </td> 
+                                <td style="font-size:25px">
+                                    <t t-esc="line.booking_id.hotel_invoice_id"/>
+                                </td> 
                             </tr>
                         </t>
                        <tr>
