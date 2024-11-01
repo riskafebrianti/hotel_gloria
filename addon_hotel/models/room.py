@@ -42,7 +42,8 @@ class room(models.Model):
     keterangan = fields.Boolean(
         string='ket',
         store=True,
-        compute='_terket'
+        default=False,
+        # compute='_terket'
     )
     
     room_booking = fields.Many2one('room.booking', string="id")
