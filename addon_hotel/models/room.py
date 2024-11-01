@@ -43,7 +43,7 @@ class room(models.Model):
         string='ket',
         store=True,
         default=False,
-        # compute='_terket'
+        compute='_terket'
     )
     
     room_booking = fields.Many2one('room.booking', string="id")
