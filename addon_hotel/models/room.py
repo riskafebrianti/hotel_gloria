@@ -75,12 +75,10 @@ class room(models.Model):
             
         for order in self:
             jumpess = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('booking_id.state','=', 'draft')])
-            if not jumpess:
-                self.keterangan = 'False'
-            else:
-            
-                jumpesss = jumpess.booking_id[-1]
+            # jumpesss = jumpess.booking_id[-1]
+            if jumpess:
                 self.keterangan = 'True'
+            
             
           
             print(order)
