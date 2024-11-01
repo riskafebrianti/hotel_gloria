@@ -73,6 +73,8 @@
                 <field name="roomsugest" invisible="1"/>
                 <field name="deposit_in"  invisible="1"/>
                 <field name="deposit_out"  invisible="1"/>
+                <field name="move"/>
+                <field name="extend"/>
             </xpath>
 
             <xpath expr="//button[@name='action_invoice']" position="replace">
@@ -113,6 +115,27 @@
                 </div>
             </xpath>
 
+            <xpath expr="//form//sheet//group//group[2]//field[@name='need_service']" position="replace">
+                            <field name="need_service"
+                                   invisible="1"/>
+            </xpath>
+            <xpath expr="//form//sheet//group//group[2]//field[@name='need_service']" position="replace">
+                            <field name="need_service"
+                                   invisible="1"/>
+            </xpath>
+            <xpath expr="//form//sheet//group//group[2]//field[@name='need_fleet']" position="replace">
+                            <field name="need_fleet"
+                                   invisible="1"/>
+            </xpath>
+            <xpath expr="//form//sheet//group//group[2]//field[@name='need_food']" position="replace">
+                            <field name="need_food"
+                                   invisible="1"/>
+            </xpath>
+            <xpath expr="//form//sheet//group//group[2]//field[@name='need_event']" position="replace">
+                            <field name="need_event"
+                                   invisible="1"/>
+            </xpath>
+
     
         
         </field>
@@ -141,6 +164,7 @@
                     <field name="checkout_date"/>
                     <field name="uom_qty"/>
                     <field name="room_id"/>
+                    <field name="price_total"/>
                     
                 </group>
                 <footer>

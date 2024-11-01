@@ -66,12 +66,16 @@ class WizardExample(models.TransientModel):
         co = self.env['room.booking.line'].browse(self.env.context.get('active_id')).checkout_date
         return co
 
-    # def default_duration(self):
-    #     duration = self.env['room.booking.line'].browse(self.env.context.get('active_id')).uom_qty
-    #     return duration
+    def default_duration(self):
+        duration = self.env['room.booking.line'].browse(self.env.context.get('active_id')).uom_qty
+        return duration
+    
+    def default_total(self):
+        price = self.env['room.booking.line'].browse(self.env.context.get('active_id')).price_subtotal
+        return price
     
     room_id = fields.Many2one('hotel.room', string="Room",
-                            domain=[('status', '=', 'available')],
+                            domain=[('status', '=', 'available')],  
                             help="Indicates the Room",
                             required=True, select=True, default= default_room, )
 
@@ -81,24 +85,57 @@ class WizardExample(models.TransientModel):
                                     required=True,  default= default_co,)
     uom_qty = fields.Float(string="Duration",
                         help="The quantity converted into the UoM used by "
-                            "the product", readonly=True )
+                            "the product", readonly=True, compute='_compute_default' )
+    price_total = fields.Float(string="Total",
+                            # compute='_compute_price_subtotal',
+                            # default= default_total,
+                            store=True)
     
-    @api.onchange("checkout_date")
-    def _onchange_checkin_datee(self):
-        """When you change checkin_date or checkout_date it will check
-        and update the qty of hotel service line
-        -----------------------------------------------------------------
-        @param self: object pointer"""
-        co_pertama = self.env['room.booking.line'].browse(self.env.context.get('active_id')).checkout_date
-        if self.checkout_date < co_pertama:
-            raise ValidationError(
-                _("Checkout must be greater or equal checkin date"))
-        if self.checkout_date:      
-            diffdate = self.checkout_date - co_pertama
+        
+    
+    @api.depends('checkout_date')
+    def _compute_default(self):
+        order_line_id = self.env.context.get('active_id')
+        order_line = self.env['room.booking.line'].browse(order_line_id)
+        if order_line.checkout_date != self.checkout_date :
+            diffdate = self.checkout_date - order_line.checkin_date
             qty = diffdate.days
             if diffdate.total_seconds() > 0:
                 qty = qty + 1
             self.uom_qty = qty
+            self.price_total = self.room_id.list_price * self.uom_qty
+        else:
+            self.uom_qty = order_line.uom_qty
+            self.price_total = order_line.price_subtotal
+
+
+    
+    
+    
+    # @api.onchange("checkout_date")
+    # def _onchange_checkin_datee(self):
+    #     """When you change checkin_date or checkout_date it will check
+    #     and update the qty of hotel service line
+    #     -----------------------------------------------------------------
+    #     @param self: object pointer"""
+    #     co_pertama = self.env['room.booking.line'].browse(self.env.context.get('active_id')).checkin_date
+    #     if self.checkout_date < co_pertama:
+    #         raise ValidationError(
+    #             _("Checkout must be greater or equal checkin date"))
+    #     if self.checkout_date:      
+    #         diffdate = self.checkout_date - co_pertama
+    #         qty = diffdate.days
+    #         if diffdate.total_seconds() > 0:
+    #             qty = qty + 1
+    #         self.uom_qty = qty
+
+    @api.depends('checkout_date','room_id','uom_qty')
+    def _compute_price_subtotal(self):
+        """Compute the amounts of the room booking line."""
+        print(self)
+        diri = self.env['room.booking.line'].browse(self.env.context.get('active_id'))
+
+        self.price_total = self.room_id.list_price * self.uom_qty
     
     def _compute_amount_untaxed(self, flag=False):
         """Compute the total amounts of the Sale Order"""
@@ -194,95 +231,188 @@ class WizardExample(models.TransientModel):
         order_line = self.env['room.booking.line'].browse(order_line_id)
         diri = self.env['room.booking.line'].browse(self.env.context.get('active_id')).booking_id
 
-        if order_line.room_id != self.room_id:
+        if order_line.room_id != self.room_id and order_line.price_subtotal > self.price_total:
 
-            status_tersedia = self.env['room.booking.line'].browse(order_line_id).room_id
-            status_tersedia.update({
-                'status' : "available"
-            })
-            # Update order line dengan data dari wizard
-            order_line.write({
-                'room_id': self.room_id.id,
-                'ket': "Pindah Kamar"
-            })
-            order_line.room_id.update({
-                'status' : "occupied"
-            })
-            invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')]).line_ids
-            for a in invc:
-                if a.display_type == 'product':
-                    a.write({
-                        'name': self.room_id.name,  
+                status_tersedia = self.env['room.booking.line'].browse(order_line_id).room_id
+                status_tersedia.update({
+                    'status' : "available"
+                })
+                # Update order line dengan data dari wizard
+                if order_line.ket =='Extend':
+                    order_line.update({
+                        'room_id': self.room_id.id,
+                        'ket': order_line.ket+" & Pindah Kamar"
                     })
-
-
-        if order_line.checkout_date != self.checkout_date:
-            co_pertama = self.env['room.booking.line'].browse(self.env.context.get('active_id')).checkout_date
-            if self.checkout_date < co_pertama:
-                raise ValidationError(
-                    _("Checkout must be greater or equal checkin date"))
-            if self.checkout_date:      
-                diffdate = self.checkout_date - co_pertama
-                qty = diffdate.days
-                if diffdate.total_seconds() > 0:
-                    qty = qty + 1
-                self.uom_qty = qty
-            # Update order line dengan data dari wizard
-            
-            if order_line.ket:
+                elif order_line.ket == 'Pindah Kamar':
+                    order_line.update({
+                        'room_id': self.room_id.id,
+                        'ket': "Pindah Kamar"
+                    })
+                elif not order_line.ket:
+                    order_line.update({
+                        'room_id': self.room_id.id,
+                        'ket': "Pindah Kamar"
+                    })
+                else:
+                    order_line.update({
+                        'room_id': self.room_id.id,
+                        # 'ket': "Pindah Kamar"
+                    })
+                
+                order_line.room_id.update({
+                    'status' : "occupied"
+                })
+                invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')])
+                if not invc:
+                     raise ValidationError(_('Lakukan invoice di Kamar sebelumnya.'))
+                else:
+                    invcc = invc[-1].line_ids
+                    for a in invcc:
+                        if a.display_type == 'product':
+                            a.update({
+                                'name': self.room_id.name,  
+                            })
+        
+        if order_line.checkout_date != self.checkout_date and order_line.price_subtotal > self.price_total:
+        
+            if order_line.ket =='Pindah Kamar':
                 order_line.write({
                 'checkout_date': self.checkout_date,
-                'uom_qty' :self.uom_qty + self.env['room.booking.line'].browse(self.env.context.get('active_id')).uom_qty,
+                'uom_qty' :self.uom_qty,
                 'ket': order_line.ket+' & Extend'
             })
-                
+            
+            elif order_line.ket =='Extend': 
+                order_line.update({
+                'checkout_date': self.checkout_date,
+                'uom_qty' :self.uom_qty,
+                'ket': 'Extend'
+            })
             elif not order_line.ket:
-                order_line.write({
+                order_line.update({
                     'checkout_date': self.checkout_date,
                     'ket': 'Extend',
-                    'uom_qty' :self.uom_qty + self.env['room.booking.line'].browse(self.env.context.get('active_id')).uom_qty
+                    'uom_qty' :self.uom_qty
                 })
+            else:
+                order_line.update({
+                    'checkout_date': self.checkout_date,
+                    # 'ket': 'Extend',
+                    'uom_qty' :self.uom_qty
+                })
+                
+         
+        if order_line.price_subtotal != self.price_total:
 
-            # if not self.room_line_ids:
-            #     raise ValidationError(_("Please Enter Room Details"))
-
-        booking_list = diri._compute_amount_untaxed(True)
-        if booking_list:
-            account_move = self.env["account.move"].create([{
-                'move_type': 'out_invoice',
-                'invoice_date': fields.Date.today(),
-                'hotel_booking_id' : diri.id,
-                'partner_id': diri.partner_id.id,
-                'ref': diri.name,
-            }])
-            for rec in booking_list:
-                account_move.invoice_line_ids.create([{
-                    'name': rec['name'],
-                    'quantity': self.uom_qty,
-                    'price_unit': rec['price_unit'],
-                    # 'tax_ids': rec['tax_ids'],
-                    'move_id': account_move.id,
-                    'price_subtotal': self.uom_qty * rec['price_unit'],
-                    'product_type': rec['product_type'],
+            booking_list = diri._compute_amount_untaxed(True)
+            if booking_list:
+                account_move = self.env["account.move"].create([{
+                    'move_type': 'out_invoice',
+                    'invoice_date': fields.Date.today(),
+                    'hotel_booking_id' : diri.id,
+                    'partner_id': diri.partner_id.id,
+                    'ref': diri.name,
                 }])
-            diri.write({'invoice_status': "invoiced",
-                        'hotel_invoice_id': account_move.id })
-            diri.invoice_button_visible = True
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Invoices',
-                'view_mode': 'form',
-                'view_type': 'form',
-                'res_model': 'account.move',
-                'view_id': self.env.ref('account.view_move_form').id,
-                'res_id': account_move.id,
-                'context': "{'create': False}"
-            }
+                for rec in order_line:
+                   account_move.line_ids.create([{
+                        'name': rec['room_id'].name,
+                        'quantity': self.uom_qty,
+                        'price_unit': self.price_total,
+                        # 'tax_ids': rec['tax_ids'],
+                        'product_uom_id' : rec['uom_id'].id,
+                        'move_id': account_move.id,
+                        'price_subtotal': self.uom_qty * self.price_total,
+                        'product_type': 'room',
+                    }])
+                diri.update({'invoice_status': "invoiced",
+                            'hotel_invoice_id':  account_move.id })
+                diri.invoice_button_visible = True
 
+            
+
+                if order_line.room_id != self.room_id:
+
+                    status_tersedia = self.env['room.booking.line'].browse(order_line_id).room_id
+                    status_tersedia.update({
+                        'status' : "available"
+                    })
+                    # Update order line dengan data dari wizard
+                    if order_line.ket =='Extend':
+                        order_line.write({
+                            'room_id': self.room_id.id,
+                            'ket': order_line.ket+" & Pindah Kamar"
+                        })
+                    elif order_line.ket == 'Pindah Kamar':
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': "Pindah Kamar"
+                        })
+                    elif not order_line.ket:
+                        order_line.write({
+                            'room_id': self.room_id.id,
+                            'ket': "Pindah Kamar"
+                        })
+                    else:
+                        order_line.write({
+                            'room_id': self.room_id.id,
+                            # 'ket': "Pindah Kamar"
+                        })
+                    
+                    order_line.room_id.update({
+                        'status' : "occupied"
+                    })
+                    invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')])[-1].line_ids
+                    for a in invc:
+                        if a.display_type == 'product':
+                            a.write({
+                                'name': self.room_id.name,  
+                            })
+                
+                if order_line.checkout_date != self.checkout_date:
+                    
+                    if order_line.ket =='Pindah Kamar':
+                        order_line.write({
+                        'checkout_date': self.checkout_date,
+                        'uom_qty' :self.uom_qty,
+                        'ket': order_line.ket+' & Extend'
+                    })
+                    
+                    elif order_line.ket =='Extend': 
+                        order_line.update({
+                        'checkout_date': self.checkout_date,
+                        'uom_qty' :self.uom_qty ,
+                        'ket': 'Extend'
+                    })
+                    elif not order_line.ket:
+                        order_line.update({
+                            'checkout_date': self.checkout_date,
+                            'ket': 'Extend',
+                            'uom_qty' :self.uom_qty 
+                        })
+                    else:
+                        order_line.update({
+                            'checkout_date': self.checkout_date,
+                            # 'ket': 'Extend',
+                            'uom_qty' :self.uom_qty 
+                        })
+            
+
+            return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Invoices',
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_model': 'account.move',
+                    'view_id': self.env.ref('account.view_move_form').id,
+                    'res_id': account_move.id,
+                    'context': "{'create': False}"
+                    }
+        
+         
 
         print(self)
 
-           
+    
            
     
 

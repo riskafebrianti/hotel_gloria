@@ -27,6 +27,8 @@ class RoomBookingTree(models.Model):
                                  store=True,)
     deposit_in = fields.Boolean(string='deposit_in', )
     deposit_out = fields.Boolean(string='deposit_out', )
+    move = fields.Boolean(string='move', )
+    extend = fields.Boolean(string='extend', )
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
@@ -372,4 +374,36 @@ class RoomBookingTree(models.Model):
             'context': "{'create': False}"
         }
     
-    
+    def action_done(self):
+        """Button action_confirm function"""
+        for rec in self.env['account.move'].search(
+                [('ref', '=', self.name)]):
+            # if rec.payment_state != 'not_paid':
+            if rec.state == 'posted' and rec.payment_state !='not_paid':
+                self.write({"state": "done"})
+                self.is_checkin = False
+                if self.room_line_ids:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'type': 'success',
+                            'message': "Booking Checked Out Successfully!",
+                            'next': {'type': 'ir.actions.act_window_close'},
+                        }
+                    }
+            if rec.state == 'draft' and rec.payment_state !='paid':
+                self.write({"state": "done"})
+                self.is_checkin = False
+                if self.room_line_ids:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'type': 'success',
+                            'message': "Booking Checked Out Successfully!",
+                            'next': {'type': 'ir.actions.act_window_close'},
+                        }
+                    }
+            raise ValidationError(_('Your Invoice is Due for Payment.'))
+        self.write({"state": "done"})

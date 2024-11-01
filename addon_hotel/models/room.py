@@ -33,8 +33,19 @@ class room(models.Model):
          store=True,
           required=True, 
     )
+    # ket = fields.Char(
+    #     string='ket',
+    #      store=True,
+    #      compute='_terket'
+    # )
     
+    keterangan = fields.Boolean(
+        string='ket',
+        store=True,
+        compute='_terket'
+    )
     
+    room_booking = fields.Many2one('room.booking', string="id")
     # mentenance_id = fields.Many2many('maintenance.request',
     #                                         string="ID Maintenance",
     #                                         help="Choose Room Maintenance",
@@ -56,6 +67,21 @@ class room(models.Model):
             date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else (12, datetime.now().year-1)
             jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('checkin_date','>',date_begin), ('checkin_date','<',datetime.now())])
             order.terbooking = len(jumpes)
+            print(order)
+    
+    @api.depends('booking_line_id.booking_id','keterangan')
+    def _terket(self):
+            
+        for order in self:
+            jumpess = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('booking_id.state','=', 'draft')])
+            if not jumpess:
+                self.keterangan = 'False'
+            else:
+            
+                jumpesss = jumpess.booking_id[-1]
+                self.keterangan = 'True'
+            
+          
             print(order)
         
     
@@ -84,7 +110,7 @@ class room(models.Model):
 
     def addroom(self):
        self.ensure_one()
-       cari = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['reserved','check_in'])])[-1].id
+       cari = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['draft','reserved','check_in'])])[-1].id
        return{
         #    'name' : self.display_name,
            'type' : 'ir.actions.act_window',
@@ -111,8 +137,19 @@ class room(models.Model):
             'domain': [('room_maintenance_ids.id','=', self.id),('state','!=','done')],
             'context': "{'create': False}"
         }
+
+    # @api.depends('status')
+    # def _cari(self):
+    #     for b in self:
+    #         cari = self.env['room.booking'].sudo().search([('state','in',['draft']),('room_line_ids.room_id','=', b.id)])
+    #         if not cari:
+    #             self.ket = "-"
+    #         else:
+    #             for a in cari:
+    #                 self.ket = a.id
         
-        
+
+    
 
     def room(self):
        self.ensure_one()
