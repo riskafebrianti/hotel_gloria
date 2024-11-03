@@ -96,13 +96,13 @@
                                     <!-- <t t-esc="line.price_unit"/> -->
                                     <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.price_unit))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                 </td> 
-                                <!-- <td style="font-size:25px">
+                                <td style="font-size:25px">
                                     <t t-esc="line.booking_id.piutang"/>
                                     
                                 </td> 
                                 <td style="font-size:25px">
                                     <t t-esc="line.booking_id.state_paymnt"/>
-                                </td>  -->
+                                </td> 
                           
                                  <td style="font-size:25px">
                                     <t t-esc="line.booking_id.message_follower_ids[0].name"/>
