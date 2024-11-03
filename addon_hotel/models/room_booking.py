@@ -4,7 +4,7 @@ from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import pytz
 from odoo.exceptions import UserError
 from collections import OrderedDict
-import numpy as np
+
 
 class RoomBookingTree(models.Model):
     _inherit = 'room.booking'
