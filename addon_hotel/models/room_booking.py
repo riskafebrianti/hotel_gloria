@@ -33,10 +33,10 @@ class RoomBookingTree(models.Model):
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
     
     state_paymnt = fields.Char(
-        string='state_paymnt',store=True,  compute='paymnt',
+        string='state_paymnt',store=True,  
     )
     piutang = fields.Char(
-        string='state_paymnt',store=True,  compute='paymnt',
+        string='state_paymnt',store=True,  
     )
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'

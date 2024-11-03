@@ -96,19 +96,14 @@
                                     <!-- <t t-esc="line.price_unit"/> -->
                                     <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.price_unit))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                 </td> 
-                                <td style="font-size:25px">
+                                <!-- <td style="font-size:25px">
                                     <t t-esc="line.booking_id.piutang"/>
-                                    <!-- <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.piutang))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span> -->
+                                    
                                 </td> 
                                 <td style="font-size:25px">
                                     <t t-esc="line.booking_id.state_paymnt"/>
-                                </td> 
-                            <!-- <t t-foreach="docs.amount()" t-as="linee">
-                                <td style="font-size:25px">
-                                    <t t-esc="linee"/>
-                                </td> 
-                            </t> -->
-                              
+                                </td>  -->
+                          
                                  <td style="font-size:25px">
                                     <t t-esc="line.booking_id.message_follower_ids[0].name"/>
                                 </td> 
