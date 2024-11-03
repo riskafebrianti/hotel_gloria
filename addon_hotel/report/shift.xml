@@ -7,7 +7,7 @@
         <!-- <div t-attf-class="o_company_#{company_id}_layout header" t-att-style="report_header_style" > -->
             <t t-call="web.external_layout">
             
-                <div class="float-left" style="border:0px solid; margin-top:-45px;width:50%;">
+                <div class="float-left" style="border:0px solid; margin-top:-45px;width:50%;font-size:30px;">
                     <div class="details">
                             <b><span style="color:black; font-size:35px;"><t t-esc="docs.company_id.name"/></span></b>
                                 <br></br>
@@ -19,7 +19,7 @@
                                 <span t-esc="docs.company_id.city" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>
-                            <t t-if="docs.company_id.mobile">
+                            <t t-if="docs.company_id.mobile" style="font-size:30px;">
                                 Whatsapp. <span t-esc="docs.company_id.mobile" style="font-size:30px;"/> / Telp. <span t-esc="docs.company_id.phone" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>  
@@ -52,7 +52,7 @@
                                 <th  style="font-size:30px">Status</th>
                                 <th  style="font-size:30px">Harga</th>
                                 <th  style="font-size:30px">Total</th>
-                                <th  style="font-size:30px">Bayar</th>
+                                <th  style="font-size:30px">Piutang</th>
                                 <th  style="font-size:30px">Status Invoice</th>
                                 <th  style="font-size:30px">Dibuat Oleh</th>
                             </tr>
@@ -60,6 +60,7 @@
                         <t t-set="i" t-value="0"/>
                         <t t-foreach="docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids" t-as="line">
                             <t t-set="i" t-value="i+1"/>
+                            <!-- <t t-set="tes" t-value="docs.paid()"/> -->
                             
                             <tr>
                                 <td style="font-size:25px">
@@ -92,16 +93,24 @@
                                     <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.price_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                 </td>
                                 <td style="font-size:25px">
-                                    <t t-esc="line.booking_id.message_follower_ids.name"/>
+                                    <!-- <t t-esc="line.price_unit"/> -->
+                                    <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.price_unit))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                 </td> 
                                 <td style="font-size:25px">
-                                    <t t-esc="line.price_unit"/>
+                                    <t t-esc="line.booking_id.piutang"/>
+                                    <!-- <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.piutang))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span> -->
                                 </td> 
                                 <td style="font-size:25px">
-                                    <t t-esc="line.price_total"/>
+                                    <t t-esc="line.booking_id.state_paymnt"/>
                                 </td> 
+                            <!-- <t t-foreach="docs.amount()" t-as="linee">
                                 <td style="font-size:25px">
-                                    <t t-esc="line.booking_id.hotel_invoice_id.name"/>
+                                    <t t-esc="linee"/>
+                                </td> 
+                            </t> -->
+                              
+                                 <td style="font-size:25px">
+                                    <t t-esc="line.booking_id.message_follower_ids[0].name"/>
                                 </td> 
                             </tr>
                         </t>

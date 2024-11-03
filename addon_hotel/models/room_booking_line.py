@@ -2,12 +2,16 @@ from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
+
 from odoo.tools.safe_eval import pytz
 
 class RoomBookingline(models.Model):
     _inherit = 'room.booking.line'
 
-    
+    room_id = fields.Many2one('hotel.room', string="Room",
+                            domain=[('status', '=', 'available')],
+                            help="Indicates the Room",
+                            required=True, select=True, tracking=1,)
     jumlah = fields.Integer(string='Dewasa',store=True,)
     jumlahanak = fields.Integer(string='Anak',store=True,)
     deposit = fields.Float(string='Deposit',required=True,store=True,)
@@ -77,7 +81,7 @@ class WizardExample(models.TransientModel):
     room_id = fields.Many2one('hotel.room', string="Room",
                             domain=[('status', '=', 'available')],  
                             help="Indicates the Room",
-                            required=True, select=True, default= default_room, )
+                            required=True, default=default_room, select=True, tracking=1)
 
     checkout_date = fields.Datetime(string="Check Out",
                                     help="You can choose the date,"
@@ -87,47 +91,35 @@ class WizardExample(models.TransientModel):
                         help="The quantity converted into the UoM used by "
                             "the product", readonly=True, compute='_compute_default' )
     price_total = fields.Float(string="Total",
-                            # compute='_compute_price_subtotal',
+                            compute='_compute_price_subtotal',
                             # default= default_total,
                             store=True)
     
-        
+    # @api.multi
+    # def action_save_log_note(self):
+    #     # Implement the logic to save the log note, such as adding it to a related record's chatter
+    #     related_record = self.env['room.booking'].browse(self._context.get('active_id'))
+    #     if related_record:
+    #         related_record.message_post(body=self.room_id)  
     
-    @api.depends('checkout_date')
+    @api.depends('room_id','checkout_date')
     def _compute_default(self):
         order_line_id = self.env.context.get('active_id')
         order_line = self.env['room.booking.line'].browse(order_line_id)
-        if order_line.checkout_date != self.checkout_date :
+        if order_line.checkout_date != self.checkout_date or order_line.room_id != self.room_id:
             diffdate = self.checkout_date - order_line.checkin_date
             qty = diffdate.days
             if diffdate.total_seconds() > 0:
                 qty = qty + 1
             self.uom_qty = qty
+            # self.room_id = self.room_id
             self.price_total = self.room_id.list_price * self.uom_qty
         else:
             self.uom_qty = order_line.uom_qty
+            # self.room_id = order_line.room_id
             self.price_total = order_line.price_subtotal
 
 
-    
-    
-    
-    # @api.onchange("checkout_date")
-    # def _onchange_checkin_datee(self):
-    #     """When you change checkin_date or checkout_date it will check
-    #     and update the qty of hotel service line
-    #     -----------------------------------------------------------------
-    #     @param self: object pointer"""
-    #     co_pertama = self.env['room.booking.line'].browse(self.env.context.get('active_id')).checkin_date
-    #     if self.checkout_date < co_pertama:
-    #         raise ValidationError(
-    #             _("Checkout must be greater or equal checkin date"))
-    #     if self.checkout_date:      
-    #         diffdate = self.checkout_date - co_pertama
-    #         qty = diffdate.days
-    #         if diffdate.total_seconds() > 0:
-    #             qty = qty + 1
-    #         self.uom_qty = qty
 
     @api.depends('checkout_date','room_id','uom_qty')
     def _compute_price_subtotal(self):
@@ -230,6 +222,8 @@ class WizardExample(models.TransientModel):
         order_line_id = self.env.context.get('active_id')
         order_line = self.env['room.booking.line'].browse(order_line_id)
         diri = self.env['room.booking.line'].browse(self.env.context.get('active_id')).booking_id
+        msg= f"Dari Kamar: {order_line.room_id.name} Pindah Ke Kamar:  {self.room_id.name}"
+        order_line.booking_id.message_post(body=msg)
 
         if order_line.room_id != self.room_id and order_line.price_subtotal > self.price_total:
 
@@ -243,16 +237,20 @@ class WizardExample(models.TransientModel):
                         'room_id': self.room_id.id,
                         'ket': order_line.ket+" & Pindah Kamar"
                     })
+                    
+
                 elif order_line.ket == 'Pindah Kamar':
                     order_line.update({
                         'room_id': self.room_id.id,
                         'ket': "Pindah Kamar"
                     })
+                    
                 elif not order_line.ket:
                     order_line.update({
                         'room_id': self.room_id.id,
                         'ket': "Pindah Kamar"
                     })
+                    
                 else:
                     order_line.update({
                         'room_id': self.room_id.id,
@@ -342,21 +340,25 @@ class WizardExample(models.TransientModel):
                             'room_id': self.room_id.id,
                             'ket': order_line.ket+" & Pindah Kamar"
                         })
+                        
                     elif order_line.ket == 'Pindah Kamar':
                         order_line.update({
                             'room_id': self.room_id.id,
                             'ket': "Pindah Kamar"
                         })
+                        
                     elif not order_line.ket:
                         order_line.write({
                             'room_id': self.room_id.id,
                             'ket': "Pindah Kamar"
                         })
+                        
                     else:
                         order_line.write({
                             'room_id': self.room_id.id,
                             # 'ket': "Pindah Kamar"
                         })
+                        
                     
                     order_line.room_id.update({
                         'status' : "occupied"

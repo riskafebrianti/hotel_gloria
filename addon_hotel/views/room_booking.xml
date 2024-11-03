@@ -52,6 +52,8 @@
 
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="deposit_sisa"/>
+                <field name="state_paymnt" invisible="1" />
+                <field name="piutang" invisible="1"/>
             </xpath>
 
             <xpath expr="//field[@name='room_id']" position="replace">
@@ -73,8 +75,7 @@
                 <field name="roomsugest" invisible="1"/>
                 <field name="deposit_in"  invisible="1"/>
                 <field name="deposit_out"  invisible="1"/>
-                <field name="move"/>
-                <field name="extend"/>
+               
             </xpath>
 
             <xpath expr="//button[@name='action_invoice']" position="replace">

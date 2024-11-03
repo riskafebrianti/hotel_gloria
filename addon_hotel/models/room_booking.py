@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import pytz
+from odoo.exceptions import UserError
+from collections import OrderedDict
+import numpy as np
 
 class RoomBookingTree(models.Model):
     _inherit = 'room.booking'
@@ -27,9 +30,14 @@ class RoomBookingTree(models.Model):
                                  store=True,)
     deposit_in = fields.Boolean(string='deposit_in', )
     deposit_out = fields.Boolean(string='deposit_out', )
-    move = fields.Boolean(string='move', )
-    extend = fields.Boolean(string='extend', )
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
+    
+    state_paymnt = fields.Char(
+        string='state_paymnt',store=True,  compute='paymnt',
+    )
+    piutang = fields.Char(
+        string='state_paymnt',store=True,  compute='paymnt',
+    )
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
     )
@@ -95,11 +103,31 @@ class RoomBookingTree(models.Model):
         for a in self:
             per.append(a.date_order)
         return per[-1]
-
+#   def paid(self):
+#         for a in self:
+#             b = a.env['account.move'].sudo().search([('hotel_booking_id','=',a.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')]).payment_state
+#             return b
+        
+#     def amount(self):
+#         residual = []
+#         for z in self:
+#             c = self.env['account.move'].sudo().search([('hotel_booking_id','=',z.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')]).amount_residual
+#             residual.append(c)
+#             # a = np.array.residual.tolist()
+#         return residual
+  
+        
         
     
-            
+    @api.depends('hotel_invoice_id.payment_state','hotel_invoice_id.amount_residual')
+    def paymnt(self):
     
+        a = self.env['account.move'].sudo().search([('hotel_booking_id','=',self.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
+    #     for a in self:
+        self.state_paymnt = a.payment_state
+        self.piutang = a.amount_residual
+        print(self)
+        
     
     @api.depends('payment_ids.payment_type')
     def depoSisa(self):
