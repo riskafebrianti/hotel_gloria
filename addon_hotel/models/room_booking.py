@@ -33,10 +33,10 @@ class RoomBookingTree(models.Model):
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
     
     state_paymnt = fields.Char(
-        string='state_paymnt',store=True,  
+        string='state_paymnt',store=True, compute='paymnt',
     )
     piutang = fields.Char(
-        string='state_paymnt',store=True,  
+        string='state_paymnt',store=True,  compute='paymnt',
     )
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
@@ -117,7 +117,14 @@ class RoomBookingTree(models.Model):
 #         return residual
   
         
-        
+    @api.onchange('room_line_ids','state')
+    def get_price(self):
+        for room in self.room_line_ids:
+            room.room_id.write({
+                'status': 'occupied',
+                'is_room_avail': True
+            })
+    
     
     @api.depends('hotel_invoice_id.payment_state','hotel_invoice_id.amount_residual')
     def paymnt(self):

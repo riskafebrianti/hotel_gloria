@@ -262,7 +262,11 @@ class WizardExample(models.TransientModel):
                 })
                 invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')])
                 if not invc:
-                     raise ValidationError(_('Lakukan invoice di Kamar sebelumnya.'))
+                    order_line.update({
+                        'room_id': self.room_id.id,
+                        # 'ket': "Pindah Kamar"
+                    })
+                    #  raise ValidationError(_('Lakukan invoice di Kamar sebelumnya.'))
                 else:
                     invcc = invc[-1].line_ids
                     for a in invcc:

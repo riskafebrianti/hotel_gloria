@@ -70,18 +70,25 @@ class room(models.Model):
             order.terbooking = len(jumpes)
             print(order)
     
-    @api.depends('booking_line_id.booking_id','keterangan')
-    def _terket(self):
-            
-        for order in self:
-            jumpess = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('booking_id.state','=', 'draft')])
-            # jumpesss = jumpess.booking_id[-1]
-            if jumpess:
-                self.keterangan = 'True'
+    # @api.depends('booking_line_id.booking_id')
+    # def _terket(self):
+    #     self.write({"status": "occupied"})
+    #     # for room in self.room_line_ids:
+    #     #     room.room_id.write({
+    #     #         'status': 'occupied',
+    #     #         'is_room_avail': True
+    #     #     })
+    #     # # for order in self:
+    #     #     jumpess = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('booking_id.state','=', 'draft')])
+    #     #     # jumpesss = jumpess.booking_id[-1]
+    #     #     if jumpess:
+    #     #         self.keterangan = 'True'
+    #     #     if not jumpess:
+    #     #         self.keterangan = 'False'
             
             
           
-            print(order)
+            # print(order)
         
     
     @api.depends('mentenance_ids','status_kerusakan')
