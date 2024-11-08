@@ -9,3 +9,4 @@ from . import account_move
 from . import account_payment
 from . import room_maintenance
 from . import room_booking_line
+from . import purchase

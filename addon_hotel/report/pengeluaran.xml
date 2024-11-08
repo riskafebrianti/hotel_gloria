@@ -6,78 +6,78 @@
             <t t-call="web.external_layout">
 
             
-                <div class="float-left" style="border:0px solid; margin-top:-45px;width:50%;">
+               <div class="float-left" style="border:0px solid; margin-top:-45px;width:50%;font-size:30px;">
                     <div class="details">
-                            <b><span style="color:black; font-size:29px;"><t t-esc="docs.company_id.name"/></span></b>
+                            <b><span style="color:black; font-size:35px;"><t t-esc="docs.company_id.name"/></span></b>
                                 <br></br>
                             <t t-if="docs.company_id.street">
-                                <span  t-esc="docs.company_id.street"/>
+                                <span  t-esc="docs.company_id.street" style="font-size:30px;"/>
                             </t>
                                 <br></br>
                             <t t-if="docs.company_id">
-                                <span t-esc="docs.company_id.city"/> 
+                                <span t-esc="docs.company_id.city" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>
-                            <t t-if="docs.company_id.mobile">
-                                Whatsapp. <span t-esc="docs.company_id.mobile"/> / Telp. <span t-esc="docs.company_id.phone"/> 
+                            <t t-if="docs.company_id.mobile" style="font-size:30px;">
+                                Whatsapp. <span t-esc="docs.company_id.mobile" style="font-size:30px;"/> / Telp. <span t-esc="docs.company_id.phone" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>  
                     </div>
 
                 </div>     
-                    <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:700px;">
-                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
-                    </div> 
+                    <div class="float-right" style="border:0px solid; margin-top:-170px; margin-left:2000px;">
+                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:190px;"/>
+                    </div>
                    
                 <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
 
             <br/>
                 <!-- <h2>Booking Report</h2> -->
-               <div class="page" style="border:0px solid;">
+               <div class="page" style="border:0px solid;font-size:40px; ">
                     
-                    <h2>Ringkasan Daftar Pembayaran</h2>
+                    <h2 style="font-size:60px">Ringkasan Daftar Pembayaran</h2>
                     <br/>
                     <table class="table table-bordered" style="page-break-inside: avoid; position:relative;">
                         <thead>
                             <tr>
-                                <th style="width:1%;">No.</th>
-                                <th>Date</th>
-                                <th>No. Bill</th>
-                                <th>Vendor</th>
-                                <th>Description</th>
-                                <th>Amount</th>
+                                <th style="font-size:30px; width:1%;">No.</th>
+                                <th style="font-size:30px">Date</th>
+                                <th style="font-size:30px">No. Bill</th>
+                                <th style="font-size:30px">Vendor</th>
+                                <th style="font-size:30px">Description</th>
+                                <th style="font-size:30px">Amount</th>
                                 
                             </tr>
                         </thead>
                         <t t-set="i" t-value="0"/>
-                        <t t-foreach="docs.line_ids.filtered(lambda r: r.name)" t-as="line" >
+                        <t t-foreach="docs.filtered(lambda r: r.name)" t-as="line" >
                         <!-- x.invoice_list.filtered(lambda r: r.to_check == True) -->
                             <t t-set="i" t-value="i+1"/>
                             
                             <tr>
-                                <td>
+                                <td style="font-size:25px">
                             <!-- <t t-if="line.payment_type == 'outbound'">
                                 <div style="page-break-after: always;"></div>
                             </t> -->
                                     <t t-esc="i"/>
                                 </td>
-                                 <td>
-                                    <t t-esc="line.move_id.date.strftime('%d/%m/%y')"/>
+                                 <td style="font-size:25px">
+                                    <t t-esc="line.date.strftime('%d/%m/%y')"/>
                                 </td>
-                                <td>
-                                    <t t-esc="line.move_id.name"/>
+                                <td style="font-size:25px">
+                                    <t t-esc="line.name"/>
                                 </td>
-                                <td>
-                                    <t t-esc="line.move_id.partner_id.name"/>
+                                <td style="font-size:25px">
+                                    <t t-esc="line.partner_id.name"/>
                                    
                                 </td>
                                 
-                                <td>
-                                    <t t-esc="line.name"/>
+                                <td style="font-size:25px">
+                                    <t t-esc="line.po().deskripsi"/>
                                 </td>
-                                <td>
-                                 
-                                    <t t-esc="line.price_total"/>
+                                <td style="font-size:25px">
+                                    <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.amount_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    <!-- <t t-esc="line.amount_total"/> -->
                                 </td>
                                 
 
@@ -88,6 +88,11 @@
                             </tr>
                             
                         </t>
+                        <tr>
+                            <td colspan="5" align="right"  style= "font-size:30px;">Total</td>
+                            <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.amount_total for line in docs.filtered(lambda r: r.name))))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                           
+                       </tr>
                        <strong>
                        <!-- <tr>
                             <td colspan="5" align="right">Amount</td>
@@ -112,20 +117,20 @@
                         </div>
                     </div> -->
 
-                </div>
-                <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ;"> 
+               </div>
+                <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ; font-size:25px;"> 
                    Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><br/><br/>
                     <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
-                        <!-- <strong><wahr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
-                    <center><p style="margin:top;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center>
+                        <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
+                    <center><p style="margin:top;font-size:25px;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center>
                 </div>
 
-                <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;"> 
+                <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;font-size:25px;"> 
                     <center> 
                      <br/><br/>
                         <p>Mengetahui</p><br/><br/><br/><br/><br/><br/><br/>
                             <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
-                        <p style="margin:top;"><u>Lorem Ipsum</u><br/> Manager</p>
+                        <p style="margin:top;font-size:25px;"><u>Lorem Ipsum</u><br/> Manager</p>
                     </center>
                 </div>
             </t>

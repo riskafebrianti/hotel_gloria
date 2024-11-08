@@ -52,8 +52,8 @@
 
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="deposit_sisa"/>
-                <field name="state_paymnt" invisible="1" />
-                <field name="piutang" invisible="1"/>
+                <!-- <field name="state_paymnt"  />
+                <field name="piutang" /> -->
             </xpath>
 
             <xpath expr="//field[@name='room_id']" position="replace">

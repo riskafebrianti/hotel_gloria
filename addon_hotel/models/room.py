@@ -33,25 +33,9 @@ class room(models.Model):
          store=True,
           required=True, 
     )
-    # ket = fields.Char(
-    #     string='ket',
-    #      store=True,
-    #      compute='_terket'
-    # )
-    
-    keterangan = fields.Boolean(
-        string='ket',
-        store=True,
-        default=False,
-        compute='_terket'
-    )
-    
-    room_booking = fields.Many2one('room.booking', string="id")
-    # mentenance_id = fields.Many2many('maintenance.request',
-    #                                         string="ID Maintenance",
-    #                                         help="Choose Room Maintenance",
-    #                                         compute='_maintenance'
-    #                                         )
+
+    list_price = fields.Float(string='Rent', digits='Product Price',
+                            help="The rent of the room.", store=True,required=True, )
     
     
     mentenance_ids = fields.One2many('maintenance.request', 'room_maintenance_ids', string='field_name')

@@ -1,23 +1,36 @@
 from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 
 from odoo.tools.safe_eval import pytz
 
-class RoomBookingline(models.Model):
+class RoomBookingLineee(models.Model):
     _inherit = 'room.booking.line'
 
     room_id = fields.Many2one('hotel.room', string="Room",
                             domain=[('status', '=', 'available')],
                             help="Indicates the Room",
-                            required=True, select=True, tracking=1,)
+                            required=True,  tracking=1,)
     jumlah = fields.Integer(string='Dewasa',store=True,)
     jumlahanak = fields.Integer(string='Anak',store=True,)
     deposit = fields.Float(string='Deposit',required=True,store=True,)
-    diskon = fields.Float(string='Diskon', tracking=True, force_save='1', store=True,)
+    diskon = fields.Float(string='Diskon', tracking=True, force_save='1',readonly=True, store=True,)
     ket = fields.Char(string='Keterangan', force_save='1', store=True, readonly=True)
-
+    
+    price_unit = fields.Float(string='Rent',
+                              digits='Product Price',
+                              help="The rent price of the selected room.", readonly=True)
+    
+    tax_ids = fields.Many2many('account.tax',
+                               'hotel_room_order_line_taxes_rel',
+                               'room_id', 'tax_id',
+                            #    related='room_id.taxes_ids',
+                               string='Taxes',
+                               readonly=True,
+                               help="Default taxes used when selling the room."
+                               , domain=[('type_tax_use', '=', 'sale')])
 
     @api.onchange('room_id','booking_id.room_line_ids')
     def get_room_request(self):
@@ -26,9 +39,113 @@ class RoomBookingline(models.Model):
                 line.room_id = line.booking_id.roomsugest
                 line.jumlah = line.room_id.num_person
                 line.deposit = line.room_id.deposit
+                # line.price_unit = line.room_id.list_price
             else:
                 line.jumlah = line.room_id.num_person
                 line.deposit = line.room_id.deposit
+                # line.price_unit = line.room_id.list_price
+    
+    
+    @api.onchange('booking_id.room_line_ids','price_unit','tax_ids')
+    def _onchange_price_unit(self):
+        for lines in self:
+            if lines.price_unit != lines.room_id.list_price or lines.tax_ids.name != lines.room_id.taxes_ids.name:
+                lines.update({
+                'price_unit': lines.room_id.list_price,
+                'tax_ids': lines.room_id.taxes_ids._origin
+                })
+                return {
+                'warning': {
+                    'title': "Tidak dapat diubah",
+                    'message': "Silahkan hubungi manager anda untuk ubah data!",
+                },
+            }
+            if lines.booking_id.state != 'draft':
+                 return {
+                'warning': {
+                    'title': "Tidak dapat diubah",
+                    'message': "Silahkan hubungi manager anda untuk ubah data!",
+                },
+            }
+            if lines.room_id:
+                 return {
+                'warning': {
+                    'title': "Tidak dapat diubah",
+                    'message': "Silahkan hubungi manager anda untuk ubah data!",
+                },
+            }
+            # if lines.tax_ids.name != lines.room_id.taxes_ids.name:
+            #     lines.write({
+            #     'tax_ids': lines.room_id.taxes_ids._origin
+            #     })
+            #     return {
+            #     'warning': {
+            #         'title': "Tidak dapat diubah",
+            #         'message': "Silahkan hubungi manager anda untuk ubah data!",
+            #     },
+            # }
+                
+                # raise ValidationError(
+                #                     "Maaf anda tidak bisa ubah harga kamar ini "
+                #                     "silahkan hubungi manager anda untuk merubahnya"
+                #                    )
+                # self.env.user.notify_info(message="apaaa")
+                # print(self)
+                # raise UserError(_( "Maaf anda tidak bisa ubah pajak kamar ini  silahkan hubungi manager anda untuk merubahnya"))
+            
+            # lines.write({'tax_ids': lines.room_id.taxes_ids._origin})
+            # print(self)
+                # raise ValidationError(
+                #                     "Maaf anda tidak bisa ubah pajak kamar ini "
+                #                     "silahkan hubungi manager anda untuk merubahnya"
+                #                    )
+            # lines.update({
+            #     'tax_ids': lines.room_id.taxes_ids._origin
+            #     })
+#         return {
+#         'type': 'ir.actions.client',
+#         'tag': 'display_notification',
+#         'params': {
+#         'title': _("Warning head"),
+#         'type': 'warning',
+#         'message': _("This is the detailed warning"),
+#         'sticky': True,
+#     },
+# }
+            
+
+    @api.onchange('checkin_date', 'checkout_date', 'room_id')
+    def onchange_checkin_date(self):
+        records = self.env['room.booking'].search(
+            [('state', 'in', ['reserved', 'check_in'])])
+        for rec in records:
+            for a in rec.room_line_ids:
+                rec_room_id = a.room_id
+                rec_checkin_date = a.checkin_date
+                rec_checkout_date = a.checkout_date
+
+                if rec_room_id and rec_checkin_date and rec_checkout_date:
+                    # Check for conflicts with existing room lines
+                    for line in self:
+                        if line.id != rec.id and line.room_id == rec_room_id:
+                            # Check if the dates overlap
+                            if (rec_checkin_date >= line.checkin_date >= rec_checkout_date or
+                                    rec_checkin_date >= line.checkout_date >= rec_checkout_date):
+                                raise ValidationError(
+                                    _("Sorry, You cannot create a reservation for "
+                                    "this date since it overlaps with another "
+                                    "reservation..!!"))
+                            if rec_checkout_date <= line.checkout_date and rec_checkin_date >= line.checkin_date:
+                                raise ValidationError(
+                                    "Sorry You cannot create a reservation for this"
+                                    "date due to an existing reservation between "
+                                    "this date")
+                    return {
+                    'warning': {
+                        'title': "Tidak dapat diubah",
+                        'message': "Silahkan hubungi manager anda untuk ubah data!",
+                    },
+                }
 
     # @api.depends('uom_qty', 'price_unit', 'tax_ids')
     # def _compute_price_subtotal(self):

@@ -6,7 +6,7 @@
         <field name="model">hotel.room</field>
         
         <field name="arch" type="xml">
-            <kanban>
+            <kanban default_order="name">
                 <field name="name"/>
                 <field name="status"/>
                 <field name="maintenance"/>
@@ -14,7 +14,7 @@
                 <field name="status"/>
                 <field name="terbooking"/>
                 <field name="status_kerusakan"/>
-                <field name="keterangan"/>
+                
                 
                 <templates>
                     <t t-name="kanban-box">
@@ -56,8 +56,8 @@
                                         </div>
                                         <div class="oe_kanban_bottom_right">
                                         
-                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available' or keterangan != False"/>
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available' and keterangan != True"/>
+                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available'"/>
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available'"/>
                                         </div>
                                     </div> 
                             </div> 
@@ -117,8 +117,7 @@
                 <field name="maintenance"/>
                 <field name="status_kerusakan"/>
                 <field name="terbooking"/>
-                <field name="keterangan"/>
-                <field name="room_booking"/>
+
             </xpath>
             <xpath expr="//field[@name='taxes_ids']" position="after">
                 <field name="deposit"/>

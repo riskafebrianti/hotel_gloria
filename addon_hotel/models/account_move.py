@@ -46,6 +46,10 @@ class AccountMove(models.Model):
             per.append(a.date)
         return per[-1]
     
+    def po(self):
+        for b in self:
+              c = self.env['purchase.order'].sudo().search([('name','=',b.invoice_origin)])
+        return c
     # batas py untuk qweb (up)
 
     @api.depends('move_id', 'ref')

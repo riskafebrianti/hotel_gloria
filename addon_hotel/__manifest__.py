@@ -32,6 +32,7 @@
         'views/maintenance_req.xml',
         'views/account_payment.xml',
         'views/room_booking.xml',
+        'views/purchase.xml',
         'report/shift.xml',
         'report/deposit.xml',
         'report/report.xml',
