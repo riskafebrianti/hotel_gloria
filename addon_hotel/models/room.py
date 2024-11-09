@@ -45,6 +45,14 @@ class room(models.Model):
     
     maintenance = fields.Char(string='Maintenance',tracking=True, store=True, readonly=True)
 
+    @api.onchange('name','list_price')
+    def get_price(self):
+        if self.name:
+            if self.list_price == '0.00' :
+                raise ValidationError( "Maaf anda tidak bisa ubah pajak kamar ini  silahkan hubungi manager anda untuk merubahnya")
+        
+    
+
     @api.depends('booking_line_id','terbooking')
     def _terbooking(self):
             
