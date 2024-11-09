@@ -67,13 +67,7 @@ class RoomBookingLineee(models.Model):
                     'message': "Silahkan hubungi manager anda untuk ubah data!",
                 },
             }
-            if lines.room_id:
-                 return {
-                'warning': {
-                    'title': "Tidak dapat diubah",
-                    'message': "Silahkan hubungi manager anda untuk ubah data!",
-                },
-            }
+           
             # if lines.tax_ids.name != lines.room_id.taxes_ids.name:
             #     lines.write({
             #     'tax_ids': lines.room_id.taxes_ids._origin
@@ -140,13 +134,7 @@ class RoomBookingLineee(models.Model):
                                     "Sorry You cannot create a reservation for this"
                                     "date due to an existing reservation between "
                                     "this date")
-                    return {
-                    'warning': {
-                        'title': "Tidak dapat diubah",
-                        'message': "Silahkan hubungi manager anda untuk ubah data!",
-                    },
-                }
-
+                          
     # @api.depends('uom_qty', 'price_unit', 'tax_ids')
     # def _compute_price_subtotal(self):
     #     """Compute the amounts of the room booking line."""
