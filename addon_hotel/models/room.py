@@ -53,7 +53,7 @@ class room(models.Model):
                 return {
                 'warning': {
                     'title': "Tidak dapat diubah",
-                    'message': "Silahkan hubungi manager anda untuk ubah dataaa!",
+                    'message': "Silahkan hubungi manager anda untuk ubah dataaaa!",
                 },
             }
             
