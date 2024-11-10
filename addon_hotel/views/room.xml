@@ -122,6 +122,7 @@
             <xpath expr="//field[@name='taxes_ids']" position="after">
                 <field name="deposit"/>
             </xpath>
+            
         </field>
     </record>
       

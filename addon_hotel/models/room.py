@@ -1,7 +1,7 @@
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError
 from datetime import datetime, timedelta
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 class room(models.Model):
     _inherit = 'hotel.room'
 
@@ -28,7 +28,7 @@ class room(models.Model):
         compute='_maintenance',
     )
     
-    deposit = fields.Char(
+    deposit = fields.Float(
         string='Deposit',
          store=True,
           required=True, 
@@ -45,11 +45,19 @@ class room(models.Model):
     
     maintenance = fields.Char(string='Maintenance',tracking=True, store=True, readonly=True)
 
-    @api.onchange('name','list_price')
+    @api.onchange('deposit','name','list_price')
     def get_price(self):
         if self.name:
-            if self.list_price == '0.00' :
-                raise ValidationError( "Maaf anda tidak bisa ubah pajak kamar ini  silahkan hubungi manager anda untuk merubahnya")
+            if not self.list_price or not self.deposit:
+               
+                return {
+                'warning': {
+                    'title': "Tidak dapat diubah",
+                    'message': "Silahkan hubungi manager anda untuk ubah data!",
+                },
+            }
+            
+
         
     
 

@@ -31,6 +31,8 @@ class RoomBookingLineee(models.Model):
                                readonly=True,
                                help="Default taxes used when selling the room."
                                , domain=[('type_tax_use', '=', 'sale')])
+    
+    
 
     @api.onchange('room_id','booking_id.room_line_ids')
     def get_room_request(self):

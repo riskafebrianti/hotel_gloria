@@ -52,8 +52,7 @@
 
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="deposit_sisa"/>
-                <!-- <field name="state_paymnt"  />
-                <field name="piutang" /> -->
+               
             </xpath>
 
             <xpath expr="//field[@name='room_id']" position="replace">
@@ -108,14 +107,7 @@
                 </button>
             </xpath>
             
-            <!-- <xpath expr="//form" position="inside">
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </xpath> -->
-
+          
             <xpath expr="//form//sheet//group//group[2]//field[@name='need_service']" position="replace">
                             <field name="need_service"
                                    invisible="1"/>
