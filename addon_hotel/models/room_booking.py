@@ -31,6 +31,8 @@ class RoomBookingTree(models.Model):
     deposit_in = fields.Boolean(string='deposit_in', )
     deposit_out = fields.Boolean(string='deposit_out', )
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
+
+    
     
     # state_paymnt = fields.Char(
     #     string='bayar',store=True, compute='paymnt',
@@ -76,6 +78,29 @@ class RoomBookingTree(models.Model):
     checkout_date = fields.Datetime(string="Check Out",
                                 help="Date of Checkout",
                                 default=default_CO)
+    
+    # @api.onchange('state')
+    # def bolean_draft(self):
+    #     # if self.state == 'draft' and self.room_line_ids.room_id.id :
+    #     #     self.room_id.draft = True
+    #     res = super(RoomBookingTree, self).bolean_draft()
+
+    #     if self.state != 'draft':
+    #         self.room_line_ids.room_id.draft = False
+        
+        
+    #     return res
+    
+    def create(self, vals):
+        if vals['room_line_ids'] and vals['state'] == 'draft':
+            # self.room_line_ids.room_id.write({'draft':True,})
+            valsaa = vals['room_line_ids'][0][2]['room_id']
+            updatee = self.env['hotel.room'].sudo().search([('id','=', valsaa)])
+            updatee.write({'draft' : True})
+            return super(RoomBookingTree, self).create(vals)
+
+        
+    
     
     def _compute_depo_count(self):
         """Compute the invoice count"""
@@ -468,6 +493,7 @@ class RoomBookingTree(models.Model):
             for room in self.room_line_ids:
                 room.room_id.write({
                     'status': 'occupied',
+                     'draft': False
                 })
                 room.room_id.is_room_avail = False
             self.write({"state": "check_in"})

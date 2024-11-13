@@ -55,9 +55,10 @@
                                             
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                        
-                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available'"/>
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available'"/>
+                                         <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" />
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" />
+                                        <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available'"/>
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available'"/> -->
                                         </div>
                                     </div> 
                             </div> 
@@ -117,7 +118,7 @@
                 <field name="maintenance"/>
                 <field name="status_kerusakan"/>
                 <field name="terbooking"/>
-
+                <field name="draft"/>
             </xpath>
             <xpath expr="//field[@name='taxes_ids']" position="after">
                 <field name="deposit"/>

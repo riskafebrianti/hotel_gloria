@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hotel_management_odoo','account', 'event', 'fleet', 'lunch','mail'],
+    'depends': ['base','hotel_management_odoo','account', 'event', 'fleet', 'lunch','mail','purchase','sale'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'views/maintenance_req.xml',
         'views/account_payment.xml',
         'views/room_booking.xml',
+        'views/wizard_bl.xml',
         'views/purchase.xml',
         'report/shift.xml',
         'report/deposit.xml',

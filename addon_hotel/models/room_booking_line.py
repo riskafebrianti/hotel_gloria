@@ -23,15 +23,20 @@ class RoomBookingLineee(models.Model):
                               digits='Product Price',
                               help="The rent price of the selected room.", readonly=True)
     
-    tax_ids = fields.Many2many('account.tax',
-                               'hotel_room_order_line_taxes_rel',
-                               'room_id', 'tax_id',
-                            #    related='room_id.taxes_ids',
-                               string='Taxes',
-                               readonly=True,
-                               help="Default taxes used when selling the room."
-                               , domain=[('type_tax_use', '=', 'sale')])
+
     
+
+    
+
+    # def create(self, vals):
+    #     # if vals.terbooking:
+    #     if self.booking_id.state == 'draft':
+    #         self.room_id.draft = True
+    #         # raise UserError(_( "Isi Harga kamar dan deposit"))
+    #     else:
+    #         return super(RoomBookingLineee, self).create(vals)
+            
+        
     
 
     @api.onchange('room_id','booking_id.room_line_ids')
@@ -47,7 +52,44 @@ class RoomBookingLineee(models.Model):
                 line.deposit = line.room_id.deposit
                 # line.price_unit = line.room_id.list_price
     
-    
+    @api.depends('uom_qty', 'price_unit', 'tax_ids')
+    # @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
+    def _compute_price_subtotal(self):
+        """Compute the amounts of the room booking line."""
+        # for line in self:
+        #     tax_results = self.env['account.tax']._compute_taxes([
+        #         line._convert_to_tax_base_line_dict()
+        #     ])
+        #     # totals = list(tax_results['totals'].values())[0]
+        #     totals = list(tax_results['tax_lines_to_add'])[0]
+        #     amount_untaxed = totals['base_amount']
+        #     amount_tax = totals['tax_amount']
+
+        #     line.update({
+        #         'price_subtotal': amount_untaxed,
+        #         'price_tax': amount_tax,
+        #         'price_total': amount_untaxed + amount_tax,
+        #     })
+
+
+
+        for line in self:
+            tax_results = self.env['account.tax']._compute_taxes(
+                [line._convert_to_tax_base_line_dict()])
+            totals = list(tax_results['tax_lines_to_add'])[0]
+            amount_untaxed = totals['base_amount']
+            amount_tax = totals['tax_amount']
+            line.update({
+                'price_subtotal': amount_untaxed,
+                'price_tax': amount_tax,
+                'price_total': amount_untaxed + amount_tax,
+            })
+            if self.env.context.get('import_file',
+                                    False) and not self.env.user. \
+                    user_has_groups('account.group_account_manager'):
+                line.tax_id.invalidate_recordset(
+                    ['invoice_repartition_line_ids'])
+                
     @api.onchange('booking_id.room_line_ids','price_unit','tax_ids')
     def _onchange_price_unit(self):
         for lines in self:
@@ -70,45 +112,7 @@ class RoomBookingLineee(models.Model):
                 },
             }
            
-            # if lines.tax_ids.name != lines.room_id.taxes_ids.name:
-            #     lines.write({
-            #     'tax_ids': lines.room_id.taxes_ids._origin
-            #     })
-            #     return {
-            #     'warning': {
-            #         'title': "Tidak dapat diubah",
-            #         'message': "Silahkan hubungi manager anda untuk ubah data!",
-            #     },
-            # }
-                
-                # raise ValidationError(
-                #                     "Maaf anda tidak bisa ubah harga kamar ini "
-                #                     "silahkan hubungi manager anda untuk merubahnya"
-                #                    )
-                # self.env.user.notify_info(message="apaaa")
-                # print(self)
-                # raise UserError(_( "Maaf anda tidak bisa ubah pajak kamar ini  silahkan hubungi manager anda untuk merubahnya"))
-            
-            # lines.write({'tax_ids': lines.room_id.taxes_ids._origin})
-            # print(self)
-                # raise ValidationError(
-                #                     "Maaf anda tidak bisa ubah pajak kamar ini "
-                #                     "silahkan hubungi manager anda untuk merubahnya"
-                #                    )
-            # lines.update({
-            #     'tax_ids': lines.room_id.taxes_ids._origin
-            #     })
-#         return {
-#         'type': 'ir.actions.client',
-#         'tag': 'display_notification',
-#         'params': {
-#         'title': _("Warning head"),
-#         'type': 'warning',
-#         'message': _("This is the detailed warning"),
-#         'sticky': True,
-#     },
-# }
-            
+          
 
     @api.onchange('checkin_date', 'checkout_date', 'room_id')
     def onchange_checkin_date(self):
@@ -137,31 +141,7 @@ class RoomBookingLineee(models.Model):
                                     "date due to an existing reservation between "
                                     "this date")
                           
-    # @api.depends('uom_qty', 'price_unit', 'tax_ids')
-    # def _compute_price_subtotal(self):
-    #     """Compute the amounts of the room booking line."""
-    #     for line in self:
-    #         tax_results = self.env['account.tax']._compute_taxes(
-    #             [line._convert_to_tax_base_line_dict()])
-    #         totals = list(tax_results['totals'].values())[0]
-    #         amount_untaxed = totals['amount_untaxed'] 
-    #         amount_tax = totals['amount_tax']
-    #         line.update({
-    #             'price_subtotal': amount_untaxed - self.diskon,
-    #             'price_tax': amount_tax,
-    #             'price_total': amount_untaxed - self.diskon + amount_tax,
-    #         })
-    #         if self.env.context.get('import_file',
-    #                                 False) and not self.env.user. \
-    #                 user_has_groups('account.group_account_manager'):
-    #             line.tax_id.invalidate_recordset(
-    #                 ['invoice_repartition_line_ids'])
-    
-    # @api.onchange('diskon','price_subtotal','booking_id.room_line_ids')
-    # def get_diskon(self):
-    #    if self.diskon:
-    #        self.price_subtotal = (self.price_unit * self.uom_qty) - self.diskon
-    #        print(self)
+   
     
     
 
@@ -521,7 +501,7 @@ class WizardExample(models.TransientModel):
                     'context': "{'create': False}"
                     }
         
-         
+        
 
         print(self)
 

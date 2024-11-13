@@ -30,7 +30,7 @@
             </field>
     </record>
 
-    <record model="ir.ui.view" id="room_booking_line">
+    <!-- <record model="ir.ui.view" id="room_booking_line">
         <field name="name">room.booking.form</field>
         <field name="model">room.booking</field>
         <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_form"/>
@@ -132,7 +132,7 @@
     
         
         </field>
-    </record>
+    </record> -->
 
 
 
@@ -148,7 +148,7 @@
    </template>
      -->
 
-     <record id="view_wizard_example_form" model="ir.ui.view">
+    <record id="view_wizard_example_form" model="ir.ui.view">
         <field name="name">wizard.example.form</field>
         <field name="model">wizard.example</field>
         <field name="arch" type="xml">

@@ -6,13 +6,15 @@ class room(models.Model):
     _inherit = 'hotel.room'
 
     kanbancolor = fields.Integer('Color Index', compute="set_kanban_color")
-    room_type = fields.Selection([('single', 'Single'),
-                                ('double', 'Double'),
-                                ('twin', 'Room Twin'),
-                                ('grand_deluxe_balkon', 'Grand Deluxe Balkon'),
-                                ('grand_deluxe', 'Grand Deluxe'),
-                                ('single_deluxe', 'Single Deluxe'),
-                                ('dormitory', 'Dormitory')],
+    room_type = fields.Selection([
+                                ('twin', 'Deluxe Twin'),
+                                ('single', 'Deluxe Single'),
+                                ('grand_deluxe', 'Grand Deluxe non Balkon'),
+                                ('grand_deluxe_balkon', 'Grand Deluxe Balkon')],
+                                # ('single', 'Single'),
+                                # ('double', 'Double'),
+                                # ('dormitory', 'Dormitory')
+                                
                                 required=True, string="Room Type",
                                 help="Automatically selects the Room Type",
                                 tracking=True,
@@ -37,6 +39,10 @@ class room(models.Model):
     list_price = fields.Float(string='Rent', digits='Product Price',
                             help="The rent of the room.", store=True,required=True, )
     
+    draft = fields.Boolean(
+                            string="Ada di draft",
+                            store=True,
+                            )
     
     mentenance_ids = fields.One2many('maintenance.request', 'room_maintenance_ids', string='field_name')
     booking_line_id = fields.One2many('room.booking.line', 'room_id', string='field_name')
@@ -45,17 +51,31 @@ class room(models.Model):
     
     maintenance = fields.Char(string='Maintenance',tracking=True, store=True, readonly=True)
 
-    @api.onchange('deposit','name','list_price')
-    def get_price(self):
-        if self.name:
-            if not self.list_price or not self.deposit:
-               
-                return {
-                'warning': {
-                    'title': "Tidak dapat diubah",
-                    'message': "Silahkan hubungi manager anda untuk ubah dataa!",
-                },
-            }
+    # @api.depends('quantity', 'price')
+    # def get_price_total(self):
+    #     self.draft = 'True'
+    
+    # @api.depends('booking_line_id')
+    # def draft(self):
+    #     print(self)
+    
+        # cari = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['reserved','check_in'])]).id
+        # cari_draft = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','==','draft')]).id
+
+        # if cari:
+        #     self.draft = 'False'
+        # if cari_draft:
+        #     self.draft = 'True'
+    
+
+    # @api.onchange('terbooking','name','list_price')
+    def create(self, vals):
+        # if vals.terbooking:
+        if not vals['list_price'] or not vals['deposit']:
+            
+            raise UserError(_( "Isi Harga kamar dan deposit"))
+        else:
+            return super(room, self).create(vals)
             
 
         
@@ -116,18 +136,32 @@ class room(models.Model):
 
     def addroom(self):
        self.ensure_one()
-       cari = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['draft','reserved','check_in'])])[-1].id
-       return{
-        #    'name' : self.display_name,
-           'type' : 'ir.actions.act_window',
-           'view_id' : self.env.ref('hotel_management_odoo.room_booking_view_form').id,
-           'res_model' :'room.booking',
-           'res_id' :cari,
-           'view_mode':'form',
-           'target' : 'current',
-        #    'domain': [('room_line_ids.room_id', '=', self.id)],
-        #    'domain' : [('room_line_ids.room_id', '=', self.id)],
-       }
+       cari = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['reserved','check_in'])]).id
+       cari_draft = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', self.id),('state','in',['draft'])]).id
+       if cari:
+            return{
+                #    'name' : self.display_name,
+                'type' : 'ir.actions.act_window',
+                'view_id' : self.env.ref('hotel_management_odoo.room_booking_view_form').id,
+                'res_model' :'room.booking',
+                'res_id' :cari,
+                'view_mode':'form',
+                'target' : 'current',
+                #    'domain': [('room_line_ids.room_id', '=', self.id)],
+                #    'domain' : [('room_line_ids.room_id', '=', self.id)],
+            }
+       if cari_draft:
+           return{
+                #    'name' : self.display_name,
+                'type' : 'ir.actions.act_window',
+                'view_id' : self.env.ref('hotel_management_odoo.room_booking_view_form').id,
+                'res_model' :'room.booking',
+                'res_id' :cari_draft,
+                'view_mode':'form',
+                'target' : 'current',
+                #    'domain': [('room_line_ids.room_id', '=', self.id)],
+                #    'domain' : [('room_line_ids.room_id', '=', self.id)],
+            }
     
     def action_show_maintenance(self):
         print(self)
@@ -178,20 +212,32 @@ class room(models.Model):
         ----------------------------------------
         @param self: object pointer
         """
-        if self.room_type == "single":
-            self.num_person = 1
-        elif self.room_type == "double":
-            self.num_person = 2
-        elif self.room_type == "grand_deluxe":
-            self.num_person = 2
-        elif self.room_type == "single_deluxe":
-            self.num_person =  1
-        elif self.room_type == "room_twin":
-            self.num_person = 2
-        else:
+        if self.room_type:
             self.num_person = 4
 
-    
+        if self.room_type == "twin":
+            self.deposit = '141000'
+            self.list_price = '359000'
+
+        elif self.room_type == "single":
+            self.deposit = '141000'
+            self.list_price = '359000'
+
+        elif self.room_type == "grand_deluxe_balkon":
+            self.deposit = '171000'
+            self.list_price = '429000'
+
+        elif self.room_type == "grand_deluxe":
+             self.deposit = '101000'
+             self.list_price = '399000'
+        # else:
+        #     self.num_person = 4
+
+    #  ('twin', 'Deluxe Twin')
+    #                             ('single', 'Deluxe Single'),
+    #                             ('grand_deluxe', 'Grand Deluxe non Balkon'),
+    #                             ('grand_deluxe_balkon', 'Grand Deluxe Balkon')
+
     # def action_open_order_line(self):
     #     return {
     #         'type': 'ir.actions.act_window',
