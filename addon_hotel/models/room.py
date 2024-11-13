@@ -86,7 +86,7 @@ class room(models.Model):
             
         for order in self:
             date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else (12, datetime.now().year-1)
-            jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('checkin_date','>',date_begin), ('checkin_date','<',datetime.now())])
+            jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('booking_id.state', 'not in', ['draft', 'cancel']),('checkin_date','>',date_begin), ('checkin_date','<',datetime.now())])
             order.terbooking = len(jumpes)
             print(order)
     

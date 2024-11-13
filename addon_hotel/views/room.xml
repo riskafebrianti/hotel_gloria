@@ -13,6 +13,7 @@
                 <field name="room_type"/>
                 <field name="status"/>
                 <field name="terbooking"/>
+                <field name="draft"/>
                 <field name="status_kerusakan"/>
                 
                 
@@ -55,11 +56,13 @@
                                             
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                         <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" />
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" />
-                                        <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available'"/>
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available'"/> -->
-                                        </div>
+                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object"  invisible="status != 'available' or draft == True"/>
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object"  invisible="status == 'available' and draft == False"/>
+                                        <!-- <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" /> -->
+                                        <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available' or draft == True"/>
+                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available' or draft != True"/>
+                                        -->
+                                        </div> 
                                     </div> 
                             </div> 
                         <!-- </div> -->
