@@ -7,7 +7,7 @@ class room(models.Model):
 
     kanbancolor = fields.Integer('Color Index', compute="set_kanban_color")
     room_type = fields.Selection([
-                                ('twin', 'Deluxe Twin'),
+                                ('  ', 'Deluxe Twin'),
                                 ('single', 'Deluxe Single'),
                                 ('grand_deluxe', 'Grand Deluxe non Balkon'),
                                 ('grand_deluxe_balkon', 'Grand Deluxe Balkon')],
