@@ -28,6 +28,7 @@ class RoomBookingTree(models.Model):
     roomsugest = fields.Many2one("hotel.room",
                                  string='RoomSugest',
                                  store=True,)
+    
     deposit_in = fields.Boolean(string='deposit_in', )
     deposit_out = fields.Boolean(string='deposit_out', )
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
