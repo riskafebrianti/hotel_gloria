@@ -76,14 +76,25 @@ class RoomBookingLineee(models.Model):
         for line in self:
             tax_results = self.env['account.tax']._compute_taxes(
                 [line._convert_to_tax_base_line_dict()])
-            totals = list(tax_results['tax_lines_to_add'])[0]
-            amount_untaxed = totals['base_amount']
-            amount_tax = totals['tax_amount']
-            line.update({
-                'price_subtotal': amount_untaxed,
-                'price_tax': amount_tax,
-                'price_total': amount_untaxed + amount_tax,
-            })
+            
+            if not list(tax_results['tax_lines_to_add']):
+                totals = list(tax_results['totals'].values())[0]
+                amount_untaxed = totals['amount_untaxed']
+                amount_tax = totals['amount_tax']
+                line.update({
+                    'price_subtotal': amount_untaxed,
+                    'price_tax': amount_tax,
+                    'price_total': amount_untaxed + amount_tax,
+                })
+            else:
+                totals = list(tax_results['tax_lines_to_add'])[0]
+                amount_untaxed = totals['base_amount']
+                amount_tax = totals['tax_amount']
+                line.update({
+                    'price_subtotal': amount_untaxed,
+                    'price_tax': amount_tax,
+                    'price_total': amount_untaxed + amount_tax,
+                })
             if self.env.context.get('import_file',
                                     False) and not self.env.user. \
                     user_has_groups('account.group_account_manager'):
