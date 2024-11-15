@@ -6,7 +6,7 @@
         <field name="model">room.booking</field>
         <field name="arch" type="xml">
             <search>
-                <field name="ktp"/>
+                <!-- <field name="ktp"/> -->
                 <field name="partner_id"/>
                 <field name="state"/>
                 <!-- <filter name="fl_draft" string="Draft" domain="[('state','=', 'draft')]"/>
