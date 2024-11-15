@@ -9,6 +9,7 @@
             <xpath expr="//field[@name='function']" position="before">
                 <field name="ktp"/>
                 <field name="sim"/>
+                <field name="admin"/>
             </xpath>
           
         </field>

@@ -29,8 +29,8 @@ class RoomBookingTree(models.Model):
                                  string='RoomSugest',
                                  store=True,)
     
-    deposit_in = fields.Boolean(string='deposit_in', )
-    deposit_out = fields.Boolean(string='deposit_out', )
+    deposit_in = fields.Boolean(string='deposit_in', default=False)
+    deposit_out = fields.Boolean(string='deposit_out', default=False)
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
 
     
@@ -91,7 +91,7 @@ class RoomBookingTree(models.Model):
         
         
     #     return res
-    
+    #draft 
     def create(self, vals):
         if vals['room_line_ids'] and vals['state'] == 'draft':
             # self.room_line_ids.room_id.write({'draft':True,})
@@ -100,7 +100,8 @@ class RoomBookingTree(models.Model):
             updatee.write({'draft' : True})
             return super(RoomBookingTree, self).create(vals)
 
-        
+
+    
     
     
     def _compute_depo_count(self):
@@ -147,26 +148,47 @@ class RoomBookingTree(models.Model):
             a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
             for pay in a:
                 d = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-                # if len(d) >= 1:
-                #     b = sum(line.amount_total for line in d)
-                # if not d: 
-                #     b =  "-"
+                if len(d) >= 1:
+                    b = sum(line.amount_total for line in d)
+                if not d: 
+                    b =  "-"
+            return d
+        
+    def paymnt(self):
+
+        for b in self:
+            a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
+            if a:
+                for pay in a:
+                    d = self.env['account.move'].sudo().search([('ref','=', pay.name)]).amount_total
+                    print(self)
+                    # if len(d) >= 1:
+                    #     b = sum(line.amount_total for line in d)
+                    # if not d: 
+                    #     b =  "-"
+            if not a:
+                d = 0
             return d
         
     def paymnttotal(self):
 
         for b in self:
             a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
-            for pay in a:
-                d = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-                # for to in d:
-                #     # sum(values.get('simpokdaftar').mapped('amount_currency'))
-                #     total = sum(to.mapped('amount_total'))
+            if a:
+                for pay in a:
+                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+                    hasil= sum(data.mapped('amount_total'))
+            if not a:
+                hasil= 0
+                    # for to in d:
+                    #     # sum(values.get('simpokdaftar').mapped('amount_currency'))
+                    #     total = sum(to.mapped('amount_total'))
                 # if len(d) >= 1:
                 #     b = sum(line.amount_total for line in d)
                 # if not d: 
                 #     b =  "-"
-            return sum(d.mapped('amount_total'))
+                print(self)
+            return hasil
                 
         
 
@@ -208,6 +230,36 @@ class RoomBookingTree(models.Model):
                             'default_ref': 'Deposit Booking: '+ str(self.name)
                             }
         }
+    def action_maintenance_request(self):
+        """
+        Function that handles the maintenance request
+        """
+        room_list = []
+        for rec in self.room_line_ids.room_id.ids:
+            room_list.append(rec)
+        if room_list:
+            room_id = self.env['hotel.room'].search([
+                ('id', 'in', room_list)])
+            self.env['maintenance.request'].sudo().create({
+                'date': fields.Date.today(),
+                'state': 'draft',
+                'type': 'room',
+                'room_maintenance_ids': room_id.ids,
+            })
+            
+            room_id.maintenance = 'Request Maintenance'
+            self.maintenance_request_sent = True
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'success',
+                    'message': "Maintenance Request Sent Successfully",
+                    'next': {'type': 'ir.actions.act_window_close'},
+                }
+            }
+        raise ValidationError(_("Please Enter Room Details"))
+    
     def action_checkout(self):
         """Button action_heck_out function"""
         self.write({"state": "check_out"})
@@ -217,7 +269,7 @@ class RoomBookingTree(models.Model):
                 'is_room_avail': True
             })
             room.write({'checkout_date': datetime.today()})
-        self.deposit_out = True
+        # self.deposit_out = True
         # print(self)
         return{
            'type' : 'ir.actions.act_window',
@@ -271,7 +323,16 @@ class RoomBookingTree(models.Model):
                 'ref': self.name,
                 'journal_id': journal,
             }])
-           
+            for rec in booking_list:
+                account_move.invoice_line_ids.create([{
+                    'name': rec['name'],
+                    'quantity': rec['quantity'],
+                    'price_unit': rec['price_unit'],
+                    'tax_ids': rec['tax_ids'],
+                    'move_id': account_move.id,
+                    'price_subtotal': rec['quantity'] * rec['price_unit'],
+                    'product_type': rec['product_type'],
+                }])
             self.write({'invoice_status': "invoiced"})
             return {
                 'type': 'ir.actions.act_window',
@@ -507,3 +568,34 @@ class RoomBookingTree(models.Model):
                     'next': {'type': 'ir.actions.act_window_close'},
                 }
             }
+    def action_reserve(self):
+        """Button Reserve Function"""
+        if self.state == 'reserved':
+            message = _("Room Already Reserved.")
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'warning',
+                    'message': message,
+                    'next': {'type': 'ir.actions.act_window_close'},
+                }
+            }
+        if self.room_line_ids:
+            for room in self.room_line_ids:
+                room.room_id.write({
+                    'status': 'reserved',
+                     'draft': False
+                })
+                room.room_id.is_room_avail = False
+            self.write({"state": "reserved"})
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'success',
+                    'message': "Rooms reserved Successfully!",
+                    'next': {'type': 'ir.actions.act_window_close'},
+                }
+            }
+        raise ValidationError(_("Please Enter Room Details"))

@@ -56,13 +56,16 @@
                                             
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                        <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object"  invisible="status != 'available' or draft == True"/>
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object"  invisible="status == 'available' and draft == False"/>
+                                        <a name="room" icon="fa-solid fa-plus fa-2xl"  type="object" style="font-size: 22px; margin-top-10px;" invisible="status != 'available' or draft == True"/>
+                                        <!-- <a name="room" icon="fa-solid fa-plus fa-2xl"  type="object" style="font-size: 22px; margin-top-10px;" /> -->
+                                        <a name="addroom" icon="fa-cogsfa-regular fa-bookmark fa-2xl" style="color: #F96E2A; font-size: 25px; margin-top-10px;"  type="object"  invisible="status == 'available' and draft == False"/>
+                                        <!-- <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"   type="object"  invisible="status == 'available' and draft == False"/> -->
                                         <!-- <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" /> -->
                                         <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available' or draft == True"/>
                                         <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available' or draft != True"/>
                                         -->
                                         </div> 
+                                       
                                     </div> 
                             </div> 
                         <!-- </div> -->

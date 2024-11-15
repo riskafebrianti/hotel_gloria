@@ -54,6 +54,8 @@ class AccountPayment(models.Model):
             lambda pay: pay.is_internal_transfer and not pay.paired_internal_transfer_payment_id
         )._create_paired_internal_transfer_payment()
 
+        self.room_booking_id.deposit_out = True
+
     
     def periode(self):
         print(self)

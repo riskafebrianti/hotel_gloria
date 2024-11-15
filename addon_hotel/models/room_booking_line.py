@@ -123,7 +123,10 @@ class RoomBookingLineee(models.Model):
                 },
             }
            
-          
+    def admininvsible(self):
+        admininv = self.env['res.partner'].browse(self._uid).admin
+        return admininv
+    
 
     @api.onchange('checkin_date', 'checkout_date', 'room_id')
     def onchange_checkin_date(self):

@@ -103,8 +103,10 @@
 <!-- len(d) >= 1 -->
                                 <t t-if="line.booking_id.paymnt()">
                                     <td style="font-size:25px">
-                                        <span>Rp. <t t-esc="'{0:,.2f}'.format(int(sum(line.amount_total for line in docs.paymnt())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                        <!-- <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt().amount_total for line in docs))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span> -->
                                         <!-- <t t-esc="sum(line.amount_total for line in docs.paymnt())"/> -->
+                                        <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+
                                     </td> 
                                 </t>   
                                 <t t-if="not line.booking_id.paymnt()">

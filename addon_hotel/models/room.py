@@ -81,7 +81,7 @@ class room(models.Model):
         
     
 
-    @api.depends('booking_line_id','terbooking')
+    @api.depends('booking_line_id','booking_line_id.booking_id.state','terbooking')
     def _terbooking(self):
             
         for order in self:
