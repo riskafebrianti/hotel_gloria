@@ -28,7 +28,7 @@
         'views/views.xml',
         'views/templates.xml',
         'views/room.xml',
-        # 'views/res_partner.xml',
+        'views/res_partner.xml',
         'views/maintenance_req.xml',
         'views/account_payment.xml',
         'views/room_booking.xml',
