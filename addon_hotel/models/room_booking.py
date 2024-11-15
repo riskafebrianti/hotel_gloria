@@ -9,7 +9,7 @@ from collections import OrderedDict
 class RoomBookingTree(models.Model):
     _inherit = 'room.booking'
 
-    ktp = fields.Char(string='ktp', related='partner_id.ktp', )
+    # ktp = fields.Char(string='ktp', related='partner_id.ktp', )
     partner_id = fields.Many2one('res.partner', string="Customer",
                                  help="Customers of hotel",
                                  required=True, index=True, tracking=1,
