@@ -84,7 +84,7 @@
         <field name="report_name">addon_hotel.report_struk</field>
         <field name="report_file">addon_hotel.report_struk</field>
         <field name="paperformat_id" ref="addon_hotel.paperformat_custom"/>
-        <field name="print_report_name">'Laporan Pengeluaran Hotel'</field>
+        <field name="print_report_name">'Cetak Struk'</field>
         <field name="binding_model_id" ref="model_room_booking"/>
     </record> 
 

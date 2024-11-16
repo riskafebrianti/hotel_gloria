@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='room_maintenance_ids']" position="after">
                     <field name="kerusakan_berat" invisible="type != 'room'"/>
+                     <field name="catatan" invisible="state in ('ongoing','support','done')"/>
                 </xpath>
                 
             </field>
@@ -21,6 +22,7 @@
                     <field name="sequence"/>
                     <field name="state"/>
                     <field name="kerusakan_berat"/>
+                   
                     <!-- <t t-if="kerusakan_berat == True">
                         <span>Kerusakan berat</span>
                     </t> -->

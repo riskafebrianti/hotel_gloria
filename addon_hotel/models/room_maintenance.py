@@ -7,6 +7,7 @@ class Maintenance(models.Model):
 
     kerusakan_berat = fields.Boolean(string='Kerusakan Berat', 
                                      help="Centang jika jenis maintenance berat maka FO tidak akan bisa membuat reservasi atas kamar ini")
+    catatan = fields.Char(string='Note')
 
 
     def action_assign_team(self):
