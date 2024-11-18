@@ -27,7 +27,7 @@
         # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'views/room.xml',
+        # 'views/room.xml',
         'views/res_partner.xml',
         'views/maintenance_req.xml',
         'views/account_payment.xml',

@@ -15,7 +15,7 @@
                 <field name="terbooking"/>
                 <field name="draft"/>
                 <field name="status_kerusakan"/>
-                
+            
                 
                 <templates>
                     <t t-name="kanban-box">
