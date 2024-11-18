@@ -93,9 +93,9 @@ class RoomBookingTree(models.Model):
         
     #     return res
     #draft 
-    def admininvsible(self):
-        admininv = self.env['res.partner'].browse(self._uid).admin
-        return admininv
+    # def admininvsible(self):
+    #     admininv = self.env['res.partner'].browse(self._uid).admin
+    #     return admininv
 
     def create(self, vals):
         if vals['room_line_ids'] and vals['state'] == 'draft':
