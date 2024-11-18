@@ -41,6 +41,7 @@ class RoomBookingTree(models.Model):
     # piutang = fields.Char(
     #     string='piutang',store=True,  compute='paymnt',
     # )
+  
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
     )
@@ -92,6 +93,10 @@ class RoomBookingTree(models.Model):
         
     #     return res
     #draft 
+    def admininvsible(self):
+        admininv = self.env['res.partner'].browse(self._uid).admin
+        return admininv
+
     def create(self, vals):
         if vals['room_line_ids'] and vals['state'] == 'draft':
             # self.room_line_ids.room_id.write({'draft':True,})

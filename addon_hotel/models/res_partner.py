@@ -9,7 +9,7 @@ class ResPartner(models.Model):
         compute='_compute_company_type', inverse='_write_company_type', default='person')
     ktp = fields.Char(string='No KTP',store=True,)
     sim = fields.Char(string='No SIM',store=True,)
-    admin = fields.Boolean(string='Admin')
+    # admin = fields.Boolean(string='Admin')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

@@ -47,7 +47,10 @@
             </xpath>
 
             <xpath expr="//field[@name='price_total']" position="after">
-                <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" attrs="{'invisible':[('_uid', '=', True)]}" class="btn btn-info"/>
+                <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" invisible="uid not in (2,3)" class="btn btn-info"/>
+                 <!-- <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" invisible="admininvsible == True" class="btn btn-info"/> -->
+                                <!-- <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" class="btn btn-info"/> -->
+
             </xpath>
 
             <xpath expr="//field[@name='partner_id']" position="after">
