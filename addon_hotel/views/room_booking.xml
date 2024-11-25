@@ -9,10 +9,17 @@
                 <!-- <field name="ktp"/> -->
                 <field name="partner_id"/>
                 <field name="state"/>
-                <!-- <filter name="fl_draft" string="Draft" domain="[('state','=', 'draft')]"/>
-                <group>
+                 <filter name="fl_draft" string="Shift 1"  domain="[('create_uid.id', '=', uid), ('date_order', '>=', time.strftime('%%Y-%%m-%%d 23:59:59') ) ]"/>  
+                <!-- datetime.combine(today_date, datetime.min.time()).replace(hour=7, minute=0, second=0) -->
+                 <!-- domain="[('user_ids', 'in', uid)]"  -->
+                 <!-- ('date','<',time.strftime('%%Y-%%m-%%d 23:59:59')) -->
+                 <!-- _order','>=','datetime.today().replace(hour=7, minute=0, second=0)')]"/> -->
+                <!--<group>
+
                     <filter name="gr_pay" string="Bayar Via" context="{'group_by':'payment_method'}"/>
                 </group> -->
+                <!-- [('date','<',time.strftime('%%Y-%%m-%%d 23:59:59')),('date','>=',(datetime.date.today()-datetime.timedelta(hour=7)).strftime('%%Y-%%m-%%d 00:00:00'))] -->
+
             </search>
         </field>
     </record>
@@ -24,7 +31,8 @@
             <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <!-- <field name="ktp" invisible="1"/> -->
+                    <field name="ktp" invisible="1"/>
+                    <field name="roomsugest" />
                     
                 </xpath>
             </field>
@@ -89,7 +97,7 @@
             
             <xpath expr="//button[@name='action_checkout']" position="replace">
                 <button name="action_checkout" string="Check-Out"
-                            class="btn-primary" invisible="state != 'check_in' or deposit_in != True" 
+                            class="btn-primary" invisible="state != 'check_in' or  invoice_button_visible != True" 
                             type="object"/>
                 
             </xpath>

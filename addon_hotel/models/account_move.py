@@ -2,6 +2,24 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from collections import OrderedDict
 
+
+
+class inheritWizard(models.TransientModel):
+
+    _inherit = 'account.payment.register'
+
+    def default_journal(self):
+        status_tersedia = self.env['account.journal'].search([('type', '=','cash')])
+        return status_tersedia
+
+    journal_id = fields.Many2one(
+            comodel_name='account.journal',
+            compute='_compute_journal_id', store=True, readonly=False, precompute=True,
+            check_company=True,
+            default= default_journal,
+            domain="[('id', 'in', available_journal_ids)]")
+
+
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
@@ -12,7 +30,7 @@ class AccountMove(models.Model):
                                                         "Reference",
                                                         compute='_compute_field' )
     
-        
+    # show_update_fpos = fields.Boolean(string="Show Update Fiscal Position")
     def nama(self):
         loop = self.filtered(lambda pay: pay.move_type == 'out_invoice' and pay.journal_id.id == 1)
         data_kamar =[]

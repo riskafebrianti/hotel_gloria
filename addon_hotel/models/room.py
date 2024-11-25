@@ -42,19 +42,30 @@ class room(models.Model):
     draft = fields.Boolean(
                             string="Ada di draft",
                             store=True,
+                            readonly=True
                             )
     
     mentenance_ids = fields.One2many('maintenance.request', 'room_maintenance_ids', string='field_name')
     booking_line_id = fields.One2many('room.booking.line', 'room_id', string='field_name')
   
     terbooking = fields.Char(string='Jumlah Terpesan', compute='_terbooking',store=True,)
-    
+    ket = fields.Char(string='Keterangan booking', compute='get_price_total',)
     maintenance = fields.Char(string='Maintenance',tracking=True, store=True, readonly=True)
 
     # @api.depends('quantity', 'price')
-    # def get_price_total(self):
-    #     self.draft = 'True'
-    
+    def get_price_total(self):
+        for diri in self:
+            data = self.env['room.booking'].sudo().search([('room_line_ids.room_id','=', diri.id),('state','in',['reserved','check_in'])])
+            if data :
+                for oc in data.room_line_ids:
+                    if oc.checkout_date < datetime.today():
+                        diri.ket = 'Over CheckOut'      
+                    else:
+                        diri.ket ='Terisi'          
+            if not data:
+                diri.ket = ''
+            if diri.status == 'available':
+                diri.ket = '-'    
     # @api.depends('booking_line_id')
     # def draft(self):
     #     print(self)
@@ -177,7 +188,7 @@ class room(models.Model):
             'domain': [('room_maintenance_ids.id','=', self.id),('state','!=','done')],
             'context': "{'create': False}"
         }
-
+    
     # @api.depends('status')
     # def _cari(self):
     #     for b in self:

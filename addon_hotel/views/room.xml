@@ -14,6 +14,7 @@
                 <field name="status"/>
                 <field name="terbooking"/>
                 <field name="draft"/>
+                <field name="ket"/>
                 <field name="status_kerusakan"/>
             
                 
@@ -41,11 +42,14 @@
                                          <div>
                                            <field name="terbooking"/>x Terpesan
                                         </div>
-                                      
-                                      
-                                        <div>
-                                        
+                                       <div t-if="record.ket.raw_value != 'Over CheckOut'">
+                                            <a name="addroom" style="color: #ffffff;" type="object"> <span style="font-size: 15px; font-weight: bold; color:ffffff;"><field name="ket"/></span></a>    
                                         </div>
+                                        <div t-if="record.ket.raw_value == 'Over CheckOut'">
+                                            <a name="addroom" style="color: #e63333;" type="object"> <span style="font-size: 15px; font-weight: bold; color:black;"><field name="ket"/></span></a>    
+                                        </div>
+                                      
+                                       
                                     </div>
 
                                     <div class="o_kanban_record_bottom mt-3">
@@ -57,13 +61,7 @@
                                         </div>
                                         <div class="oe_kanban_bottom_right">
                                         <a name="room" icon="fa-solid fa-plus fa-2xl"  type="object" style="font-size: 22px; margin-top-10px;" invisible="status != 'available' or draft == True"/>
-                                        <!-- <a name="room" icon="fa-solid fa-plus fa-2xl"  type="object" style="font-size: 22px; margin-top-10px;" /> -->
                                         <a name="addroom" icon="fa-cogsfa-regular fa-bookmark fa-2xl" style="color: #F96E2A; font-size: 25px; margin-top-10px;"  type="object"  invisible="status == 'available' and draft == False"/>
-                                        <!-- <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"   type="object"  invisible="status == 'available' and draft == False"/> -->
-                                        <!-- <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" /> -->
-                                        <!-- <button name="room" icon="fa-solid fa-plus fa-2xl"  type="object" invisible="status != 'available' or draft == True"/>
-                                        <button name="addroom" icon="fa-cogsfa-regular fa-eye fa-lg"  type="object" invisible="status == 'available' or draft != True"/>
-                                        -->
                                         </div> 
                                        
                                     </div> 
@@ -125,9 +123,11 @@
                 <field name="status_kerusakan"/>
                 <field name="terbooking"/>
                 <field name="draft"/>
+                 
             </xpath>
             <xpath expr="//field[@name='taxes_ids']" position="after">
                 <field name="deposit"/>
+                <field name="ket"/>
             </xpath>
             
         </field>

@@ -26,7 +26,7 @@ class RoomBookingTree(models.Model):
                                     " only newly added lines"
                                     " will be affected.")
     roomsugest = fields.Many2one("hotel.room",
-                                 string='RoomSugest',
+                                 string='Room',
                                  store=True,)
     
     deposit_in = fields.Boolean(string='deposit_in', default=False)
@@ -107,7 +107,20 @@ class RoomBookingTree(models.Model):
 
 
     
+    # @api.model
+    # def action_filter_by_custom_date(self):
+    #     action = self.env.ref('room_booking.room_booking_search').read()[0]
+    #     action['context'] = {
+    #         'custom_date': fields.Date.today()
+    #     }
+    #     return action
     
+    
+    # def get_price_total(self):
+    #     tes = datetime.today().replace(hour=7, minute=0, second=0)
+    #     return tes
+    
+
     
     def _compute_depo_count(self):
         """Compute the invoice count"""
@@ -145,19 +158,24 @@ class RoomBookingTree(models.Model):
     
         for z in self:
             c = self.env['account.move'].sudo().search([('hotel_booking_id','=',z.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
-        return c
+            if len(c) >=1:
+                hasil = sum(line.amount_residual for line in c)
+            if not c:
+                hasil = 0
+        
+        return hasil
     
-    def paymnt(self):
+    # def paymnt(self):
 
-        for b in self:
-            a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
-            for pay in a:
-                d = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-                if len(d) >= 1:
-                    b = sum(line.amount_total for line in d)
-                if not d: 
-                    b =  "-"
-            return d
+    #     for b in self:
+    #         a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
+    #         for pay in a:
+    #             d = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+    #             if len(d) >= 1:
+    #                 b = sum(line.amount_total for line in d)
+    #             if not d: 
+    #                 b =  0
+    #         return d
         
     def paymnt(self):
 
