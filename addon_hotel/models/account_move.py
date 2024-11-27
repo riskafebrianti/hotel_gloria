@@ -30,7 +30,7 @@ class AccountMove(models.Model):
                                                         "Reference",
                                                         compute='_compute_field' )
     
-    # show_update_fpos = fields.Boolean(string="Show Update Fiscal Position")
+    
     def nama(self):
         loop = self.filtered(lambda pay: pay.move_type == 'out_invoice' and pay.journal_id.id == 1)
         data_kamar =[]

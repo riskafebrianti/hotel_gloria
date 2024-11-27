@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <form string="Form Manager">
                 <group>
-                    <field name="checkout_date"/>
-                    <field name="uom_qty"/>
+                    <field name="checkout_date" invisible="1"/>
+                    <field name="uom_qty" invisible="1"/>
                     <field name="room_id"/>
                     <field name="price_total"/>
                     

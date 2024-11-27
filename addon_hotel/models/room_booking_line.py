@@ -179,6 +179,12 @@ class WizardExample(models.TransientModel):
         price = self.env['room.booking.line'].browse(self.env.context.get('active_id')).price_subtotal
         return price
     
+    # struk_ids = fields.One2many(
+    #     comodel_name='toko.struk',
+    #     inverse_name='pegawai_id',
+    #     string='Riwayat Jual',
+    #     )
+
     room_id = fields.Many2one('hotel.room', string="Room",
                             domain=[('status', '=', 'available')],  
                             help="Indicates the Room",
@@ -439,6 +445,25 @@ class WizardExample(models.TransientModel):
                     status_tersedia.update({
                         'status' : "available"
                     })
+                
+                    # context = dict(self._context or {})
+                    # if context.get('active_ids', False):
+                    #     self.env['account.move.line'].browse(context.get('active_ids')).remove_move_reconcile()
+                    # return {'type': 'ir.actions.act_window_close'}
+
+
+                    accmove =  self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1'),('state','=','posted')])[0]
+                    # context = dict(self._context or {})
+                    if accmove:
+                        # for loop in accmove:
+                        #     if loop.display_type == 'product':
+                        accmove.line_ids.remove_move_reconcile()
+                        accmove.update({
+                            'state' : 'cancel'
+                        })
+                        print(self)
+                        
+
                     # Update order line dengan data dari wizard
                     if order_line.ket =='Extend':
                         order_line.write({
@@ -474,6 +499,8 @@ class WizardExample(models.TransientModel):
                             a.write({
                                 'name': self.room_id.name,  
                             })
+                   
+            # return {'type': 'ir.actions.act_window_close'}
                 
                 if order_line.checkout_date != self.checkout_date:
                     
@@ -503,6 +530,9 @@ class WizardExample(models.TransientModel):
                             'uom_qty' :self.uom_qty 
                         })
             
+
+            
+    
 
             return {
                     'type': 'ir.actions.act_window',

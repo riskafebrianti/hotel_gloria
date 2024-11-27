@@ -46,7 +46,7 @@ class room(models.Model):
                             )
     
     mentenance_ids = fields.One2many('maintenance.request', 'room_maintenance_ids', string='field_name')
-    booking_line_id = fields.One2many('room.booking.line', 'room_id', string='field_name')
+    booking_line_id = fields.One2many('room.booking.line', 'room_id', string='field_namee')
   
     terbooking = fields.Char(string='Jumlah Terpesan', compute='_terbooking',store=True,)
     ket = fields.Char(string='Keterangan booking', compute='get_price_total',)

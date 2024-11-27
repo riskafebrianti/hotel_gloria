@@ -56,8 +56,8 @@
 
             <xpath expr="//field[@name='price_total']" position="after">
                 <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action"  class="btn btn-info"/>
-                 <!-- <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" invisible="admininvsible == True" class="btn btn-info"/> -->
-                                <!-- <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" class="btn btn-info"/> -->
+                 <!-- <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" invisible="admininvsible == True" class="btn btn-info"/>
+                                <button icon="fa-cogsfa-regular fa-angle-double-right fa-lg" name="%(addon_hotel.action_wizard_example)d" type="action" class="btn btn-info"/> -->
 
             </xpath>
 
@@ -82,7 +82,7 @@
             </xpath>
 
             <xpath expr="//field[@name='pricelist_id']" position="after">
-                <field name="roomsugest" invisible="1"/>
+                <field name="roomsugest" />
                 <field name="deposit_in"  invisible="1"/>
                 <field name="deposit_out" invisible="1"/>
                
@@ -148,16 +148,7 @@
 
 
 
-   <!-- <template id="template_id" name="tes" inherit_id="hotel_management_odoo.room_booking_view_form">
-    <xpath expr="" position="inside">
-         <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
-            </div>
-    </xpath>
-   </template>
-     -->
+  
 
     <record id="view_wizard_example_form" model="ir.ui.view">
         <field name="name">wizard.example.form</field>
@@ -165,7 +156,7 @@
         <field name="arch" type="xml">
             <form string="Form Manager">
                 <group>
-                    <field name="checkout_date"/>
+                    <field name="checkout_date" invisible="1"/>
                     <field name="uom_qty"/>
                     <field name="room_id"/>
                     <field name="price_total"/>
