@@ -9,7 +9,9 @@
                 <!-- <field name="ktp"/> -->
                 <field name="partner_id"/>
                 <field name="state"/>
-                 <filter name="fl_draft" string="Shift 1"  domain="[('create_uid.id', '=', uid), ('date_order', '>=', time.strftime('%%Y-%%m-%%d 23:59:59') ) ]"/>  
+                <filter name="fl_draft" string="SHIFT 1"  domain="[('create_uid.id', '=', uid),('datesrc',  '=', True)]"/>  
+                <filter name="fl_draft" string="SHIFT 2"  domain="[('create_uid.id', '=', uid),('shift_2',  '=', True)]"/>  
+                <filter name="fl_draft" string="SHIFT 3"  domain="[('create_uid.id', '=', uid),('shift_3',  '=', True)]"/>  
                 <!-- datetime.combine(today_date, datetime.min.time()).replace(hour=7, minute=0, second=0) -->
                  <!-- domain="[('user_ids', 'in', uid)]"  -->
                  <!-- ('date','<',time.strftime('%%Y-%%m-%%d 23:59:59')) -->
@@ -33,6 +35,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="ktp" invisible="1"/>
                     <field name="roomsugest" />
+                
                     
                 </xpath>
             </field>
@@ -82,9 +85,12 @@
             </xpath>
 
             <xpath expr="//field[@name='pricelist_id']" position="after">
-                <field name="roomsugest" />
+                <field name="roomsugest" invisible="1" />
                 <field name="deposit_in"  invisible="1"/>
                 <field name="deposit_out" invisible="1"/>
+                <field name="datesrc" invisible="1"/>
+                <field name="shift_2" invisible="1"/>
+                <field name="shift_3" invisible="1"/>
                
             </xpath>
 

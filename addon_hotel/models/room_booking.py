@@ -32,6 +32,9 @@ class RoomBookingTree(models.Model):
     deposit_in = fields.Boolean(string='deposit_in', default=False)
     deposit_out = fields.Boolean(string='deposit_out', default=False)
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
+    datesrc = fields.Date(string='shift1', search = '_search_is_expired1', store=False,)
+    shift_2 = fields.Date(string='shift2', search = '_search_is_expired2', store=False,)
+    shift_3 = fields.Date(string='shift3', search = '_search_is_expired3', store=False,)
 
     
     
@@ -97,6 +100,65 @@ class RoomBookingTree(models.Model):
     #     admininv = self.env['res.partner'].browse(self._uid).admin
     #     return admininv
 
+    # @api.depends('date', 'price')
+    def _search_is_expired1(self, operator, value):
+        # today = fields.Datetime.context_timestamp(self, datetime.now())
+        tes = fields.datetime.now()
+        hasil = fields.Datetime.context_timestamp(self, tes)
+        shift1_awal =  hasil.replace(hour=7, minute=0, second=0)
+        shift1_akhir =  hasil.replace(hour=15, minute=0, second=0)
+        
+        data = self.env['room.booking'].search([])
+        record = []
+        for data_waktu in data:
+
+            tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.date_order)
+            if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+                array = record.append(data_waktu.id)
+        records = self.env['room.booking'].browse(record)
+        # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+        return [('id', 'in', records.ids)]
+    
+    def _search_is_expired2 (self, operator, value):
+        # today = fields.Datetime.context_timestamp(self, datetime.now())
+        tes = fields.datetime.now()
+        hasil = fields.Datetime.context_timestamp(self, tes)
+        shift1_awal =  hasil.replace(hour=15, minute=0, second=0)
+        shift1_akhir =  hasil.replace(hour=23, minute=0, second=0)
+        
+        data = self.env['room.booking'].search([])
+        record = []
+        for data_waktu in data:
+
+            tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.date_order)
+            if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+                array = record.append(data_waktu.id)
+        records_shift2 = self.env['room.booking'].browse(record)
+        # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+        return [('id', 'in', records_shift2.ids)]
+    
+    def _search_is_expired3(self, operator, value):
+        # today = fields.Datetime.context_timestamp(self, datetime.now())
+        tes = fields.datetime.now()
+        hasil = fields.Datetime.context_timestamp(self, tes)
+        shift1_awal =  hasil.replace(hour=23, minute=0, second=0)
+        shift1_akhir =  hasil.replace(hour=7, minute=0, second=0)
+        
+        data = self.env['room.booking'].search([])
+        record = []
+        for data_waktu in data:
+
+            tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.date_order)
+            if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+                array = record.append(data_waktu.id)
+        records = self.env['room.booking'].browse(record)
+        # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+        return [('id', 'in', records.ids)]
+    
+
     def create(self, vals):
         if vals['room_line_ids'] and vals['state'] == 'draft':
             # self.room_line_ids.room_id.write({'draft':True,})
@@ -106,6 +168,10 @@ class RoomBookingTree(models.Model):
             return super(RoomBookingTree, self).create(vals)
 
 
+    # @api.depends('quantity', 'price')
+    # def hallo(self):
+    #     default=fields.Date.today()
+    #     return default
     
     # @api.model
     # def action_filter_by_custom_date(self):
