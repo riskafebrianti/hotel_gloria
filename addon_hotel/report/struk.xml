@@ -18,15 +18,15 @@
                                 <span t-esc="docs.company_id.city"/> 
                             </t>   
                                 <br></br>
-                            <t t-if="docs.company_id.mobile">
-                                Whatsapp. <span t-esc="docs.company_id.mobile"/> / Telp. <span t-esc="docs.company_id.phone"/> 
+                            <t t-if="docs.company_id.phone">
+                                Whatsapp. <span t-esc="docs.company_id.phone"/>  
                             </t>   
                                 <br></br>  
                     </div>
 
                 </div>     
                     <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:700px;">
-                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
+                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:120px;"/>
                     </div>
                    
                 <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
@@ -87,7 +87,7 @@
                                     <span><t t-esc="i"/></span>
                                 </td>
                                  <td>
-                                    <span><t t-esc="line.room_id.name"/></span>
+                                    <span>Room <t t-esc="line.room_id.name"/></span>
                                 </td>
                                 <td>
                                     <span><t t-esc="line.uom_qty"/></span>
@@ -111,8 +111,19 @@
                         </t>
                        <strong>
                         <tr>
-                            <td colspan="5" align="right"></td>
+                            <td colspan="5" align="right">Total</td>
                             <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                           
+                       </tr>
+                       <tr>
+                            <td colspan="5" align="right">Bayar</td>
+                            <!-- <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td> -->
+                            <td  align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
+
+                       </tr>
+                       <tr>
+                            <td colspan="5" align="right">Sisa</td>
+                            <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs))-(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                            
                        </tr>
                         <!-- <tr>
@@ -144,7 +155,7 @@
                 <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;"> 
                     <center> 
                      <br/><br/>
-                        <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
+                        <p>Dibuat Oleh:</p><br/><br/><br/>
                             <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
                         <p style="margin:top;"><u><span t-esc="user.name"/></u><br/> Front Office</p>
                     </center>

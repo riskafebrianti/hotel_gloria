@@ -246,7 +246,7 @@ class RoomBookingTree(models.Model):
     def paymnt(self):
 
         for b in self:
-            a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
+            a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE'),('state','=','paid')])
             if a:
                 for pay in a:
                     d = self.env['account.move'].sudo().search([('ref','=', pay.name)]).amount_total
