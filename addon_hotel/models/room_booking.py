@@ -412,16 +412,15 @@ class RoomBookingTree(models.Model):
                 'ref': self.name,
                 'journal_id': journal,
             }])
-            for rec in booking_list:
-                account_move.invoice_line_ids.create([{
-                    'name': rec['name'],
-                    'quantity': rec['quantity'],
-                    'price_unit': rec['price_unit'],
-                    'tax_ids': rec['tax_ids'],
-                    'move_id': account_move.id,
-                    'price_subtotal': rec['quantity'] * rec['price_unit'],
-                    'product_type': rec['product_type'],
-                }])
+            # for rec in booking_list:
+            #     account_move.invoice_line_ids.create([{
+            #         'name': rec['name'],
+            #         'price_unit': rec['price_unit'],
+            #         'tax_ids': rec['tax_ids'],
+            #         'move_id': account_move.id,
+            #         'price_subtotal': rec['quantity'] * rec['price_unit'],
+            #         'product_type': rec['product_type'],
+            #     }])
             self.write({'invoice_status': "invoiced"})
             return {
                 'type': 'ir.actions.act_window',
@@ -546,6 +545,7 @@ class RoomBookingTree(models.Model):
             rec.amount_total_fleet = amount_total_fleet
             rec.amount_total_event = amount_total_event
             rec.amount_total_service = amount_total_service
+
         return booking_list
     
     

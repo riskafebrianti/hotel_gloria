@@ -26,17 +26,7 @@ class RoomBookingLineee(models.Model):
 
     
 
-    
 
-    # def create(self, vals):
-    #     # if vals.terbooking:
-    #     if self.booking_id.state == 'draft':
-    #         self.room_id.draft = True
-    #         # raise UserError(_( "Isi Harga kamar dan deposit"))
-    #     else:
-    #         return super(RoomBookingLineee, self).create(vals)
-            
-        
     
 
     @api.onchange('room_id','booking_id.room_line_ids')
@@ -224,8 +214,7 @@ class WizardExample(models.TransientModel):
         else:
             self.uom_qty = order_line.uom_qty
             # self.room_id = order_line.room_id
-            self.price_total = order_line.price_subtotal
-
+            self.price_total = order_line.room_id.list_price * order_line.uom_qty
 
 
     @api.depends('checkout_date','room_id','uom_qty')
@@ -426,7 +415,7 @@ class WizardExample(models.TransientModel):
                    account_move.line_ids.create([{
                         'name': rec['room_id'].name,
                         'quantity': self.uom_qty,
-                        'price_unit': self.price_total,
+                        'price_unit': rec['room_id'].list_price,
                         # 'tax_ids': rec['tax_ids'],
                         'product_uom_id' : rec['uom_id'].id,
                         'move_id': account_move.id,

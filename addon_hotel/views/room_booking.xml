@@ -47,7 +47,7 @@
         <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_form"/>
         <field name="arch" type="xml">
          
-            <xpath expr="//field[@name='uom_qty']" position="before">
+            <xpath expr="//field[@name='uom_id']" position="after">
                 <field name="jumlah" />
                 <field name="jumlahanak" width="150px" optional="hide"/>                
             </xpath>
@@ -122,6 +122,13 @@
                     <field string="Deposit" name="depo_count"
                             widget="statinfo"/>
                 </button>
+                <!-- <button class="oe_stat_button" type="object"
+                        name="action_view_depo"
+                        invisible="deposit_in != True"
+                        icon="fa-edit">
+                    <field string="Deposit" name="depo_count"
+                            widget="statinfo"/>
+                </button> -->
             </xpath>
             
           
