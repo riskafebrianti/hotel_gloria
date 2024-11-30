@@ -19,9 +19,12 @@
                                 <span t-esc="docs.company_id.city" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>
-                            <t t-if="docs.company_id.mobile" style="font-size:30px;">
-                                Telepon / Whatsapp. <span t-esc="docs.company_id.mobile" style="font-size:30px;"/> / Telp. <span t-esc="docs.company_id.phone" style="font-size:30px;"/> 
-                            </t>   
+                            <t t-if="docs.company_id.phone">
+                               Telepon <span t-esc="docs.company_id.phone"/>  
+                            </t>
+                            <t t-if="docs.company_id.mobile">
+                               / Whatsapp. <span t-esc="docs.company_id.mobile"/>  
+                            </t>      
                                 <br></br>  
                     </div>
 
