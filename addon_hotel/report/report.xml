@@ -41,7 +41,7 @@
         <field name="report_name">addon_hotel.report_room_booking</field>
         <field name="report_file">addon_hotel.report_room_booking</field>
         <field name="paperformat_id" ref="addon_hotel.paperformat_custom_landscape"/>
-        <field name="print_report_name">'Laporan Shift %s' % (time.strftime('%d-%m-%Y '))</field>
+        <field name="print_report_name">'Laporan Shift %s' % (object._now())</field>
         <!-- <field name="print_report_name">'Laporan Shift %s' % (context_timestamp(object, datetime.datetime.now()).strftime('%d %B %Y %H:%M'))</field> -->
         <field name="binding_model_id" ref="model_room_booking"/>
     </record> 
@@ -85,7 +85,7 @@
         <field name="report_name">addon_hotel.report_struk</field>
         <field name="report_file">addon_hotel.report_struk</field>
         <field name="paperformat_id" ref="addon_hotel.paperformat_custom"/>
-        <field name="print_report_name">'Cetak Struk'</field>
+        <field name="print_report_name">'Cetak Struk  %s' % (object._now())</field>
         <field name="binding_model_id" ref="model_room_booking"/>
     </record> 
 

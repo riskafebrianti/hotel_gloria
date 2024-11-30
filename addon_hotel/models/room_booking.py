@@ -99,7 +99,8 @@ class RoomBookingTree(models.Model):
     # def admininvsible(self):
     #     admininv = self.env['res.partner'].browse(self._uid).admin
     #     return admininv
-
+    def _now(self):
+        return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
     # @api.depends('date', 'price')
     def _search_is_expired1(self, operator, value):
         # today = fields.Datetime.context_timestamp(self, datetime.now())
