@@ -17,7 +17,7 @@
                             </t>   
                                 <br></br>
                             <t t-if="docs.company_id.mobile">
-                                Whatsapp. <span t-esc="docs.company_id.mobile"/> / Telp. <span t-esc="docs.company_id.phone"/> 
+                                Telepon / Whatsapp. <span t-esc="docs.company_id.mobile"/> / Telp. <span t-esc="docs.company_id.phone"/> 
                             </t>   
                                 <br></br>  
                     </div>

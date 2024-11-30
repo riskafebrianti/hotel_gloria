@@ -20,7 +20,7 @@
                             </t>   
                                 <br></br>
                             <t t-if="docs.company_id.mobile" style="font-size:30px;">
-                                Whatsapp. <span t-esc="docs.company_id.mobile" style="font-size:30px;"/> / Telp. <span t-esc="docs.company_id.phone" style="font-size:30px;"/> 
+                                Telepon / Whatsapp. <span t-esc="docs.company_id.mobile" style="font-size:30px;"/> / Telp. <span t-esc="docs.company_id.phone" style="font-size:30px;"/> 
                             </t>   
                                 <br></br>  
                     </div>
