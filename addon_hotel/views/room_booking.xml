@@ -109,27 +109,27 @@
             </xpath>
             
             <xpath expr="//form//header" position="inside">
+               <!-- <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('done','cancel') or deposit_in == True" /> -->
                <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('done','cancel') or deposit_in == True" />
                <button name="action_deposit_out" string="Out Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved','done', 'check_in') or deposit_out == True"/>
                <button name="action_charge" string="Charge" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in != True"/>
             </xpath>
 
-            <xpath expr="//div[@name='button_box']//button[@name='action_view_invoices']" position="after">
+            <!-- <xpath expr="//div[@name='button_box']//button[@name='action_view_invoices']" position="after">
                 <button class="oe_stat_button" type="object"
                         name="action_view_depo"
                         invisible="deposit_in != True"
-                        icon="fa-edit">
+                        icon="fa-reply">
                     <field string="Deposit" name="depo_count"
                             widget="statinfo"/>
                 </button>
-                <!-- <button class="oe_stat_button" type="object"
+                <button class="oe_stat_button" type="object"
                         name="action_view_depo"
-                        invisible="deposit_in != True"
-                        icon="fa-edit">
-                    <field string="Deposit" name="depo_count"
+                        icon="fa-bolt">
+                    <field string="Charge" name="chrg_count"
                             widget="statinfo"/>
-                </button> -->
-            </xpath>
+                </button>
+            </xpath> -->
             
           
             <xpath expr="//form//sheet//group//group[2]//field[@name='need_service']" position="replace">
