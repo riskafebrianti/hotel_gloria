@@ -109,8 +109,8 @@
             </xpath>
             
             <xpath expr="//form//header" position="inside">
-               <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('done','cancel') or deposit_in == True" />
-               <!-- <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" /> -->
+               <!-- <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('done','cancel') or deposit_in == True" /> -->
+               <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" />
                <button name="action_deposit_out" string="Out Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved','done', 'check_in') or deposit_out == True"/>
                <button name="action_charge" string="Charge" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in != True"/>
             </xpath>
