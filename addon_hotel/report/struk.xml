@@ -49,7 +49,7 @@
                                     <td> <span>Date Check in</span></td>
                                     <td><span></span></td>
                                     <td> <span>: </span></td>
-                                    <td><t t-esc="context_timestamp(docs.checkin_date).strftime('%d/%m/%Y')"/></td>
+                                    <td><t t-esc="docs.checkin_date.strftime('%d/%m/%Y')"/></td>
                                     <!-- context_timestamp(datetime.docs.checkin_date).strftime('%d %B %Y %H:%M') -->
                                 </tr>
                                 
@@ -57,7 +57,7 @@
                                     <td> <span>Date Check out</span></td>
                                     <td><span></span></td>
                                     <td> <span>: </span></td>
-                                    <td><t t-esc="context_timestamp(docs.checkout_date).strftime('%d/%m/%y')"/></td>
+                                    <td><t t-esc="docs.checkout_date.strftime('%d/%m/%Y')"/></td>
                                 </tr>
                                 
                         </table>
