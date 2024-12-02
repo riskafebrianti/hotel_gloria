@@ -103,7 +103,7 @@
                                     <span><t t-esc="i"/></span>
                                 </td>
                                  <td>
-                                    <span style="text-transform: uppercase;>Room <t t-esc="line.room_id.name"/> <t t-esc="line.room_id.room_type"/></span>
+                                    <span style="text-transform: uppercase;">Room <t t-esc="line.room_id.name"/> <t t-esc="line.room_id.room_type"/></span>
                                 </td>
                                 <td>
                                     <span><t t-esc="line.uom_qty"/></span>
