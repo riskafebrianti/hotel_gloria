@@ -28,47 +28,58 @@
                     </div>
 
                 </div>     
-                    <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:700px;">
+                    <!-- <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:700px;">
                         <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:120px;"/>
-                    </div>
+                    </div> -->
                    
                 <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
 
             <br/>
                 <!-- <h2>Booking Report</h2> -->
-               <div class="page" style="border:0px solid;">
+               <div class="page" style="border:0px solid; margin-top:-17px;">
                     
-                    <h2>Transaction Room <t t-esc="docs.name"/></h2>
-                    <br/>
-                   <div style="border:0px solid; width:100%; ">
+                    <span style="font-size:14px; color:black; font-weight: bold;font-family: Times and Roman;letter-spacing: 4px">TRANSAKSI KAMAR <t t-esc="docs.name"/></span>
+                    
+                   <div style="border:0px solid; width:100%; margin-top:5px; font-family: Times and Roman">
                    
                     <table class="table-borderless">
                         <!-- <table style="float:left;"> -->
                         
                                 <tr>
                                     <td> <span>Date Check in</span></td>
-                                    <td><span></span></td>
+                                    <td><span> </span></td>
                                     <td> <span>: </span></td>
+                                    <td><span> </span></td>
                                     <td><t t-esc="docs.room_line_ids.checkin_date.strftime('%d/%m/%Y')"/></td>
                                     <!-- context_timestamp(datetime.docs.checkin_date).strftime('%d %B %Y %H:%M') -->
                                 </tr>
                                 
                                 <tr>
                                     <td> <span>Date Check out</span></td>
-                                    <td><span></span></td>
+                                    <td><span> </span></td>
                                     <td> <span>: </span></td>
+                                    <td><span> </span></td>
                                     <td><t t-esc="docs.room_line_ids.checkout_date.strftime('%d/%m/%Y')"/></td>
                                 </tr>
                                 
                         </table>
 
                    </div> 
-                    <div style="border:0px solid; width:100%; text-align:right; margin-top:-30px">
-                        <span style="margin:right;">Kepada : <t t-esc="docs.partner_id.name"/><br/>
-                        <t t-esc="docs.partner_id.street"/></span><span> <t t-esc="docs.partner_id.city"/></span>
+                    <div style="border:0px solid; width:30%; margin-left:70%; text-align:left; margin-top:-75px;  font-family: Times and Roman">
+                        <span style="margin:left;">Kepada : <t t-esc="docs.partner_id.name"/><br/>
+                        <t t-esc="docs.partner_id.street"/></span> <span> <t t-esc="docs.partner_id.city"/></span><br/>
+                        <span>
+                             <t t-if="docs.partner_id.phone">
+                               Telepon : <span t-esc="docs.partner_id.phone"/>  
+                            </t>
+                            <t t-if="docs.partner_id.mobile">
+                               / Whatsapp : <span t-esc="docs.partner_id.mobile"/>  
+                            </t>   
+                        </span>
                     
                     </div>
-                    <table class="table table-bordered" style="page-break-inside: avoid; position:relative;">
+                    <br/>
+                    <table class="table table-bordered" style="page-break-inside: avoid; position:relative; font-family: Times and Roman;border-color:black;">
                         <thead>
                             <tr>
                                 <th style="width:1%;">No.</th>
@@ -92,7 +103,7 @@
                                     <span><t t-esc="i"/></span>
                                 </td>
                                  <td>
-                                    <span>Room <t t-esc="line.room_id.name"/></span>
+                                    <span style="text-transform: uppercase;>Room <t t-esc="line.room_id.name"/> <t t-esc="line.room_id.room_type"/></span>
                                 </td>
                                 <td>
                                     <span><t t-esc="line.uom_qty"/></span>
@@ -160,7 +171,7 @@
                 <div class="ttd" style="border:0px solid; float: right; color: black; width:30%; margin-top:-40px;"> 
                     <center> 
                      <br/><br/>
-                        <p>Dibuat Oleh:</p><br/><br/><br/>
+                        <p>Dibuat Oleh:</p><br/><br/>
                             <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
                         <p style="margin:top;"><u><span t-esc="user.name"/></u><br/> Front Office</p>
                     </center>
