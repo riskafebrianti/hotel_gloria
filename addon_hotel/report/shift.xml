@@ -158,7 +158,7 @@
                 <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;font-size:25px;"> 
                     <center> 
                      <br/><br/>
-                        <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
+                        <p>Dibuat Oleh:</p><br/><br/>
                             <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
                         <p style="margin:top;font-size:25px;"><u><span t-esc="user.name"/></u><br/> Front Office</p>
                     </center>
