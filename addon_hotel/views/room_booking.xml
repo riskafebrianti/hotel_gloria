@@ -86,8 +86,9 @@
 
             <xpath expr="//field[@name='pricelist_id']" position="after">
                 <field name="roomsugest" invisible="1" />
-                <field name="deposit_in"  invisible="1"/>
-                <field name="deposit_out" invisible="1"/>
+                <field name="deposit_in" />
+                <field name="deposit_out"/>
+                <field name="charge"/>
                 <field name="datesrc" invisible="1"/>
                 <field name="shift_2" invisible="1"/>
                 <field name="shift_3" invisible="1"/>
@@ -97,9 +98,15 @@
             <xpath expr="//button[@name='action_invoice']" position="replace">
                 <button name="action_invoice" string="Create Invoice"
                             type="object" class="btn-primary"
-                            invisible="state not in ('check_in', 'check_out') or invoice_button_visible == True or deposit_in != True"/>
+                            invisible="state not in ('check_in','draft', 'check_out') or invoice_button_visible == True or deposit_in != True"/>
                 
             </xpath>
+            <!-- <xpath expr="//button[@name='action_checkin']" position="replace">
+                <button name="action_checkin" string="Check-In"
+                            class="btn-primary"
+                            invisible="is_checkin == True or state in ('check_in','check_out','done','cancel')  or  invoice_button_visible != True"
+                            type="object"/>
+            </xpath> -->
             
             <xpath expr="//button[@name='action_checkout']" position="replace">
                 <button name="action_checkout" string="Check-Out"
@@ -107,11 +114,16 @@
                             type="object"/>
                 
             </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="replace">
+               <button name="action_cancel" string="Cancel"
+                             invisible="uid not in (2,12)" type="object" class="btn-secondary"/>
+                
+            </xpath>
             
-            <xpath expr="//form//header" position="inside">
-               <!-- <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('done','cancel') or deposit_in == True" /> -->
-               <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" />
-               <button name="action_deposit_out" string="Out Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved','done', 'check_in') or deposit_out == True"/>
+            <xpath expr="//form//header//button[@name='action_cancel']" position="before">
+               <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" invisible="state in ('done','cancel') or deposit_in == True" />
+               <!-- <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" /> -->
+               <button name="action_deposit_out" string="Out Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_out != True"/>
                <button name="action_charge" string="Charge" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in != True"/>
             </xpath>
 
@@ -123,12 +135,25 @@
                     <field string="Deposit" name="depo_count"
                             widget="statinfo"/>
                 </button>
-                <!-- <button class="oe_stat_button" type="object"
-                        name="action_view_depo"
-                        icon="fa-bolt">
+                
+                <button class="oe_stat_button" type="object"
+                        name="action_view_chrg"
+                        icon="fa-bolt"
+                        invisible="chrg_count == 0">
+                        
                     <field string="Charge" name="chrg_count"
                             widget="statinfo"/>
-                </button> -->
+                </button>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']//button[@name='action_view_invoices']" position="replace">
+               <button class="oe_stat_button" type="object"
+                                name="action_view_invoices" 
+                                invisible="invoice_count == 0"
+                                icon="fa-edit">
+                            <field string="Invoices" name="invoice_count"
+                                   widget="statinfo"/>
+                        </button>
             </xpath>
             
           

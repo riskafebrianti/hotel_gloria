@@ -29,8 +29,9 @@ class RoomBookingTree(models.Model):
                                  string='Room',
                                  store=True,)
     
-    deposit_in = fields.Boolean(string='deposit_in', default=False)
-    deposit_out = fields.Boolean(string='deposit_out', default=False)
+    deposit_in = fields.Boolean(string='deposit_in', default=False, compute='_compute_invsb')
+    deposit_out = fields.Boolean(string='deposit_out', compute='_compute_invsb', default=False)
+    charge = fields.Boolean(string='charge', compute='_compute_invsb', default=False)
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
     datesrc = fields.Date(string='shift1', search = '_search_is_expired1', store=False,)
     shift_2 = fields.Date(string='shift2', search = '_search_is_expired2', store=False,)
@@ -47,6 +48,8 @@ class RoomBookingTree(models.Model):
   
     
     depo_count = fields.Integer(string='depo_count', compute='_compute_depo_count'
+    )
+    chrg_count = fields.Integer(string='depo_count', compute='_compute_chrg_count'
     )
     pricelist_id = fields.Many2one(comodel_name='product.pricelist',
                                 string="Pricelist",
@@ -74,31 +77,37 @@ class RoomBookingTree(models.Model):
                                             help="sets to True if the "
                                                 "maintenance request send "
                                                 "once" )
-    def default_CO(self):
-        tes = fields.Datetime.now().replace(hour=4, minute= 00) + timedelta(days=1)
-        
-        return tes
     
-    
-    checkout_date = fields.Datetime(string="Check Out",
-                                help="Date of Checkout",
-                                default=default_CO)
-    
-    # @api.onchange('state')
-    # def bolean_draft(self):
-    #     # if self.state == 'draft' and self.room_line_ids.room_id.id :
-    #     #     self.room_id.draft = True
-    #     res = super(RoomBookingTree, self).bolean_draft()
 
-    #     if self.state != 'draft':
-    #         self.room_line_ids.room_id.draft = False
-        
-        
-    #     return res
-    #draft 
-    # def admininvsible(self):
-    #     admininv = self.env['res.partner'].browse(self._uid).admin
-    #     return admininv
+    def _compute_invsb(self):
+        for record in self:
+            data_in = self.env['account.payment'].search(
+                [('room_booking_id','=', record.id),('move_id.journal_id.code','!=','CHRG')])
+            charge = self.env['account.payment'].search(
+                [('room_booking_id','=', record.id),('move_id.journal_id.code','=','CHRG')])
+            
+            if charge:
+                record.charge = True
+            if not charge:
+                record.charge = False
+
+            if data_in :
+                if data_in.payment_type == 'inbound':
+                    record.deposit_in = True    
+                if data_in.payment_type == 'outbound':
+                    record.deposit_out = True    
+                if not data_in.payment_type == 'outbound':
+                    record.deposit_out = False
+                if not data_in.payment_type == 'inbound':
+                    record.deposit_in= False
+
+            if not data_in:
+                record.deposit_in = False
+                record.deposit_out = False
+            
+                print(self)
+    
+
     def _now(self):
         return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
     # @api.depends('date', 'price')
@@ -193,7 +202,20 @@ class RoomBookingTree(models.Model):
         """Compute the invoice count"""
         for record in self:
             record.depo_count = self.env['account.payment'].search_count(
-                [('room_booking_id','=', self.id)])
+                [('room_booking_id','=', self.id),('move_id.journal_id.code','!=','CHRG')])
+            
+    def _compute_chrg_count(self):
+        """Compute the invoice count"""
+        for record in self:
+            record.chrg_count = self.env['account.move'].search_count(
+                [('hotel_booking_id','=', self.id),('journal_id.code','=','CHRG')])
+
+    def _compute_invoice_count(self):
+        """Compute the invoice count"""
+        for record in self:
+            record.invoice_count = self.env['account.move'].search_count(
+                [('ref', '=', self.name),('journal_id.code','!=','CHRG')])
+
     
     def total_semua(self):
         total = sum(self.room_line_ids.mapped('price_total'))
@@ -224,7 +246,12 @@ class RoomBookingTree(models.Model):
     def amount(self):
     
         for z in self:
-            c = self.env['account.move'].sudo().search([('hotel_booking_id','=',z.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
+            c = self.env['account.move'].sudo().search([
+                ('ref','=',z.name),
+                ('move_type','=','out_invoice'),
+                ('payment_state','=','not_paid'),
+                ('state','=','posted'),
+                ('journal_id.name','!=','CHARGE')])
             if len(c) >=1:
                 hasil = sum(line.amount_residual for line in c)
             if not c:
@@ -247,7 +274,12 @@ class RoomBookingTree(models.Model):
     def paymnt(self):
 
         for b in self:
-            a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE'),('state','=','paid')])
+            a = self.env['account.move'].sudo().search([
+                ('ref','=',b.name),
+                ('move_type','=','out_invoice'),
+                ('state','=','posted'),
+                ('journal_id.name','!=','CHARGE'),
+                ('payment_state','=','paid')])
             if a:
                 for pay in a:
                     d = self.env['account.move'].sudo().search([('ref','=', pay.name)]).amount_total
@@ -263,7 +295,13 @@ class RoomBookingTree(models.Model):
     def paymnttotal(self):
 
         for b in self:
-            a = self.env['account.move'].sudo().search([('hotel_booking_id','=',b.id),('move_type','=','out_invoice'),('journal_id.name','!=','CHARGE')])
+            a = self.env['account.move'].sudo().search([
+               ('ref','=',b.name),
+                ('move_type','=','out_invoice'),
+                ('journal_id.name','!=','CHARGE'),
+                ('payment_state','=','paid')
+                ])
+           
             if a:
                 for pay in a:
                     data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
@@ -299,13 +337,7 @@ class RoomBookingTree(models.Model):
             if not k.deposit:
                 raise ValidationError(
                 _("Masukkan Nilai Deposit"))
-    #    self.ensure_one()
-    #    print(self)
-    #    if not self.room_line_ids.deposit:
-    #        raise ValidationError(
-    #             _("Masukkan Nilai Deposit"))
-       
-        self.deposit_in = True
+        
         return{
             'type' : 'ir.actions.act_window',
             'view_id' : self.env.ref('account.view_account_payment_form').id,
@@ -320,6 +352,8 @@ class RoomBookingTree(models.Model):
                             'default_ref': 'Deposit Booking: '+ str(self.name)
                             }
         }
+        # self.deposit_in = True
+        
     def action_maintenance_request(self):
         """
         Function that handles the maintenance request
@@ -378,7 +412,7 @@ class RoomBookingTree(models.Model):
        }
     def action_deposit_out(self):
        
-       self.deposit_out = True
+    #    self.deposit_out = True
        print(self)
        return{
            'type' : 'ir.actions.act_window',
@@ -395,6 +429,17 @@ class RoomBookingTree(models.Model):
                          'create': False
                         },
        }
+    def action_view_invoices(self):
+        """Method for Returning invoice View"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Invoices',
+            'view_mode': 'tree,form',
+            'view_type': 'tree,form',
+            'res_model': 'account.move',
+            'domain': [('ref', '=', self.name),('journal_id.code','!=','CHRG')],
+            'context': "{'create': False}"
+        }
     def action_charge(self):
         self.ensure_one()
        
@@ -460,7 +505,8 @@ class RoomBookingTree(models.Model):
         booking_list = []
         account_move_line = self.env['account.move.line'].search_read(
             domain=[('ref', '=', self.name),
-                    ('display_type', '!=', 'payment_term')],
+                    ('display_type', '!=', 'payment_term'),
+                    ('journal_id.name', '!=', 'CHARGE')],
             fields=['name', 'quantity', 'price_unit', 'product_type'], )
         for rec in account_move_line:
             del rec['id']
@@ -597,7 +643,19 @@ class RoomBookingTree(models.Model):
             'view_mode': 'tree,form',
             'view_type': 'tree,form',
             'res_model': 'account.payment',
-            'domain': [('room_booking_id','=', self.id)],
+            'domain': [('room_booking_id','=', self.id),('move_id.journal_id.code','!=','CHRG')],
+            'context': "{'create': False}"
+        }
+    
+    def action_view_chrg(self):
+        """Method for Returning invoice View"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Charge',
+            'view_mode': 'tree,form',
+            'view_type': 'tree,form',
+            'res_model': 'account.move',
+            'domain': [('hotel_booking_id','=', self.id),('journal_id.code','=','CHRG')],
             'context': "{'create': False}"
         }
     
