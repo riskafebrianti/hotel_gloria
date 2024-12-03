@@ -86,9 +86,9 @@
 
             <xpath expr="//field[@name='pricelist_id']" position="after">
                 <field name="roomsugest" invisible="1" />
-                <field name="deposit_in" />
-                <field name="deposit_out"/>
-                <field name="charge"/>
+                <field name="deposit_in" invisible="1" />
+                <field name="deposit_out" invisible="1"/>
+                <field name="charge" invisible="1"/>
                 <field name="datesrc" invisible="1"/>
                 <field name="shift_2" invisible="1"/>
                 <field name="shift_3" invisible="1"/>
