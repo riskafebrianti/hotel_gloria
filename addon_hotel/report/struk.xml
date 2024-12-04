@@ -85,7 +85,7 @@
                                      <span><t t-esc="docs.partner_id.city"/></span>
                                      <br/>
                                      <t t-if="docs.company_id.phone">
-                                        Telepon <span t-esc="docs.company_id.phone"/>  
+                                        Telepon <span t-esc="docs.partner_id.phone"/>  
                                         </t>
                                         <!-- <t t-if="docs.company_id.mobile">
                                         Mobile  <span t-esc="docs.company_id.mobile"/>  
