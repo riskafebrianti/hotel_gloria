@@ -48,7 +48,7 @@
                                 <tr>
                                     <td> <span>Date Check in</span></td>
                                     <td><span> </span></td>
-                                    <td> <span>: </span></td>
+                                    <td> <span> : </span></td>
                                     <td><span> </span></td>
                                     <td><t t-esc="docs.room_line_ids.checkin_date.strftime('%d/%m/%Y')"/></td>
                                     <!-- context_timestamp(datetime.docs.checkin_date).strftime('%d %B %Y %H:%M') -->
@@ -57,7 +57,7 @@
                                 <tr>
                                     <td> <span>Date Check out</span></td>
                                     <td><span> </span></td>
-                                    <td> <span>: </span></td>
+                                    <td> <span> : </span></td>
                                     <td><span> </span></td>
                                     <td><t t-esc="docs.room_line_ids.checkout_date.strftime('%d/%m/%Y')"/></td>
                                 </tr>
@@ -65,8 +65,33 @@
                         </table>
 
                    </div> 
-                    <div style="border:0px solid; width:30%; margin-left:70%; text-align:left; margin-top:-75px;  font-family: Times and Roman">
-                        <span style="margin:left;">Kepada : <t t-esc="docs.partner_id.name"/><br/>
+                    <div style="border:0px solid; width:40%; margin-left:60%; text-align:left; margin-top:-60px;  font-family: Times and Roman">
+                        <table class="table-borderless">
+                            <tr>
+                                <td>Kepada</td>
+                                <td width="10%"></td>
+                                <td></td>
+                                <td></td>
+                                <td><t t-esc="docs.partner_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><span><t t-esc="docs.partner_id.street"/></span> <span> <t t-esc="docs.partner_id.city"/></span></td>
+                            </tr>
+                            <t t-if="docs.partner_id.mobile">
+                                <tr>
+                                    <td>Nomor Telepon</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><t t-esc="docs.partner_id.mobile"/></td>
+                                </tr>
+                            </t>
+                        </table>
+                        <!-- <span style="margin:left;">Kepada : <t t-esc="docs.partner_id.name"/><br/>
                         <t t-esc="docs.partner_id.street"/></span> <span> <t t-esc="docs.partner_id.city"/></span><br/>
                         <span>
                              <t t-if="docs.partner_id.phone">
@@ -76,7 +101,7 @@
                                / Whatsapp : <span t-esc="docs.partner_id.mobile"/>  
                             </t>   
                         </span>
-                    
+                     -->
                     </div>
                     <br/>
                     <table class="table table-bordered" style="page-break-inside: avoid; position:relative; font-family: Times and Roman;border-color:black;">
@@ -103,7 +128,21 @@
                                     <span><t t-esc="i"/></span>
                                 </td>
                                  <td>
-                                    <span style="text-transform: uppercase;">Room <t t-esc="line.room_id.name"/> <t t-esc="line.room_id.room_type"/></span>
+                                    <span style="text-transform: uppercase;">Room <t t-esc="line.room_id.name"/> 
+                                     <t t-if="line.room_id.room_type == 'twin'"> 
+                                        <span>DELUXE TWIN</span>
+                                     </t>
+                                      <t t-if="line.room_id.room_type == 'single'"> 
+                                        <span>DELUXE SINGLE</span>
+                                     </t>   
+                                      <t t-if="line.room_id.room_type == 'grand_deluxe_balkon'"> 
+                                        <span>GRAND DELUXE BALKON</span>
+                                     </t>   
+                                      <t t-if="line.room_id.room_type == 'grand_deluxe'"> 
+                                        <span>GRAND DELUXE NON BALKON</span>
+                                     </t>   
+                                     </span>   
+                                    <!-- <t t-esc="line.room_id.room_type"/></span> -->
                                 </td>
                                 <td>
                                     <span><t t-esc="line.uom_qty"/></span>
@@ -123,32 +162,79 @@
                                 
                                  
                             </tr>
+                             <tr>
+                                <td colspan="3" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
+                                <!-- <td></td> -->
+                                <td align="center"  colspan="2" style="font-size:15px; letter-spacing: 1px;  color:black; font-weight: bold;">Total</td>
+                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            </tr>
+
+                            <tr>
+                                 <td colspan="3" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
+                                <!-- <td></td> -->
+                                <td align="center" colspan="2" style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Bayar</td>
+                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
+
+                            </tr>
+                           <tr>
+                                 <td colspan="3" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
+                                <!-- <td></td> -->
+                                <td align="center" colspan="2"  style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Sisa</td>
+                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs))-(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                                
+                            </tr> 
                             
                         </t>
+                        </table>
                        <strong>
-                        <tr>
-                            <td colspan="5" align="right">Total</td>
-                            <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
-                           
-                       </tr>
-                       <tr>
-                            <td colspan="5" align="right">Bayar</td>
-                            <!-- <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td> -->
-                            <td  align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
 
-                       </tr>
-                       <tr>
-                            <td colspan="5" align="right">Sisa</td>
-                            <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs))-(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
-                           
-                       </tr>
-                        <!-- <tr>
-                            <td colspan="5" align="right">Total</td>
-                            <td colspan="2" align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.amount for line in docs.filtered(lambda pay: pay.room_booking_id and pay.journal_id.name in ('Cash','Deposit') and pay.payment_type == 'inbound'))-sum(line.amount for line in docs.filtered(lambda pay: pay.room_booking_id and pay.journal_id.name in ('Cash','Deposit') and pay.payment_type == 'outbound'))))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
-                       </tr>   -->
-                       
+                       <!-- <table>
+               
+                            <tr>
+                                <td colspan="5" align="right" style="border:0px solid">Total</td>
+                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            </tr>
+                        <tr>
+                                <td colspan="5" align="right">Bayar</td>
+                                <td  align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
+
+                        </tr>
+                        <tr>
+                                <td colspan="5" align="right">Sisa</td>
+                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs))-(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            
+                        </tr>
+                        
+                       </table>-->
                       </strong>
+
+                        
+                   <!-- <div style="border:0px solid; width: 100%; margin-left:63%; margin-top:10px; font-family: Times and Roman">
+                   
+                 
+                    <table style="width: 36%; border: 1px solid black; ">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%; text-align: center; border: 1px solid black; font-size:15px; color:black; font-weight: bold;">Total</th>
+                                <th style="width: 13%; text-align: left; font-size:15px; color:black; font-weight: bold; border: 1px solid black;"><span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></th>
+                                
+                            </tr>
+                            <tr>
+                                <th style="width: 10%; text-align: center; border: 1px solid black; font-size:15px; color:black; font-weight: bold;">Bayar</th>
+                                <th style="width: 13%; text-align: left; font-size:15px; color:black; font-weight: bold; border: 1px solid black;"><span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></th>
+                                
+                            </tr>
+                            <tr>
+                                <th style="width: 10%; text-align: center; border: 1px solid black; font-size:15px; color:black; font-weight: bold;">Sisa</th>
+                                <th style="width: 13%; text-align: left; font-size:15px; color:black; font-weight: bold; border: 1px solid black;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs))-(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></th>
+                                
+                            </tr>
+                        </thead>
                     </table>
+
+                   </div>  -->
+                   <br/>
+                    
                     <!-- <div class="row" name="total">
                         <div class="col-xs-4 pull-left">
                             <table class="table table-condensed">
