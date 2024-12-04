@@ -40,13 +40,15 @@ class AccountMove(models.Model):
             for z in datanya:
                 room= z.name
                 amountnya =z.credit
-                testing = (room,amountnya)
+                amount =z.price_unit
+                testing = (room,amountnya,amount)
                 data_kamar.append(testing)
             
         result = {}
-        for card, value in data_kamar:
-                total = result.get(card, 0) + value
-                result[card] = total 
+        for card, value, vol in data_kamar:
+                total = result.get(card, 0) + value,vol
+                totall =list(total)
+                result[card] = totall 
         
         return list(result.items())
 

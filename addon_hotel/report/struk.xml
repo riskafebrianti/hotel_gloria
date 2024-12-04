@@ -79,7 +79,19 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td><span><t t-esc="docs.partner_id.street"/></span> <span> <t t-esc="docs.partner_id.city"/></span></td>
+                                <td>
+                                    <span><t t-esc="docs.partner_id.street"/></span> 
+                                     <br/>
+                                     <span><t t-esc="docs.partner_id.city"/></span>
+                                     <br/>
+                                     <t t-if="docs.company_id.phone">
+                                        Telepon <span t-esc="docs.company_id.phone"/>  
+                                        </t>
+                                        <!-- <t t-if="docs.company_id.mobile">
+                                        Mobile  <span t-esc="docs.company_id.mobile"/>  
+                                        </t>   -->
+                                     
+                                </td>
                             </tr>
                             <t t-if="docs.partner_id.mobile">
                                 <tr>
@@ -151,35 +163,35 @@
                                     <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.price_unit))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></span>
                                    
                                 </td>
-                                <td>
+                                <td  align="left">
                                  
                                     <t t-esc="line.tax_ids.name"/>
                                 </td>
                                 
-                                <td  align="center">
+                                <td  align="left">
                                     <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.price_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></span>
                                 </td>
                                 
                                  
                             </tr>
                              <tr>
-                                <td colspan="3" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
+                                <td colspan="4" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
                                 <!-- <td></td> -->
-                                <td align="center"  colspan="2" style="font-size:15px; letter-spacing: 1px;  color:black; font-weight: bold;">Total</td>
+                                <td align="center"  style="font-size:15px; letter-spacing: 1px;  color:black; font-weight: bold;">Total</td>
                                 <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                             </tr>
 
                             <tr>
-                                 <td colspan="3" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
+                                 <td colspan="4" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
                                 <!-- <td></td> -->
-                                <td align="center" colspan="2" style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Bayar</td>
+                                <td align="center" style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Bayar</td>
                                 <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
 
                             </tr>
                            <tr>
-                                 <td colspan="3" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
+                                 <td colspan="4" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
                                 <!-- <td></td> -->
-                                <td align="center" colspan="2"  style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Sisa</td>
+                                <td align="center"  style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Sisa</td>
                                 <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.amount_total for line in docs))-(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                                 
                             </tr> 

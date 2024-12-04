@@ -43,8 +43,9 @@
                         <thead>
                             <tr>
                                 <th style="width:1%;">No.</th>
-                                <th>Product</th>
-                                <th>Amount</th>
+                                <th>Kamar</th>
+                                <th>Harga Sebelum Pajak</th>
+                                <th>Harga Setelah Pajak</th>
                             </tr>
                         </thead>
                         <t t-set="i" t-value="0"/>
@@ -55,10 +56,14 @@
                                     <t t-esc="i"/>
                                 </td>
                                 <td>
-                                    <t t-esc="line[0]"/>
+                                    Kamar <t t-esc="line[0]"/>
                                 </td>
                                   <td>
-                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1]))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1][0]))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    <!-- <t t-esc="line[1]"/> -->
+                                </td>
+                                <td>
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1][1]))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                     <!-- <t t-esc="line[1]"/> -->
                                 </td>
                            </tr>
@@ -67,7 +72,8 @@
                        <strong>
                        <tr>
                             <td colspan="2" align="center">Amount</td>
-                            <td align="center" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1][0] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1][1] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
 
                        </tr>
                         <!-- <tr>
