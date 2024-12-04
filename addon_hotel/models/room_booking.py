@@ -90,16 +90,16 @@ class RoomBookingTree(models.Model):
                 record.charge = True
             if not charge:
                 record.charge = False
-
-            if data_in :
-                if data_in.payment_type == 'inbound':
-                    record.deposit_in = True    
-                if data_in.payment_type == 'outbound':
-                    record.deposit_out = True    
-                if not data_in.payment_type == 'outbound':
-                    record.deposit_out = False
-                if not data_in.payment_type == 'inbound':
-                    record.deposit_in= False
+            for semua_data in data_in:
+                if data_in :
+                    if semua_data.payment_type == 'inbound':
+                        record.deposit_in = True    
+                    if semua_data.payment_type == 'outbound':
+                        record.deposit_out = True    
+                    if not semua_data.payment_type == 'outbound':
+                        record.deposit_out = False
+                    if not semua_data.payment_type == 'inbound':
+                        record.deposit_in= False
 
             if not data_in:
                 record.deposit_in = False
