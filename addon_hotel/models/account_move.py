@@ -39,18 +39,33 @@ class AccountMove(models.Model):
             datanya = a.line_ids.filtered(lambda pay: pay.display_type == 'product')
             for z in datanya:
                 room= z.name
-                amountnya =z.credit
-                amount =z.price_unit
+                amountnya =z.price_subtotal
+                amount =z.price_total
                 testing = (room,amountnya,amount)
                 data_kamar.append(testing)
             
         result = {}
         for card, value, vol in data_kamar:
-                total = result.get(card, 0) + value,vol
-                totall =list(total)
-                result[card] = totall 
+            if card in result:
+                result[card]['total_value'] += result.get('total_value', value)
+                result[card]['amount'] += result.get('amount', vol)
+            else:
+                total = result.get(card, 0) + value
+                total1 = result.get(card, 0) + vol
+            # total1 = result.get(card, 0) + vol
+            # totall =list(total)vol
+            # result[card] = total
+            print(self)
+            result[card] = {
+                "total_value": total,
+                "amount":  total1
+            }
+            result[card]['total_value'] += result.get('total_value', value)
+            result[card]['amount'] += result.get('amount', vol)
+            print(self)
+        hasil = list(result.items())
         
-        return list(result.items())
+        return hasil
 
     def periode(self):
 

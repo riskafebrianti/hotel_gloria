@@ -27,19 +27,21 @@
 
                 </div>     
                     <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:700px;">
-                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
+                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:120px;"/>
                     </div>
                 <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
 
-            <br/>
+            <!-- <br/> -->
             
                 <!-- <h2>Booking Report</h2> -->
                <div class="page" style="border:0px solid;">
                     <div class="oe_structure"/>
-                    <h2>Report Penjualan Kamar Hotel Gloria</h2>
+                    <!-- <h2>Report Penjualan Kamar Hotel Gloria</h2> -->
+                    <span style="font-size:20px; font-weight:bold; color:black;">LAPORAN PENJUALAN KAMAR HOTEL</span>
                     <br/>
                     <span>Periode: <t t-esc="docs.periode().strftime('%d %B %Y')"/> s/d <t t-esc="docs.periodee().strftime('%d %B %Y')"/> </span>
-                    <table class="table table-bordered" style="page-break-inside: avoid; position:relative;">
+                    <br/><br/>
+                    <table class="table table-bordered" style="page-break-inside: auto; position:relative;">
                         <thead>
                             <tr>
                                 <th style="width:1%;">No.</th>
@@ -59,11 +61,11 @@
                                     Kamar <t t-esc="line[0]"/>
                                 </td>
                                   <td>
-                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1][0]))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    <span style="font-style:Open Sans;">Rp. <t t-esc="'{0:,.0f}'.format(int(line[1]['total_value']))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                     <!-- <t t-esc="line[1]"/> -->
                                 </td>
                                 <td>
-                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1][1]))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line[1]['amount']))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                     <!-- <t t-esc="line[1]"/> -->
                                 </td>
                            </tr>
@@ -72,8 +74,8 @@
                        <strong>
                        <tr>
                             <td colspan="2" align="center">Amount</td>
-                            <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1][0] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
-                            <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1][1] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1]['total_value'] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line[1]['amount'] for line in docs.nama())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
 
                        </tr>
                         <!-- <tr>
@@ -95,10 +97,10 @@
 
                 <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;"> 
                     <center> 
-                     <br/><br/>
-                        <p>Mengetahui</p><br/><br/><br/>
+                        <p>Mengetahui</p><br/><br/>
                             <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
-                        <p style="margin:top;"><u>RAMA</u><br/> Manager</p>
+                        <span style="margin:top;line-height: 85%"> RAMA  </span><br/>
+                        <span style="text-decoration: overline">Manager</span>
                     </center>
                 </div>
             </t>
