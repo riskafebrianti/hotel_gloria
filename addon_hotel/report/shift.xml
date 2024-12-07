@@ -77,7 +77,8 @@
                                 </td>
                                
                                 <td style="font-size:25px">
-                                    <t t-esc="line.booking_id.date_order.strftime('%d/%m/%Y')"/>
+                                    <!-- <t t-esc="line.booking_id.date_order.strftime('%d/%m/%Y')"/> -->
+                                    <t t-esc="context_timestamp(line.booking_id.date_order).strftime('%d/%m/%Y')"/>
                                 </td>
                                <td style="font-size:25px">
                                <!-- context_timestamp(datetime.line.checkin_date).strftime('%d/%m/%Y') -->
