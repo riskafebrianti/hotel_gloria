@@ -50,7 +50,9 @@
                                     <td><span> </span></td>
                                     <td> <span> : </span></td>
                                     <td><span> </span></td>
-                                    <td><t t-esc="docs.room_line_ids.checkin_date.strftime('%d/%m/%Y')"/></td>
+                                    <!-- <td><t t-esc="docs.room_line_ids.checkin_date.strftime('%d/%m/%Y')"/></td> -->
+                                    <td><t t-esc="context_timestamp(docs.room_line_ids.checkin_date).strftime('%d/%m/%Y')"/></td>
+                                    
                                     <!-- context_timestamp(datetime.docs.checkin_date).strftime('%d %B %Y %H:%M') -->
                                 </tr>
                                 
@@ -59,7 +61,8 @@
                                     <td><span> </span></td>
                                     <td> <span> : </span></td>
                                     <td><span> </span></td>
-                                    <td><t t-esc="docs.room_line_ids.checkout_date.strftime('%d/%m/%Y')"/></td>
+                                    <td><t t-esc="context_timestamp(docs.room_line_ids.checkout_date).strftime('%d/%m/%Y')"/></td>
+                                    
                                 </tr>
                                 
                         </table>

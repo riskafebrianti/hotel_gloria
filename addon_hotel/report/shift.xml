@@ -80,10 +80,13 @@
                                     <t t-esc="line.booking_id.date_order.strftime('%d/%m/%Y')"/>
                                 </td>
                                <td style="font-size:25px">
-                                    <t t-esc="line.checkin_date.strftime('%d/%m/%Y')"/>
+                               <!-- context_timestamp(datetime.line.checkin_date).strftime('%d/%m/%Y') -->
+                                <!-- context_timestamp(datetime.docs.checkin_date).strftime('%d %B %Y %H:%M') -->
+                                    <!-- <t t-esc="line.checkin_date.strftime('%d/%m/%Y')"/> -->
+                                    <t t-esc="context_timestamp(line.checkin_date).strftime('%d/%m/%Y')"/>
                                 </td>
                                 <td style="font-size:25px">
-                                    <t t-esc="line.checkout_date.strftime('%d/%m/%Y')"/>
+                                   <t t-esc="context_timestamp(line.checkout_date).strftime('%d/%m/%Y')"/>
                                 </td>
               
                                  <td style="font-size:25px">
