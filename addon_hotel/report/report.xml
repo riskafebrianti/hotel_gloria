@@ -89,6 +89,17 @@
         <field name="binding_model_id" ref="model_room_booking"/>
     </record> 
 
+    <record id="action_report_struk_charge" model="ir.actions.report">
+        <field name="name">Cetak Struk Charge</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">addon_hotel.report_struk_charge</field>
+        <field name="report_file">addon_hotel.report_struk_charge</field>
+        <field name="paperformat_id" ref="addon_hotel.paperformat_custom"/>
+        <field name="print_report_name">'Cetak Struk  %s' % (object._now())</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+    </record> 
+
 
 
 
