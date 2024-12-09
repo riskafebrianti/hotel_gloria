@@ -30,7 +30,8 @@ class AccountMove(models.Model):
                                                         "Reference",
                                                         compute='_compute_field' )
     
-    
+    def _now(self):
+        return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
     def nama(self):
         loop = self.filtered(lambda pay: pay.move_type == 'out_invoice' and pay.journal_id.id == 1)
         data_kamar =[]
