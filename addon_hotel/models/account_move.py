@@ -30,6 +30,27 @@ class AccountMove(models.Model):
                                                         "Reference",
                                                         compute='_compute_field' )
     
+    def action_post(self):
+        moves_with_payments = self.filtered('payment_id')
+        other_moves = self - moves_with_payments
+        if moves_with_payments:
+            moves_with_payments.payment_id.action_post()
+        if other_moves:
+            other_moves._post(soft=False)
+            if self.journal_id.name == 'CHARGE':
+                for record_line in self.line_ids:
+                    if record_line.product_id.product_tmpl_id.type=='product':
+                        tes = self.env['stock.scrap'].sudo().create({
+                        'product_id':record_line.product_id.id,
+                        # 'location_id': record_line.id,
+                        'origin': record_line.move_id.name,
+                        # 'state': 'done',
+                        'scrap_qty':record_line.quantity
+                        })
+                        print(self)
+                        return tes.action_validate()
+        return False
+    
     def _now(self):
         return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
     
