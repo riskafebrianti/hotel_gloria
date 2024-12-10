@@ -46,6 +46,18 @@
         <field name="binding_model_id" ref="model_room_booking"/>
     </record> 
 
+    <record id="action_report_room_charge" model="ir.actions.report">
+        <field name="name">Laporan Rekap Charge</field>
+        <field name="model">room.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">addon_hotel.report_room_charge</field>
+        <field name="report_file">addon_hotel.report_room_charge</field>
+        <field name="paperformat_id" ref="addon_hotel.paperformat_custom_landscape"/>
+        <field name="print_report_name">'Laporan Shift %s' % (object._now())</field>
+        <!-- <field name="print_report_name">'Laporan Shift %s' % (context_timestamp(object, datetime.datetime.now()).strftime('%d %B %Y %H:%M'))</field> -->
+        <field name="binding_model_id" ref="model_room_booking"/>
+    </record> 
+
     <record id="action_report_room_booking_deposit" model="ir.actions.report">
         <field name="name">Laporan Rekap Deposit </field>
         <field name="model">account.payment</field>

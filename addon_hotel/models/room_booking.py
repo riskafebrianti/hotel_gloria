@@ -121,7 +121,7 @@ class RoomBookingTree(models.Model):
         data = self.env['room.booking'].search([])
         record = []
         for data_waktu in data:
-
+            # date_order = 
             tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.date_order)
             if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
                 array = record.append(data_waktu.id)
@@ -613,7 +613,7 @@ class RoomBookingTree(models.Model):
             }])
             for rec in booking_list:
                 account_move.invoice_line_ids.create([{
-                    'name': rec['name'],
+                    'name': 'Kamar '+rec['name'],
                     'quantity': rec['quantity'],
                     'price_unit': rec['price_unit'],
                     'tax_ids': rec['tax_ids'],
@@ -747,3 +747,13 @@ class RoomBookingTree(models.Model):
                 }
             }
         raise ValidationError(_("Please Enter Room Details"))
+
+    def report_charge(self):
+        # loop = self.filtered(lambda pay: pay.move_type == 'out_invoice')
+        for ini in self:
+
+            print(self)
+
+            data = self.env['account.move'].search([('hotel_booking_id', '=', ini.id),('journal_id.name','=','CHARGE')]).line_ids.filtered(lambda pay: pay.product_id and pay.move_id.state =='posted')
+        print(self)
+        return list(data)

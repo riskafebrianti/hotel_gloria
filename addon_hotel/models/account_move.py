@@ -32,8 +32,9 @@ class AccountMove(models.Model):
     
     def _now(self):
         return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
+    
     def nama(self):
-        loop = self.filtered(lambda pay: pay.move_type == 'out_invoice' and pay.journal_id.id == 1)
+        loop = self.filtered(lambda pay: pay.move_type == 'out_invoice')
         data_kamar =[]
         
         for a in loop:
@@ -94,6 +95,22 @@ class AccountMove(models.Model):
             self.hotel_booking_id = self.payment_id.room_booking_id
 
 
-  
+
+    
+   
+    class moveLine(models.Model):
+        _inherit = 'account.move.line'
+
+        @api.onchange('product_id')
+        def ganti(self):
+            if self.move_id.journal_id.name == 'CHARGE':
+                data = self.env['room.booking'].search([('name', '=', self.move_id.ref)]).room_line_ids.room_id.name
+                for record in self:
+                    if record.product_id:
+                        record.name = "Kamar "+ data + " "+record.product_id.name
+           
+        
+                
+            
    
     

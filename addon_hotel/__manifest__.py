@@ -41,6 +41,7 @@
         'report/pengeluaran.xml',
         'report/struk.xml',
         'report/struk_charge.xml',
+        'report/shift_charge.xml',
         'report/template_inherit.xml'
     ],
     'assets': {

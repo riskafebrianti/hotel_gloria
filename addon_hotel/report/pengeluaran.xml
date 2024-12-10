@@ -65,7 +65,9 @@
                                     <t t-esc="i"/>
                                 </td>
                                  <td style="font-size:25px">
-                                    <t t-esc="line.date.strftime('%d/%m/%y')"/>
+                                    <t t-esc="context_timestamp(line.checkin_date).strftime('%d/%m/%y')"/>
+                                    <!-- <t t-esc="context_timestamp(line.checkin_date).strftime('%d/%m/%Y')"/> -->
+                                    
                                 </td>
                                 <td style="font-size:25px">
                                     <t t-esc="line.name"/>
@@ -123,6 +125,7 @@
                </div>
                 <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ; font-size:25px;"> 
                    Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><br/><br/>
+                   
                     <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
                         <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
                     <center><p style="margin:top;font-size:25px;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center>

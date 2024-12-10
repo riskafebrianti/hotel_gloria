@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="report_room_charge">
+        <t t-call="web.html_container" style="border:1px solid">
+        <!-- <div t-attf-class="o_company_#{company_id}_layout header" t-att-style="report_header_style" > -->
+            <t t-call="web.external_layout">
+            
+                <div class="float-left" style="border:0px solid; margin-top:-55px;width:50%;font-size:30px;">
+                    <div class="details">
+                            <b><span style="color:black; font-size:35px;"><t t-esc="docs.company_id.name"/></span></b>
+                                <br></br>
+                            <t t-if="docs.company_id.street">
+                                <span  t-esc="docs.company_id.street" style="font-size:30px;"/>
+                            </t>
+                                <br></br>
+                            <t t-if="docs.company_id">
+                                <span t-esc="docs.company_id.city" style="font-size:30px;"/> 
+                            </t>   
+                                <br></br>
+                            <t t-if="docs.company_id.phone">
+                               Telepon <span t-esc="docs.company_id.phone"/>  
+                            </t>
+                            <t t-if="docs.company_id.mobile">
+                               / Whatsapp. <span t-esc="docs.company_id.mobile"/>  
+                            </t>      
+                                <br></br>  
+                    </div>
+
+                </div>     
+                    <div class="float-right" style="border:0px solid; margin-top:-120px; margin-left:2000px;">
+                        <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
+                    </div>
+                   
+                <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
+
+            <br/>
+            
+                <div class="page">
+                <span style="font-size:40px;">Charge Report</span>
+                    <br/>
+                    <span  style="font-size:25px;">Periode :<t t-esc="docs.periode().strftime('%d %B %Y')"/> s/d <t t-esc="docs.periodee().strftime('%d %B %Y')"/> </span>
+                    <br/>
+                    <br/><table class="table">
+                        <thead>
+                            <tr>
+                                <th  style="font-size:30px">No.</th>
+                                <th  style="font-size:30px">Kode Charge</th>
+                                <th  style="font-size:30px">Room</th>
+
+                                <!-- <th  style="font-size:30px">Check-In</th>
+                                <th  style="font-size:30px">Check-Out</th> -->
+
+                                <th  style="font-size:30px">Customer</th>
+                                <th  style="font-size:30px">Deskripsi</th>
+                                <th  style="font-size:30px">Quantity</th>
+                                <th  style="font-size:30px">Price Unit</th>
+                                <th  style="font-size:30px">Total</th>
+                                <!--<th  style="font-size:30px">Piutang</th>
+                                <th  style="font-size:30px">Bayar</th>
+                                <th  style="font-size:30px">Dibuat Oleh</th> -->
+                            </tr>
+                        </thead>
+                        <t t-set="i" t-value="0"/>
+                        <t t-foreach="docs.report_charge()" t-as="line">
+                            <t t-set="i" t-value="i+1"/>
+                            <!-- <t t-set="tes" t-value="docs.paid()"/> -->
+                            
+                            <tr>
+                                <td style="font-size:25px">
+                                    <span><t t-esc="i"/></span>
+                                </td>
+                                <td style="font-size:25px">
+                                    <span><t t-esc="line.move_id.name" /></span>
+                                </td>
+                                 <td style="font-size:25px">
+                                    <span>Kamar <t t-esc="line.move_id.hotel_booking_id.room_line_ids.room_id.name"/></span>
+                                </td>
+                               
+                                 <!-- <td style="font-size:25px">
+                                    <span><t t-esc="context_timestamp(line.move_id.hotel_booking_id.room_line_ids.checkin_date).strftime('%d/%m/%Y')"/></span>
+                                </td>
+                              <td style="font-size:25px">
+                                  <span><t t-esc="context_timestamp(line.move_id.hotel_booking_id.room_line_ids.checkout_date).strftime('%d/%m/%Y')"/></span> 
+                                </td> -->
+
+                                <td style="font-size:25px">
+                                   <span><t t-esc="line.move_id.partner_id.name" /></span>
+                                </td>
+                                <td style="font-size:25px">
+                                    <span><t t-esc="line.name"/></span>
+                                </td> 
+              
+                                <td style="font-size:25px">
+                                    <span><t t-esc="line.quantity"/></span>
+                                </td> 
+                                  <td style="font-size:25px">
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.price_unit))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                </td>
+                               <td style="font-size:25px">
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.price_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                </td>
+                                <!--  <td style="font-size:25px">
+                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.move_id.amount_residual))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                </td> 
+                               <t t-if="line.booking_id.paymnt()">
+                                    <td style="font-size:25px">
+                                        <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    </td> 
+                                </t>   
+                                <t t-if="not line.booking_id.paymnt()">
+                                    <td style="font-size:25px">
+                                        <span> - </span>
+                                    </td> 
+                                </t>   
+                          
+                                 <td style="font-size:25px">
+                                    <t t-esc="line.booking_id.message_follower_ids[0].name"/>
+                                </td>  -->
+                            </tr>
+                        </t>
+                       <tr>
+                            <td colspan="7" align="right"  style= "font-size:30px;"><span>  Total</span></td>
+                            <td style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.price_total for line in docs.report_charge())))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <!-- <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.amount_total for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.amount() for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.paymnttotal() for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td> -->
+                            <!-- <td></td> -->
+                       </tr>
+                       
+                       <strong>
+                       
+                      </strong>
+                    </table>
+        
+
+                </div>
+                <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ; font-size:25px;"> 
+                   Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><span> Dibuat Oleh <span t-esc="user.name"/></span><br/><br/>
+                   
+                </div>
+
+               
+            </t>
+        </t>
+    </template>
+
+</odoo>
