@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="accmove_form">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='purchase_vendor_bill_id']" position="after">
+                    <field name="deskripsi" invisible="move_type !='in_invoice'"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

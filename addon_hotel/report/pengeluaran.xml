@@ -65,8 +65,8 @@
                                     <t t-esc="i"/>
                                 </td>
                                  <td style="font-size:25px">
-                                    <t t-esc="context_timestamp(line.checkin_date).strftime('%d/%m/%y')"/>
-                                    <!-- <t t-esc="context_timestamp(line.checkin_date).strftime('%d/%m/%Y')"/> -->
+                                   <t t-esc="line.date.strftime('%d-%m-%Y')"/>
+                                    
                                     
                                 </td>
                                 <td style="font-size:25px">
@@ -78,7 +78,7 @@
                                 </td>
                                 
                                 <td style="font-size:25px">
-                                    <t t-esc="line.po().deskripsi"/>
+                                    <t t-esc="line.deskripsi"/>
                                 </td>
                                 <td style="font-size:25px">
                                     <span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.amount_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
@@ -123,22 +123,21 @@
                     </div> -->
 
                </div>
-                <div class="ttd" style="border:0px solid; float: left; color: black; width:35% ; font-size:25px;"> 
-                   Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><br/><br/>
-                   
-                    <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/>
+               <div class="ttd" style="border:0px solid; float: left; color: black; width:55% ;font-size:25px;"> 
+                   Samarinda, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y %H:%M')"/><span> Dibuat Oleh </span> <span t-esc="user.name"/>
+                    <!-- <p>Dibuat Oleh:</p><br/><br/><br/><br/><br/><br/><br/> -->
                         <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
-                    <center><p style="margin:top;font-size:25px;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center>
+                    <!-- <center><p style="margin:top;"><u> <span t-esc="user.name"/></u><br/> Front Office</p></center> -->
                 </div>
 
-                <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;font-size:25px;"> 
+                <!-- <div class="ttd" style="border:0px solid; float: right; color: black; width:30% ;"> 
                     <center> 
-                     <br/><br/>
-                        <p>Mengetahui</p><br/><br/><br/><br/><br/><br/><br/>
-                            <!-- <strong><hr width="100%" style="border: 1px solid black; color: black !important;"/></strong> -->
-                        <p style="margin:top;font-size:25px;"><u>Lorem Ipsum</u><br/> Manager</p>
+                        <p>Mengetahui</p><br/><br/>
+               
+                        <span style="margin:top;line-height: 85%"> RAMA  </span><br/>
+                        <span style="text-decoration: overline">Manager</span>
                     </center>
-                </div>
+                </div> -->
             </t>
         </t>
     </template>

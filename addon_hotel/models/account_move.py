@@ -29,6 +29,25 @@ class AccountMove(models.Model):
                                     readonly=True, help="Choose the Booking"
                                                         "Reference",
                                                         compute='_compute_field' )
+    deskripsi = fields.Text(
+        string='Deskripsi',
+    )
+    
+    @api.onchange('invoice_line_ids')
+    def get_name(self):
+        isiqty = []
+        for a in self.invoice_line_ids:
+            qty = int(a.quantity)
+            uom = a.product_id.product_tmpl_id.uom_id.name
+            name = a.name
+            subtotal = '{0:,.0f}'.format(a.price_subtotal)
+            isiqty.append(f"Pembelian {qty} {uom} {name} @Rp.{subtotal} ")
+            self.deskripsi = ', '.join(map(str, isiqty))+ ", ".join([f"({vendor.partner_id.name})" for vendor in a.move_id])
+            # subtotal = int(a.price_subtotal)
+            # vendor = a.order_id.partner_id.name
+            # combined_names = ', '.join(map(str, isiqty))
+            # combined_names =  isiqty
+    
     
     def action_post(self):
         moves_with_payments = self.filtered('payment_id')
@@ -42,9 +61,7 @@ class AccountMove(models.Model):
                     if record_line.product_id.product_tmpl_id.type=='product':
                         tes = self.env['stock.scrap'].sudo().create({
                         'product_id':record_line.product_id.id,
-                        # 'location_id': record_line.id,
                         'origin': record_line.move_id.name,
-                        # 'state': 'done',
                         'scrap_qty':record_line.quantity
                         })
                         print(self)

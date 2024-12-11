@@ -34,6 +34,7 @@
         'views/room_booking.xml',
         'views/wizard_bl.xml',
         'views/purchase.xml',
+        'views/account_move.xml',
         'report/shift.xml',
         'report/deposit.xml',
         'report/report.xml',
