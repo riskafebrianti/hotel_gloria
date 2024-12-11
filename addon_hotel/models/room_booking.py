@@ -36,6 +36,13 @@ class RoomBookingTree(models.Model):
     datesrc = fields.Date(string='shift1', search = '_search_is_expired1', store=False,)
     shift_2 = fields.Date(string='shift2', search = '_search_is_expired2', store=False,)
     shift_3 = fields.Date(string='shift3', search = '_search_is_expired3', store=False,)
+    checkin_date = fields.Datetime(string="Check In",
+                                   help="Date of Checkin",tracking=True,
+                                   default=fields.Datetime.now())
+    checkout_date = fields.Datetime(string="Check Out",
+                                    help="Date of Checkout", tracking=True,
+                                    default=fields.Datetime.now() + timedelta(
+                                        hours=23, minutes=59, seconds=59))
 
     
     
@@ -78,6 +85,21 @@ class RoomBookingTree(models.Model):
                                                 "maintenance request send "
                                                 "once" )
     
+   
+    
+    @api.onchange('room_line_ids')
+    def get_price(self):
+        # if self.room_line_ids.checkin_date == False:
+        #     self.room_line_ids.checkin_date = self.checkin_date
+        
+        # if self.room_line_ids.checkout_date == False:
+        #     self.room_line_ids.checkout_date = self.checkout_date
+
+        if self.room_line_ids.checkin_date != self.checkin_date:
+           self.write({'checkin_date': self.room_line_ids.checkin_date})
+
+        if self.room_line_ids.checkout_date != self.checkout_date:
+            self.write({'checkout_date': self.room_line_ids.checkout_date})
 
     def _compute_invsb(self):
         for record in self:

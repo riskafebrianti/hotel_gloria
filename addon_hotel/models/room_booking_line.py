@@ -22,9 +22,42 @@ class RoomBookingLineee(models.Model):
     price_unit = fields.Float(string='Rent',
                               digits='Product Price',
                               help="The rent price of the selected room.", readonly=True)
-    
+    checkin_date = fields.Datetime(string="Check In",
+                                   help="You can choose the date,"
+                                        " Otherwise sets to current Date",
+                                   required=True, default=fields.Datetime.now())
+    checkout_date = fields.Datetime(string="Check Out",
+                                    help="You can choose the date,"
+                                         " Otherwise sets to current Date", default=fields.Datetime.now() + timedelta(
+                                        hours=23, minutes=59, seconds=59))
+    #  checkin_date = fields.Datetime(string="Check In",
+    #                                help="Date of Checkin",tracking=True,
+    #                                default=fields.Datetime.now())
+    # checkout_date = fields.Datetime(string="Check Out",
+    #                                 help="Date of Checkout", tracking=True,
+    #                                 default=fields.Datetime.now() + timedelta(
+    #                                     hours=23, minutes=59, seconds=59))
 
     
+
+    # @api.onchange("checkin_date", "checkout_date")
+    # def _onchange_checkin_date(self):
+    #     """When you change checkin_date or checkout_date it will check
+    #     and update the qty of hotel service line
+    #     -----------------------------------------------------------------
+    #     @param self: object pointer"""
+    #     if self.checkout_date < self.checkin_date:
+    #         raise ValidationError(
+    #             _("Checkout must be greater or equal checkin date"))
+    #     if self.checkin_date and self.checkout_date:
+    #         diffdate = self.checkout_date - self.checkin_date
+    #         qtyy = diffdate.days
+    #         if diffdate.total_seconds() > 0:
+    #             qty = qtyy + 1
+    #         # if diffdate.days < 2:
+    #         #     qty = qtyy
+
+    #     self.uom_qty = qty
 
 
     
@@ -144,7 +177,11 @@ class RoomBookingLineee(models.Model):
                                     "Sorry You cannot create a reservation for this"
                                     "date due to an existing reservation between "
                                     "this date")
-                          
+        if self.checkin_date == False:
+           self.write({'checkin_date': fields.Datetime.now()})
+        if self.checkout_date == False:
+           self.write({'checkout_date': fields.Datetime.now() + timedelta(hours=22, minutes=59, seconds=59)})
+        print(self)
    
     
     
@@ -198,7 +235,9 @@ class WizardExample(models.TransientModel):
     #     related_record = self.env['room.booking'].browse(self._context.get('active_id'))
     #     if related_record:
     #         related_record.message_post(body=self.room_id)  
-    
+   
+            
+
     @api.depends('room_id','checkout_date')
     def _compute_default(self):
         order_line_id = self.env.context.get('active_id')
