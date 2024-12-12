@@ -43,6 +43,7 @@ class RoomBookingTree(models.Model):
                                     help="Date of Checkout", tracking=True,
                                     default=fields.Datetime.now() + timedelta(
                                         hours=23, minutes=59, seconds=59))
+    kamar = fields.Char(string='Room', related='room_line_ids.room_id.name')
 
     
     

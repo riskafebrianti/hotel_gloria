@@ -11,5 +11,44 @@
                 </xpath>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="room_booking_tree">
+            <field name="name">account.move.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_in_invoice_bill_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_partner_display_name']" position="after">
+                    <!-- <field name="ktp" invisible="1"/> -->
+                    <field name="deskripsi" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="account_move_inherit_module_name" model="ir.ui.view">
+            <field name="name">account.move.view.form.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search//field[@name='name']" position="before">
+                    <field name="deskripsi"/>
+                </xpath>
+            </field>
+        </record>
+    <!-- Search View
+    <record model="ir.ui.view" id="nama_model_search">
+        <field name="name">nama.model.search</field>
+        <field name="model">nama.model</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="payment_method"/>
+                <filter name="fl_draft" string="Draft" domain="[('state','=', 'draft')]"/>
+                <group>
+                    <filter name="gr_pay" string="Bayar Via" context="{'group_by':'payment_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record> -->
+
     </data>
 </odoo>

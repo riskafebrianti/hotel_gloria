@@ -51,7 +51,7 @@
                                 <th  style="font-size:30px">Date</th>
                                 <th  style="font-size:30px">Check-In</th>
                                 <th  style="font-size:30px">Check-Out</th>
-                                <th  style="font-size:30px">Customer</th>
+                                <th  style="font-size:30px;width:10%;">Customer</th>
                                 <th  style="font-size:30px">Status</th>
                                 <th  style="font-size:30px">Harga</th>
                                 <th  style="font-size:30px">Total</th>

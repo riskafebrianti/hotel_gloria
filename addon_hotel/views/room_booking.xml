@@ -34,12 +34,22 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="ktp" invisible="1"/>
-                    <field name="roomsugest" />
+                    <field name="kamar" />
+                </xpath>
+            </field>
+    </record>
+    <!-- <record model="ir.ui.view" id="room_booking_line_tree">
+            <field name="name">room.booking.line.tree</field>
+            <field name="model">room.booking</field>
+            <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='roomsugest']" position="after">
+                    <field name="ktp" />
                 
                     
                 </xpath>
             </field>
-    </record>
+    </record> -->
 
     <record model="ir.ui.view" id="room_booking_line">
         <field name="name">room.booking.form</field>
@@ -92,7 +102,7 @@
                 <field name="datesrc" invisible="1"/>
                 <field name="shift_2" invisible="1"/>
                 <field name="shift_3" invisible="1"/>
-               
+                 <field name="kamar" invisible="1"/>
             </xpath>
 
             <xpath expr="//button[@name='action_invoice']" position="replace">
