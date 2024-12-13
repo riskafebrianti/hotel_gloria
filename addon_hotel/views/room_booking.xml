@@ -34,7 +34,8 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="ktp" invisible="1"/>
-                    <field name="kamar" />
+                    <field name="kamar"/>
+                    <field name="roomsugest"/>
                 </xpath>
             </field>
     </record>
