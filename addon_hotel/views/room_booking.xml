@@ -27,15 +27,15 @@
     </record>
 
 
-   <record model="ir.ui.view" id="room_booking_tree">
+   <record model="ir.ui.view" id="room_booking_treeee">
             <field name="name">room.booking.tree</field>
             <field name="model">room.booking</field>
             <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="ktp" invisible="1"/>
+                    <field name="ktp" invisible="1" optional="hide"/>
                     <field name="kamar"/>
-                    <field name="roomsugest"/>
+                    <!-- <field name="roomsugest"/> -->
                 </xpath>
             </field>
     </record>
