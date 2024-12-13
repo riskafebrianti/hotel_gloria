@@ -30,6 +30,9 @@ class RoomBookingLineee(models.Model):
                                     help="You can choose the date,"
                                          " Otherwise sets to current Date", default=fields.Datetime.now() + timedelta(
                                         hours=23, minutes=59, seconds=59))
+    uom_qty = fields.Float(string="Duratioon",
+                        help="The quantity converted into the UoM used by"
+                            "the product", readonly=False)
     #  checkin_date = fields.Datetime(string="Check In",
     #                                help="Date of Checkin",tracking=True,
     #                                default=fields.Datetime.now())
@@ -51,14 +54,30 @@ class RoomBookingLineee(models.Model):
     #             _("Checkout must be greater or equal checkin date"))
     #     if self.checkin_date and self.checkout_date:
     #         diffdate = self.checkout_date - self.checkin_date
-    #         qtyy = diffdate.days
-    #         if diffdate.total_seconds() > 0:
-    #             qty = qtyy + 1
-    #         # if diffdate.days < 2:
-    #         #     qty = qtyy
+    #         qty = diffdate.days
+    #         # if diffdate.total_seconds() > 0:
+    #         #     qty = qty + 1
+    #         if qty == 0:
+    #             qty = qty + 1
+    #         elif qty > 0:
+    #             qty = diffdate.days
+    #         self.uom_qty = qty
 
-    #     self.uom_qty = qty
-
+    @api.onchange("checkin_date", "checkout_date")
+    def _onchange_checkin_date(self):
+        """When you change checkin_date or checkout_date it will check
+        and update the qty of hotel service line
+        -----------------------------------------------------------------
+        @param self: object pointer"""
+        if self.checkout_date < self.checkin_date:
+            raise ValidationError(
+                _("Checkout must be greater or equal checkin date"))
+        if self.checkin_date and self.checkout_date:
+            diffdate = self.checkout_date - self.checkin_date
+            qty = diffdate.days
+            if diffdate.total_seconds() > 0:
+                qty = qty + 1
+            # self.uom_qty = qty
 
     
 

@@ -61,6 +61,9 @@
                 <field name="jumlah" />
                 <field name="jumlahanak" width="150px" optional="hide"/>                
             </xpath>
+            <xpath expr="//field[@name='uom_qty']" position="replace">
+               <field name="uom_qty" string="Duration" force_save="1"/>            
+            </xpath>
 
             <xpath expr="//field[@name='uom_id']" position="after">
                 <field name="ket" optional="hide"/>
