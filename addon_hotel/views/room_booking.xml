@@ -33,7 +33,7 @@
             <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="ktp" invisible="1" optional="hide"/>
+                    <field name="ktp" optional="hide"/>
                     <field name="kamar"/>
                     <!-- <field name="roomsugest"/> -->
                 </xpath>
@@ -104,6 +104,7 @@
                 <field name="deposit_out" invisible="1"/>
                 <field name="charge" invisible="1"/>
                 <field name="datesrc" invisible="1"/>
+                <!-- <field name="ktp"/> -->
                 <field name="shift_2" invisible="1"/>
                 <field name="shift_3" invisible="1"/>
                  <field name="kamar" invisible="1"/>
