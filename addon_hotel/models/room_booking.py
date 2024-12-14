@@ -9,7 +9,7 @@ from collections import OrderedDict
 class RoomBookingTree(models.Model):
     _inherit = 'room.booking'
 
-    ktp = fields.Char(string='ktp', related='partner_id.ktp', )
+    ktp = fields.Char(string='KTP', related='partner_id.ktp',)
     partner_id = fields.Many2one('res.partner', string="Customer",
                                  help="Customers of hotel",
                                  required=True, index=True, tracking=1,
@@ -133,6 +133,18 @@ class RoomBookingTree(models.Model):
 
     def _now(self):
         return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
+    
+    
+    def _name_cust(self):
+        for data in self:
+            tes = data.partner_id.name
+            if len(tes) > 25:
+                record = data.partner_id.name[:25] + ' ...'
+            if len(tes) < 25:
+                record = data.partner_id.name
+
+            return record
+    
     # @api.depends('date', 'price')
     def _search_is_expired1(self, operator, value):
         # today = fields.Datetime.context_timestamp(self, datetime.now())
@@ -305,7 +317,7 @@ class RoomBookingTree(models.Model):
                 ('payment_state','=','paid')])
             if a:
                 for pay in a:
-                    d = self.env['account.move'].sudo().search([('ref','=', pay.name)]).amount_total
+                    d = self.env['account.move'].sudo().search([('ref','=', pay.name)])[-1].amount_total
                     print(self)
                     # if len(d) >= 1:
                     #     b = sum(line.amount_total for line in d)
