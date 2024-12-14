@@ -63,21 +63,21 @@ class RoomBookingLineee(models.Model):
     #             qty = diffdate.days
     #         self.uom_qty = qty
 
-    @api.onchange("checkin_date", "checkout_date")
-    def _onchange_checkin_date(self):
-        """When you change checkin_date or checkout_date it will check
-        and update the qty of hotel service line
-        -----------------------------------------------------------------
-        @param self: object pointer"""
-        if self.checkout_date < self.checkin_date:
-            raise ValidationError(
-                _("Checkout must be greater or equal checkin date"))
-        if self.checkin_date and self.checkout_date:
-            diffdate = self.checkout_date - self.checkin_date
-            qty = diffdate.days
-            if diffdate.total_seconds() > 0:
-                qty = qty + 1
-            # self.uom_qty = qty
+    # @api.onchange("checkin_date", "checkout_date")
+    # def _onchange_checkin_date(self):
+    #     """When you change checkin_date or checkout_date it will check
+    #     and update the qty of hotel service line
+    #     -----------------------------------------------------------------
+    #     @param self: object pointer"""
+    #     if self.checkout_date < self.checkin_date:
+    #         raise ValidationError(
+    #             _("Checkout must be greater or equal checkin date"))
+    #     if self.checkin_date and self.checkout_date:
+    #         diffdate = self.checkout_date - self.checkin_date
+    #         qty = diffdate.days
+    #         if diffdate.total_seconds() > 0:
+    #             qty = qty + 1
+    #         # self.uom_qty = qty
 
     
 
@@ -379,55 +379,116 @@ class WizardExample(models.TransientModel):
         msg= f"Dari Kamar: {order_line.room_id.name} Pindah Ke Kamar:  {self.room_id.name}"
         order_line.booking_id.message_post(body=msg)
 
-        if order_line.room_id != self.room_id and order_line.price_subtotal > self.price_total:
+        accmove =  self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1'),('state','=','posted')])
+                    # context = dict(self._context or {})
+        if accmove:
+            # for loop in accmove:
+            #     if loop.display_type == 'product':
+            accmove[0].line_ids.remove_move_reconcile()
+            accmove.update({
+                'state' : 'cancel'
+            })
+            if order_line.room_id != self.room_id:
+                    status_tersedia = self.env['room.booking.line'].browse(order_line_id).room_id
+                    diri.invoice_button_visible = True
 
-                status_tersedia = self.env['room.booking.line'].browse(order_line_id).room_id
-                status_tersedia.update({
-                    'status' : "available"
-                })
-                # Update order line dengan data dari wizard
-                if order_line.ket =='Extend':
-                    order_line.update({
-                        'room_id': self.room_id.id,
-                        'ket': order_line.ket+" & Pindah Kamar"
+                    status_tersedia.update({
+                        'status' : "available"
                     })
-                    
+                    # Update order line dengan data dari wizard
+                    if order_line.ket =='Extend':
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': order_line.ket+" & Pindah Kamar"
+                        })
+                        
 
-                elif order_line.ket == 'Pindah Kamar':
-                    order_line.update({
-                        'room_id': self.room_id.id,
-                        'ket': "Pindah Kamar"
-                    })
+                    elif order_line.ket == 'Pindah Kamar':
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': "Pindah Kamar"
+                        })
+                        
+                    elif not order_line.ket:
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': "Pindah Kamar"
+                        })
+                        
+                    else:
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            # 'ket': "Pindah Kamar"
+                        })
                     
-                elif not order_line.ket:
-                    order_line.update({
-                        'room_id': self.room_id.id,
-                        'ket': "Pindah Kamar"
+                    order_line.room_id.update({
+                        'status' : "occupied"
                     })
+
+                    # invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')])
+                    # if not invc:
+                    #     order_line.update({
+                    #         'room_id': self.room_id.id,
+                    #     })
+                       
+                    # else:
+                    #     invcc = invc[-1].line_ids
+                    #     for a in invcc:
+                    #         if a.display_type == 'product':
+                    #             a.update({
+                    #                 'name': self.room_id.name,  
+                    #             })
+        
+        if not accmove:
+            if order_line.room_id != self.room_id:
+
+                    status_tersedia = self.env['room.booking.line'].browse(order_line_id).room_id
+                    status_tersedia.update({
+                        'status' : "available"
+                    })
+                    # Update order line dengan data dari wizard
+                    if order_line.ket =='Extend':
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': order_line.ket+" & Pindah Kamar"
+                        })
+                        
+
+                    elif order_line.ket == 'Pindah Kamar':
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': "Pindah Kamar"
+                        })
+                        
+                    elif not order_line.ket:
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            'ket': "Pindah Kamar"
+                        })
+                        
+                    else:
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            # 'ket': "Pindah Kamar"
+                        })
                     
-                else:
-                    order_line.update({
-                        'room_id': self.room_id.id,
-                        # 'ket': "Pindah Kamar"
+                    order_line.room_id.update({
+                        'status' : "occupied"
                     })
-                
-                order_line.room_id.update({
-                    'status' : "occupied"
-                })
-                invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')])
-                if not invc:
-                    order_line.update({
-                        'room_id': self.room_id.id,
-                        # 'ket': "Pindah Kamar"
-                    })
-                    #  raise ValidationError(_('Lakukan invoice di Kamar sebelumnya.'))
-                else:
-                    invcc = invc[-1].line_ids
-                    for a in invcc:
-                        if a.display_type == 'product':
-                            a.update({
-                                'name': self.room_id.name,  
-                            })
+                    invc = self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1')])
+                    if not invc:
+                        order_line.update({
+                            'room_id': self.room_id.id,
+                            # 'ket': "Pindah Kamar"
+                        })
+                        #  raise ValidationError(_('Lakukan invoice di Kamar sebelumnya.'))
+                    else:
+                        invcc = invc[-1].line_ids
+                        for a in invcc:
+                            if a.display_type == 'product':
+                                a.update({
+                                    'name': self.room_id.name,  
+                                })
         
         if order_line.checkout_date != self.checkout_date and order_line.price_subtotal > self.price_total:
         
@@ -499,16 +560,7 @@ class WizardExample(models.TransientModel):
                     # return {'type': 'ir.actions.act_window_close'}
 
 
-                    accmove =  self.env['account.move'].sudo().search([('hotel_booking_id.id','=',order_line.booking_id.id),('journal_id.id','=','1'),('state','=','posted')])[0]
-                    # context = dict(self._context or {})
-                    if accmove:
-                        # for loop in accmove:
-                        #     if loop.display_type == 'product':
-                        accmove.line_ids.remove_move_reconcile()
-                        accmove.update({
-                            'state' : 'cancel'
-                        })
-                        print(self)
+                   
                         
 
                     # Update order line dengan data dari wizard
