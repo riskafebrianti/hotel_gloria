@@ -317,8 +317,13 @@ class RoomBookingTree(models.Model):
                 ('payment_state','=','paid')])
             if a:
                 for pay in a:
-                    d = self.env['account.move'].sudo().search([('ref','=', pay.name)])[-1].amount_total
+                    d = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+                    if  len(d) >= 1:
+                       d =  d[-1].amount_total
+                    else:
+                        d = d.amount_total
                     print(self)
+                    # if len
                     # if len(d) >= 1:
                     #     b = sum(line.amount_total for line in d)
                     # if not d: 
