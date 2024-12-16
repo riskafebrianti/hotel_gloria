@@ -29,7 +29,7 @@ class RoomBookingLineee(models.Model):
     checkout_date = fields.Datetime(string="Check Out",
                                     help="You can choose the date,"
                                          " Otherwise sets to current Date", default=fields.Datetime.now() + timedelta(
-                                        hours=23, minutes=59, seconds=59))
+                                        hours=23, minutes=59, seconds=49))
     uom_qty = fields.Float(string="Duratioon",
                         help="The quantity converted into the UoM used by"
                             "the product", readonly=False)
@@ -54,10 +54,16 @@ class RoomBookingLineee(models.Model):
                 _("Checkout must be greater or equal checkin date"))
         if self.checkin_date and self.checkout_date:
             diffdate = self.checkout_date - self.checkin_date
+            hari_ci = fields.Datetime.context_timestamp(self, self.checkin_date).day
+            hari_co = fields.Datetime.context_timestamp(self, self.checkout_date).day
             qty = diffdate.days
             if diffdate.total_seconds() > 0:
                 qty = qty + 1
-            if qty < 1:
+                if hari_ci == hari_co  and fields.Datetime.context_timestamp(self, self.checkout_date).hour >= 12:
+                    qty = qty + 1
+            
+
+            if diffdate.days > 1:
                 qty = qty - 1 
                
 
