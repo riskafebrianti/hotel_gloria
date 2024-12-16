@@ -139,7 +139,7 @@ class RoomBookingTree(models.Model):
         for data in self:
             tes = data.partner_id.name
             if len(tes) > 25:
-                record = data.partner_id.name[:25] + ' ...'
+                record = data.partner_id.name[:20] + ' ...'
             if len(tes) < 25:
                 record = data.partner_id.name
 
