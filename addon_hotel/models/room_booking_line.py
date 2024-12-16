@@ -43,25 +43,29 @@ class RoomBookingLineee(models.Model):
 
     
 
-    # @api.onchange("checkin_date", "checkout_date")
-    # def _onchange_checkin_date(self):
-    #     """When you change checkin_date or checkout_date it will check
-    #     and update the qty of hotel service line
-    #     -----------------------------------------------------------------
-    #     @param self: object pointer"""
-    #     if self.checkout_date < self.checkin_date:
-    #         raise ValidationError(
-    #             _("Checkout must be greater or equal checkin date"))
-    #     if self.checkin_date and self.checkout_date:
-    #         diffdate = self.checkout_date - self.checkin_date
-    #         qty = diffdate.days
-    #         # if diffdate.total_seconds() > 0:
-    #         #     qty = qty + 1
-    #         if qty == 0:
-    #             qty = qty + 1
-    #         elif qty > 0:
-    #             qty = diffdate.days
-    #         self.uom_qty = qty
+    @api.onchange("checkin_date", "checkout_date")
+    def _onchange_checkin_date(self):
+        """When you change checkin_date or checkout_date it will check
+        and update the qty of hotel service line
+        -----------------------------------------------------------------
+        @param self: object pointer"""
+        if self.checkout_date < self.checkin_date:
+            raise ValidationError(
+                _("Checkout must be greater or equal checkin date"))
+        if self.checkin_date and self.checkout_date:
+            diffdate = self.checkout_date - self.checkin_date
+            qty = diffdate.days
+            if diffdate.total_seconds() > 0:
+                qty = qty + 1
+            if qty < 1:
+                qty = qty - 1 
+               
+
+            # if qty == 0:
+            #     qty = qty + 1
+            # elif qty > 0:
+            #     qty = diffdate.days
+            self.uom_qty = qty
 
     # @api.onchange("checkin_date", "checkout_date")
     # def _onchange_checkin_date(self):
