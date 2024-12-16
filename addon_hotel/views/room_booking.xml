@@ -6,8 +6,10 @@
         <field name="model">room.booking</field>
         <field name="arch" type="xml">
             <search>
-                <!-- <field name="ktp"/> -->
+                <field name="name"/>
                 <field name="partner_id"/>
+                <field name="kamar"/>
+                <field name="ktp"/>
                 <field name="state"/>
                 <filter name="fl_draft" string="SHIFT 1"  domain="[('create_uid.id', '=', uid),('datesrc',  '=', True)]"/>  
                 <filter name="fl_draft" string="SHIFT 2"  domain="[('create_uid.id', '=', uid),('shift_2',  '=', True)]"/>  
