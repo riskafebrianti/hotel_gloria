@@ -118,18 +118,47 @@
         <field name="model">hotel.room</field>
         <field name="inherit_id" ref="hotel_management_odoo.hotel_room_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='num_person']" position="after">
+            <!-- <xpath expr="//field[@name='num_person']" position="after">
                 <field name="maintenance"/>
                 <field name="status_kerusakan"/>
                 <field name="terbooking"/>
                 <field name="draft"/>
+
                  
             </xpath>
             <xpath expr="//field[@name='taxes_ids']" position="after">
-                <field name="deposit"/>
+                <field name="deposit" readonly="uid not in (2,12)"/>
                 <field name="ket"/>
+            </xpath> -->
+            <xpath expr="//page[@name='information_hotel_room']//group" position="replace">
+            <group>
+                
+                <group>
+                    <field name="floor_id" string="Floor" readonly="uid not in (2,12)"/>
+                    <field name="user_id" select="2" readonly="uid not in (2,12)" string="Room Manager"/>
+                    <field name="taxes_ids" widget="many2many_tags" readonly="uid not in (2,12)" string="Customer Taxes"/>
+                    <field name="deposit" readonly="uid not in (2,12)"/>
+                    <field name="ket"/>
+                    <field name="maintenance"/>
+                    
+                </group>
+                               
+                 <group>
+                    <field name="room_type" readonly="uid not in (2,12)"/>
+                    <field name="list_price" widget="monetary" string="Rent" readonly="uid not in (2,12)"/>
+                    <field name="num_person" readonly="uid not in (2,12)"/>
+                    <field name="uom_id" invisible="1"/>
+                    <field name="draft"/>
+                    <field name="status_kerusakan"/>
+                    <field name="terbooking"/>
+                </group>
+            </group>
             </xpath>
-            
+
+            <xpath expr="//field[@name='name']" position="replace">
+                <field name="name" readonly="uid not in (2,12)"/>
+            </xpath>
+                 
         </field>
     </record>
       
