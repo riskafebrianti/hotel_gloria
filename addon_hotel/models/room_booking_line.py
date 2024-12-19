@@ -201,11 +201,11 @@ class RoomBookingLineee(models.Model):
                                     _("Sorry, You cannot create a reservation for "
                                     "this date since it overlaps with another "
                                     "reservation..!!"))
-                            # if rec_checkout_date <= line.checkout_date and rec_checkin_date >= line.checkin_date:
-                            #     raise ValidationError(
-                            #         "Sorry You cannot create a reservation for this"
-                            #         "date due to an existing reservation between "
-                            #         "this date")
+                            if rec_checkout_date <= line.checkout_date and rec_checkin_date >= line.checkin_date:
+                                raise ValidationError(
+                                    "Sorry You cannot create a reservation for this"
+                                    "date due to an existing reservation between "
+                                    "this date")
         if self.checkin_date == False:
            self.write({'checkin_date': fields.Datetime.now()})
         if self.checkout_date == False:
