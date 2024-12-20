@@ -194,18 +194,19 @@ class RoomBookingLineee(models.Model):
                     # Check for conflicts with existing room lines
                     for line in self:
                         if line.id != rec.id and line.room_id == rec_room_id:
+                            if self._uid not in (2,12):
                             # Check if the dates overlap
-                            if (rec_checkin_date >= line.checkin_date >= rec_checkout_date or
-                                    rec_checkin_date >= line.checkout_date >= rec_checkout_date):
-                                raise ValidationError(
-                                    _("Sorry, You cannot create a reservation for "
-                                    "this date since it overlaps with another "
-                                    "reservation..!!"))
-                            if rec_checkout_date <= line.checkout_date and rec_checkin_date >= line.checkin_date:
-                                raise ValidationError(
-                                    "Sorry You cannot create a reservation for this"
-                                    "date due to an existing reservation between "
-                                    "this date")
+                                if (rec_checkin_date >= line.checkin_date >= rec_checkout_date or
+                                        rec_checkin_date >= line.checkout_date >= rec_checkout_date):
+                                    raise ValidationError(
+                                        _("Sorry, You cannot create a reservation for "
+                                        "this date since it overlaps with another "
+                                        "reservation..!! (Silahkan Hubungin Manager)"))
+                                if rec_checkout_date <= line.checkout_date and rec_checkin_date >= line.checkin_date:
+                                    raise ValidationError(
+                                        "Sorry You cannot create a reservation for this"
+                                        "date due to an existing reservation between "
+                                        "this date (Silahkan Hubungin Manager)")
         if self.checkin_date == False:
            self.write({'checkin_date': fields.Datetime.now()})
         if self.checkout_date == False:
