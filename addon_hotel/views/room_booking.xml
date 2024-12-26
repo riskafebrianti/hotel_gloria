@@ -11,18 +11,20 @@
                 <field name="kamar"/>
                 <field name="ktp"/>
                 <field name="state"/>
-                <filter name="fl_draft" string="SHIFT 1"  domain="[('create_uid.id', '=', uid),('datesrc',  '=', True)]"/>  
-                <filter name="fl_draft" string="SHIFT 2"  domain="[('create_uid.id', '=', uid),('shift_2',  '=', True)]"/>  
-                <filter name="fl_draft" string="SHIFT 3"  domain="[('create_uid.id', '=', uid),('shift_3',  '=', True)]"/>  
-                <!-- datetime.combine(today_date, datetime.min.time()).replace(hour=7, minute=0, second=0) -->
-                 <!-- domain="[('user_ids', 'in', uid)]"  -->
-                 <!-- ('date','<',time.strftime('%%Y-%%m-%%d 23:59:59')) -->
-                 <!-- _order','>=','datetime.today().replace(hour=7, minute=0, second=0)')]"/> -->
-                <!--<group>
-
-                    <filter name="gr_pay" string="Bayar Via" context="{'group_by':'payment_method'}"/>
-                </group> -->
-                <!-- [('date','<',time.strftime('%%Y-%%m-%%d 23:59:59')),('date','>=',(datetime.date.today()-datetime.timedelta(hour=7)).strftime('%%Y-%%m-%%d 00:00:00'))] -->
+                
+                <group string="string">
+                    <filter name="fl_draft" string="SHIFT 1"  domain="[('create_uid.id', '=', uid),('datesrc',  '=', True)]"/>
+                    <filter name="fl_draft" string="PEMBAYARAN SHIFT 1"  domain="['|',('create_uid.id', '=', uid), ('datesrc',  '=', True),('datepymnt', '=', True),]"/>    
+                </group>
+                <group>
+                    <filter name="fl_draft" string="SHIFT 2"  domain="[('create_uid.id', '=', uid),('shift_2',  '=', True)]"/>  
+                    <filter name="fl_draft" string="PEMBAYARAN SHIFT 2"  domain="['|',('create_uid.id', '=', uid), ('shift_2',  '=', True),('datepymnt_2', '=', True),]"/>  
+                </group>
+                <group>
+                    <filter name="fl_draft" string="SHIFT 3"  domain="[('create_uid.id', '=', uid),('shift_3',  '=', True)]"/>  
+                    <filter name="fl_draft" string="PEMBAYARAN SHIFT 3"  domain="['|',('create_uid.id', '=', uid), ('shift_3',  '=', True),('datepymnt_3', '=', True),]"/>  
+                </group>
+                
 
             </search>
         </field>
@@ -37,7 +39,13 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="ktp" optional="hide"/>
                     <field name="kamar"/>
-                    <!-- <field name="roomsugest"/> -->
+                    <field name="create_uid"/>
+                
+                </xpath>
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="chargeee" widget="badge" decoration-warning="chargeee == 'CHARGE'" optional="hide"/>
+                    <field name="status_pembayaran" widget="badge" decoration-success="status_pembayaran == 'paid'" decoration-danger="status_pembayaran == 'not_paid'" optional="hide"/>
+                    
                 </xpath>
             </field>
     </record>
@@ -106,6 +114,11 @@
                 <field name="deposit_out" invisible="1"/>
                 <field name="charge" invisible="1"/>
                 <field name="datesrc" invisible="1"/>
+                <field name="datepymnt" invisible="1"/>
+                <field name="datepymnt_2" invisible="1"/>
+                <field name="datepymnt_3" invisible="1"/>
+                <field name="status_pembayaran" invisible="1"/>
+                <field name="chargeee" invisible="1"/>
                 <!-- <field name="ktp"/> -->
                 <field name="shift_2" invisible="1"/>
                 <field name="shift_3" invisible="1"/>

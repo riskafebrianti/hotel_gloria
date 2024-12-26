@@ -33,6 +33,9 @@ class RoomBookingTree(models.Model):
     deposit_out = fields.Boolean(string='deposit_out', compute='_compute_invsb', default=False)
     charge = fields.Boolean(string='charge', compute='_compute_invsb', default=False)
     deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
+    datepymnt = fields.Date(string='pyshift1', search = '_search_paymnt1', store=False,)
+    datepymnt_2 = fields.Date(string='pyshift2', search = '_search_paymnt2', store=False,)
+    datepymnt_3 = fields.Date(string='pyshift3', search = '_search_paymnt3', store=False,)
     datesrc = fields.Date(string='shift1', search = '_search_is_expired1', store=False,)
     shift_2 = fields.Date(string='shift2', search = '_search_is_expired2', store=False,)
     shift_3 = fields.Date(string='shift3', search = '_search_is_expired3', store=False,)
@@ -44,6 +47,8 @@ class RoomBookingTree(models.Model):
                                     default=fields.Datetime.now() + timedelta(
                                         hours=23, minutes=59, seconds=59))
     kamar = fields.Char(string='Room', related='room_line_ids.room_id.name')
+    status_pembayaran = fields.Selection(string='Status Bayar', related='hotel_invoice_id.payment_state')
+    chargeee = fields.Char(string='Status Charge',  compute='chrg_state')
 
     
     
@@ -86,6 +91,20 @@ class RoomBookingTree(models.Model):
                                                 "maintenance request send "
                                                 "once" )
     
+    # @api.depends('chrg_count')
+    # def chrg_state(self):
+    #     if self.chrg_count:
+    #         self.charge = 'CHARGE'
+
+    def chrg_state(self):
+        """Compute the invoice count"""
+        for dataa in self:
+            # for g in dataa:
+            if dataa.chrg_count >= 0:
+                dataa.chargeee = 'CHARGE'
+            if dataa.chrg_count == 0:
+                dataa.chargeee = False
+              
    
     
     @api.onchange('room_line_ids')
@@ -139,13 +158,82 @@ class RoomBookingTree(models.Model):
         for data in self:
             tes = data.partner_id.name
             if len(tes) > 25:
-                record = data.partner_id.name[:20] + ' ...'
+                record = data.partner_id.name[:25] + ' ...'
             if len(tes) < 25:
                 record = data.partner_id.name
 
             return record
     
-    # @api.depends('date', 'price')
+    # filter payment shift 1
+    def _search_paymnt1(self, operator, value):
+        # today = fields.Datetime.context_timestamp(self, datetime.now())
+        tes = fields.datetime.now()
+        hasil = fields.Datetime.context_timestamp(self, tes)
+        shift1_awal =  hasil.replace(hour=7, minute=0, second=0)
+        shift1_akhir =  hasil.replace(hour=15, minute=0, second=0)
+        
+        data = self.env['account.payment'].search([])
+        record = []
+        for data_waktu in data:
+            # date_order = 
+            tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.create_date)
+            if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+                array_1 = self.env['room.booking'].sudo().search([('hotel_invoice_id.name','=', data_waktu.ref)])
+                for data in array_1:
+                    array = record.append(data.id)
+        records = self.env['room.booking'].browse(record)
+       
+        # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+        return [('id', 'in', records.ids)]
+    
+
+    # filter payment shift 2
+    def _search_paymnt2(self, operator, value):
+        # today = fields.Datetime.context_timestamp(self, datetime.now())
+        tes = fields.datetime.now()
+        hasil = fields.Datetime.context_timestamp(self, tes)
+        shift1_awal =  hasil.replace(hour=15, minute=0, second=0)
+        shift1_akhir =  hasil.replace(hour=23, minute=0, second=0)
+        
+        data = self.env['account.payment'].search([])
+        record = []
+        for data_waktu in data:
+            # date_order = 
+            tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.create_date)
+            if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+                array_1 = self.env['room.booking'].sudo().search([('hotel_invoice_id.name','=', data_waktu.ref)])
+                for data in array_1:
+                    array = record.append(data.id)
+        records = self.env['room.booking'].browse(record)
+        # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+        return [('id', 'in', records.ids)]
+    
+
+    # filter payment shift 3
+    def _search_paymnt3(self, operator, value):
+        # today = fields.Datetime.context_timestamp(self, datetime.now())
+        tes = fields.datetime.now()
+        hasil = fields.Datetime.context_timestamp(self, tes)
+        shift1_awal =  hasil.replace(hour=23, minute=0, second=0)
+        shift1_akhir =  hasil.replace(hour=7, minute=0, second=0)
+        
+        data = self.env['account.payment'].search([])
+        record = []
+        for data_waktu in data:
+            # date_order = 
+            tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.create_date)
+            if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+                array_1 = self.env['room.booking'].sudo().search([('hotel_invoice_id.name','=', data_waktu.ref)])
+                for data in array_1:
+                    array = record.append(data.id)
+        records = self.env['room.booking'].browse(record)
+        # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+        return [('id', 'in', records.ids)]
+    
+    # filter shift 1
     def _search_is_expired1(self, operator, value):
         # today = fields.Datetime.context_timestamp(self, datetime.now())
         tes = fields.datetime.now()
@@ -165,6 +253,8 @@ class RoomBookingTree(models.Model):
 
         return [('id', 'in', records.ids)]
     
+
+    # filter shift 2
     def _search_is_expired2 (self, operator, value):
         # today = fields.Datetime.context_timestamp(self, datetime.now())
         tes = fields.datetime.now()
@@ -184,6 +274,7 @@ class RoomBookingTree(models.Model):
 
         return [('id', 'in', records_shift2.ids)]
     
+    # filter shift 3
     def _search_is_expired3(self, operator, value):
         # today = fields.Datetime.context_timestamp(self, datetime.now())
         tes = fields.datetime.now()
@@ -237,13 +328,13 @@ class RoomBookingTree(models.Model):
         """Compute the invoice count"""
         for record in self:
             record.depo_count = self.env['account.payment'].search_count(
-                [('room_booking_id','=', self.id),('move_id.journal_id.code','!=','CHRG')])
+                [('room_booking_id','=', record.id),('move_id.journal_id.code','!=','CHRG')])
             
     def _compute_chrg_count(self):
         """Compute the invoice count"""
         for record in self:
             record.chrg_count = self.env['account.move'].search_count(
-                [('hotel_booking_id','=', self.id),('journal_id.code','=','CHRG')])
+                [('hotel_booking_id','=', record.id),('journal_id.code','=','CHRG')])
 
     def _compute_invoice_count(self):
         """Compute the invoice count"""
@@ -305,35 +396,59 @@ class RoomBookingTree(models.Model):
     #             if not d: 
     #                 b =  0
     #         return d
+#  def _search_is_expired1(self, operator, value):
+#         # today = fields.Datetime.context_timestamp(self, datetime.now())
+#         tes = fields.datetime.now()
+#         hasil = fields.Datetime.context_timestamp(self, tes)
+#         shift1_awal =  hasil.replace(hour=7, minute=0, second=0)
+#         shift1_akhir =  hasil.replace(hour=15, minute=0, second=0)
+        
+#         data = self.env['room.booking'].search([])
+#         record = []
+#         for data_waktu in data:
+#             # date_order = 
+#             tgl_timestamp = fields.Datetime.context_timestamp(self,  data_waktu.date_order)
+#             if tgl_timestamp >= shift1_awal and tgl_timestamp <= shift1_akhir:
+#                 array = record.append(data_waktu.id)
+#         records = self.env['room.booking'].browse(record)
+#         # records = self.env['room.booking'].search([(tgl_timestamp, '>=', todayy)])
+
+#         return [('id', 'in', records.ids)]
+
+
+
         
     def paymnt(self):
-
+        # hasil = fields.datetime.now()
         for b in self:
             a = self.env['account.move'].sudo().search([
                 ('ref','=',b.name),
                 ('move_type','=','out_invoice'),
                 ('state','=','posted'),
                 ('journal_id.name','!=','CHARGE'),
-                ('payment_state','=','paid')])
+                ('payment_state','=','paid'),
+                # ('hotel_booking_id.date_order','=', hasil)
+                ])
+            hasil = b.hotel_invoice_id.date
             if a:
                 for pay in a:
-                    d = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-                    if  len(d) >= 1:
-                       d =  d[-1].amount_total
+                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
+                    d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == hasil.strftime('%d/%m/%y'):
+                    # Jika tanggal sama, ambil total amount dari transaksi terkait
+                    if len(data) >= 1:
+                        d = data[-1].amount_total  # Ambil total amount dari elemen terakhir
                     else:
-                        d = d.amount_total
-                    print(self)
-                    # if len
-                    # if len(d) >= 1:
-                    #     b = sum(line.amount_total for line in d)
-                    # if not d: 
-                    #     b =  "-"
+                        d = data.amount_total
+
             if not a:
                 d = 0
             return d
         
     def paymnttotal(self):
-
+        # tgl = fields.datetime.now()
         for b in self:
             a = self.env['account.move'].sudo().search([
                ('ref','=',b.name),
@@ -341,20 +456,85 @@ class RoomBookingTree(models.Model):
                 ('journal_id.name','!=','CHARGE'),
                 ('payment_state','=','paid')
                 ])
-           
+            tgl = b.hotel_invoice_id.date
             if a:
                 for pay in a:
                     data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-                    hasil= sum(data.mapped('amount_total'))
+
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != tgl.strftime('%d/%m/%y'):
+                    hasil = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == tgl.strftime('%d/%m/%y'):
+                    # Jika tanggal sama, ambil total amount dari transaksi terkait
+                    if len(data) >= 1:
+                        hasil= sum(data.mapped('amount_total'))  # Ambil total amount dari elemen terakhir
+                    else:
+                        hasil= sum(data.mapped('amount_total'))
+
+                    # hasil= sum(data.mapped('amount_total'))
             if not a:
                 hasil= 0
-                    # for to in d:
-                    #     # sum(values.get('simpokdaftar').mapped('amount_currency'))
-                    #     total = sum(to.mapped('amount_total'))
-                # if len(d) >= 1:
-                #     b = sum(line.amount_total for line in d)
-                # if not d: 
-                #     b =  "-"
+                   
+                print(self)
+            return hasil
+        
+        # payment pelunasan qwqeb
+
+    def paymntlns(self):
+        # hasil = fields.datetime.now()
+        for b in self:
+            a = self.env['account.move'].sudo().search([
+                ('ref','=',b.name),
+                ('move_type','=','out_invoice'),
+                ('state','=','posted'),
+                ('journal_id.name','!=','CHARGE'),
+                ('payment_state','=','paid'),
+                # ('hotel_booking_id.date_order','=', hasil)
+                ])
+            hasil = b.hotel_invoice_id.date
+            if a:
+                for pay in a:
+                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == hasil.strftime('%d/%m/%y'):
+                    d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
+                    # Jika tanggal sama, ambil total amount dari transaksi terkait
+                    if len(data) >= 1:
+                        d = data[-1].amount_total  # Ambil total amount dari elemen terakhir
+                    else:
+                        d = data.amount_total
+
+            if not a:
+                d = 0
+            return d
+        
+    def paymnttotallns(self):
+        # tgl = fields.datetime.now()
+        for b in self:
+            a = self.env['account.move'].sudo().search([
+               ('ref','=',b.name),
+                ('move_type','=','out_invoice'),
+                ('journal_id.name','!=','CHARGE'),
+                ('payment_state','=','paid')
+                ])
+            tgl = b.hotel_invoice_id.date
+            if a:
+                for pay in a:
+                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == tgl.strftime('%d/%m/%y'):
+                    hasil = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != tgl.strftime('%d/%m/%y'):
+                    # Jika tanggal sama, ambil total amount dari transaksi terkait
+                    if len(data) >= 1:
+                        hasil= sum(data.mapped('amount_total'))  # Ambil total amount dari elemen terakhir
+                    else:
+                        hasil= sum(data.mapped('amount_total'))
+
+                    # hasil= sum(data.mapped('amount_total'))
+            if not a:
+                hasil= 0
+                   
                 print(self)
             return hasil
                 

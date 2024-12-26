@@ -51,13 +51,15 @@
                                 <th  style="font-size:30px">Date</th>
                                 <th  style="font-size:30px">Check-In</th>
                                 <th  style="font-size:30px">Check-Out</th>
+                                <!-- <th  style="font-size:30px">Tgl Bayar</th> -->
                                 <th  style="font-size:30px;width:10%;">Customer</th>
                                 <th  style="font-size:30px">Status</th>
                                 <th  style="font-size:30px">Harga</th>
                                 <th  style="font-size:30px">Total</th>
                                 <th  style="font-size:30px">Piutang</th>
                                 <th  style="font-size:30px">Bayar</th>
-                                <th  style="font-size:30px">Dibuat Oleh</th>
+                                <th  style="font-size:30px">Pelunasan</th>
+                                <th  style="font-size:30px">Dibuat</th>
                             </tr>
                         </thead>
                         <t t-set="i" t-value="0"/>
@@ -89,10 +91,15 @@
                                 <td style="font-size:25px">
                                    <t t-esc="context_timestamp(line.checkout_date).strftime('%d/%m/%Y')"/>
                                 </td>
-              
-                                 <td style="font-size:25px">
+                                
+                                 <!-- <td style="font-size:25px">
+                                   
+                                    <t t-esc="context_timestamp(line.booking_id.hotel_invoice_id.write_date).strftime('%d/%m/%Y')"/>
+                                </td> -->
+                                <td style="font-size:25px">
                                     <t t-esc="line.booking_id._name_cust()"/>
                                 </td>
+                                
                                 <td style="font-size:25px">
                                     <t t-esc="line.state"/>
                                 </td> 
@@ -103,15 +110,25 @@
                                     <!-- <t t-esc="line.price_unit"/> -->
                                     <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.amount_total))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
                                 </td> 
-                                <td style="font-size:25px">
-                                    <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.amount()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
-                                    <!-- <t t-esc="line.booking_id.amount().amount_residual"/> -->
-                                </td> 
-<!-- len(d) >= 1 -->
-                                <t t-if="line.booking_id.paymnt()">
+
+                                <t t-if="line.booking_id.amount()">
                                     <td style="font-size:25px">
                                         <!-- <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymnt().amount_total for line in docs))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span> -->
                                         <!-- <t t-esc="sum(line.amount_total for line in docs.paymnt())"/> -->
+                                        <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.amount()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+
+                                    </td> 
+                                </t>   
+                                <t t-if="not line.booking_id.amount()">
+                                    <td style="font-size:25px">
+                                        <span> - </span>
+                                    </td> 
+                                </t>  
+
+                               
+<!-- len(d) >= 1 -->
+                                <t t-if="line.booking_id.paymnt()">
+                                    <td style="font-size:25px">
                                         <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
 
                                     </td> 
@@ -120,7 +137,19 @@
                                     <td style="font-size:25px">
                                         <span> - </span>
                                     </td> 
+                                </t>  
+                                
+                               <t t-if="line.booking_id.paymntlns()">
+                                    <td style="font-size:25px">
+                                        <span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymntlns()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span>
+                                    </td> 
                                 </t>   
+                                <t t-if="not line.booking_id.paymntlns()">
+                                    <td style="font-size:25px">
+                                        <span> - </span>
+                                    </td> 
+                                </t>  
+
                           
                                  <td style="font-size:25px">
                                     <t t-esc="line.booking_id.message_follower_ids[0].name"/>
@@ -133,6 +162,7 @@
                             <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.amount_total for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                             <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.amount() for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                             <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.paymnttotal() for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.0f}'.format(int(sum(line.booking_id.paymnttotallns() for line in docs.filtered(lambda pay: pay.state not in('draft','cancel')).room_line_ids)))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                             <td></td>
                        </tr>
                        

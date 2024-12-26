@@ -16,7 +16,7 @@ class RoomBookingLineee(models.Model):
     jumlah = fields.Integer(string='Dewasa',store=True,)
     jumlahanak = fields.Integer(string='Anak',store=True,)
     deposit = fields.Float(string='Deposit',required=True,store=True,)
-    diskon = fields.Float(string='Diskon', tracking=True, force_save='1',readonly=True, store=True,)
+    diskon = fields.Float(string='Diskon', tracking=True, force_save='1',readonly=False, store=True,)
     ket = fields.Char(string='Keterangan', force_save='1', store=True, readonly=True)
     
     price_unit = fields.Float(string='Rent',
@@ -40,6 +40,7 @@ class RoomBookingLineee(models.Model):
     #                                 help="Date of Checkout", tracking=True,
     #                                 default=fields.Datetime.now() + timedelta(
     #                                     hours=23, minutes=59, seconds=59))
+
 
     
 
@@ -103,28 +104,22 @@ class RoomBookingLineee(models.Model):
                 line.jumlah = line.room_id.num_person
                 line.deposit = line.room_id.deposit
                 # line.price_unit = line.room_id.list_price
+
     
-    @api.depends('uom_qty', 'price_unit', 'tax_ids')
+    # @api.onchange('diskon')
+    # def _onchange_diskon(self):
+    #     for record in self:
+    #         if record.diskon:
+    #             harganya = self.price_total - self.diskon
+    #             self.update({
+    #                 'price_total' : harganya
+    #             })
+    #             print(self)
+    
+    @api.depends('uom_qty', 'price_unit', 'tax_ids','diskon')
     # @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
     def _compute_price_subtotal(self):
         """Compute the amounts of the room booking line."""
-        # for line in self:
-        #     tax_results = self.env['account.tax']._compute_taxes([
-        #         line._convert_to_tax_base_line_dict()
-        #     ])
-        #     # totals = list(tax_results['totals'].values())[0]
-        #     totals = list(tax_results['tax_lines_to_add'])[0]
-        #     amount_untaxed = totals['base_amount']
-        #     amount_tax = totals['tax_amount']
-
-        #     line.update({
-        #         'price_subtotal': amount_untaxed,
-        #         'price_tax': amount_tax,
-        #         'price_total': amount_untaxed + amount_tax,
-        #     })
-
-
-
         for line in self:
             tax_results = self.env['account.tax']._compute_taxes(
                 [line._convert_to_tax_base_line_dict()])
@@ -136,7 +131,7 @@ class RoomBookingLineee(models.Model):
                 line.update({
                     'price_subtotal': amount_untaxed,
                     'price_tax': amount_tax,
-                    'price_total': amount_untaxed + amount_tax,
+                    'price_total': amount_untaxed + amount_tax - self.diskon,
                 })
             else:
                 totals = list(tax_results['tax_lines_to_add'])[0]
@@ -145,13 +140,14 @@ class RoomBookingLineee(models.Model):
                 line.update({
                     'price_subtotal': amount_untaxed,
                     'price_tax': amount_tax,
-                    'price_total': amount_untaxed + amount_tax,
+                    'price_total': amount_untaxed + amount_tax - self.diskon,
                 })
             if self.env.context.get('import_file',
                                     False) and not self.env.user. \
                     user_has_groups('account.group_account_manager'):
                 line.tax_id.invalidate_recordset(
                     ['invoice_repartition_line_ids'])
+                
                 
     @api.onchange('booking_id.room_line_ids','price_unit','tax_ids')
     def _onchange_price_unit(self):
