@@ -58,10 +58,10 @@
                                     <div class="o_kanban_record_bottom mt-3">
                                         <div class="oe_kanban_bottom_left">
 
-                                        <div t-if="record.terbooking_all.raw_value % 16 == 0">
+                                        <div t-if="record.terbooking_all.raw_value % 75 == 0">
                                             <a name="action_open_price_update_wizard" icon="fa-info" help="Sepertinya Kamar Ini sudah waktu nya cuci AC" style="color:#B3C8CF; font-size: 25px; margin-top-10px;"  type="object"  invisible="cuci_ac == False"/>
                                         </div>
-                                        <div t-if="record.terbooking_all.raw_value % 3 == 0">
+                                        <div t-if="record.terbooking_all.raw_value % 96 == 0">
                                             <a name="action_open_price_update_wizard" icon="fa-info" help="Sepertinya Kamar Ini sudah waktu nya cuci AC" style="color:#EF5A6F; font-size: 25px; margin-top-10px;"  type="object"  invisible="cuci_ac == False"/>
                                         </div>
                                                

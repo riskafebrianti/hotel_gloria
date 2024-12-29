@@ -94,7 +94,7 @@ class room(models.Model):
                                                     ])
             # for data in cari:
             jumlahdata= len(cari)
-            if jumlahdata % 16 == 0:
+            if jumlahdata % 75 == 0:
                 self.cuci_ac = True
             else:
                 self.cuci_ac = False
