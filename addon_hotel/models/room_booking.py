@@ -170,12 +170,12 @@ class RoomBookingTree(models.Model):
     def _name_cust(self):
         for data in self:
             tes = data.partner_id.name
-            if len(tes) > 25:
+            if len(tes) > 23:
                 record = data.partner_id.name[:23] + ' ...'
-            if len(tes) < 25:
+            if len(tes) <= 23:
                 record = data.partner_id.name
 
-            return record
+        return record
     
     # filter payment shift 1
     def _search_paymnt1(self, operator, value):
