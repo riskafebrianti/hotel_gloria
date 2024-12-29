@@ -155,6 +155,7 @@
                <!-- <button name="action_deposit_in" string="In Deposit" class="btn-primary" type="object" /> -->
                <button name="action_deposit_out" string="Out Deposit" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_out != True"/>
                <button name="action_charge" string="Charge" class="btn-primary" type="object" invisible="state in ('draft','reserved') or deposit_in != True"/>
+               <button name="action_check_in_ubah" string="Ubah state ke check in" class="btn-primary" type="object"  invisible="uid not in (2,12) or state not in ('check_out')" />
             </xpath>
 
             <xpath expr="//div[@name='button_box']//button[@name='action_view_invoices']" position="after">
@@ -237,6 +238,7 @@
             </form>
         </field>
     </record>
+
     <record id="action_wizard_example" model="ir.actions.act_window">
         <field name="name">Form Manager</field>
         <field name="res_model">wizard.example</field>

@@ -13,7 +13,9 @@
                 <field name="room_type"/>
                 <field name="status"/>
                 <field name="terbooking"/>
+                <field name="terbooking_all"/>
                 <field name="draft"/>
+                <field name="cuci_ac"/>
                 <field name="ket"/>
                 <field name="status_kerusakan"/>
             
@@ -40,10 +42,11 @@
                                            <field name="room_type"/>
                                         </div>
                                          <div>
-                                           <field name="terbooking"/>x Terpesan
+                                           <!-- <field name="terbooking"/>x Terpesan <field name="terbooking_malam"/> Hari  -->
+                                           <field name="terbooking"/>x Terpesan 
                                         </div>
                                        <div t-if="record.ket.raw_value != 'Over CheckOut'">
-                                            <a name="addroom" style="color: #ffffff;" type="object"> <span style="font-size: 15px; font-weight: bold; color:ffffff;"><field name="ket"/></span></a>    
+                                            <a name="addroom" style="color: #ffffff;" type="object"> <span style="font-size: 15px; font-weight: bold; color:ffffff;"><field name="ket"/>sd</span></a>    
                                         </div>
                                         <div t-if="record.ket.raw_value == 'Over CheckOut'">
                                             <a name="addroom" style="color: #e63333;" type="object"> <span style="font-size: 15px; font-weight: bold; color:black;"><field name="ket"/></span></a>    
@@ -54,14 +57,28 @@
 
                                     <div class="o_kanban_record_bottom mt-3">
                                         <div class="oe_kanban_bottom_left">
+
+                                        <div t-if="record.terbooking_all.raw_value % 16 == 0">
+                                            <a name="action_open_price_update_wizard" icon="fa-info" help="Sepertinya Kamar Ini sudah waktu nya cuci AC" style="color:#B3C8CF; font-size: 25px; margin-top-10px;"  type="object"  invisible="cuci_ac == False"/>
+                                        </div>
+                                        <div t-if="record.terbooking_all.raw_value % 3 == 0">
+                                            <a name="action_open_price_update_wizard" icon="fa-info" help="Sepertinya Kamar Ini sudah waktu nya cuci AC" style="color:#EF5A6F; font-size: 25px; margin-top-10px;"  type="object"  invisible="cuci_ac == False"/>
+                                        </div>
+                                               
+
                                             <div t-if="record.maintenance.raw_value != 'Done Maintenance' and record.maintenance.raw_value != ''" class="o_project_kanban_boxes d-flex align-items-baseline">
                                                 <a name="action_show_maintenance" icon="fa-solid fa-exclamation-circle fa-lg" style="color: #e63333;" type="object"> <span style="font-size: 15px; font-weight: bold; color:black;"><field name="maintenance"/></span></a>    
                                             </div>
-                                            
+                                            <!-- <i class="fa-solid fa-screwdriver-wrench"></i>
+                                            <i class="fa-regular fa-snowflake"></i> 
+                                            <i class="far fa-comments"></i>
+                                            <i class="far fa-comment-dots"></i>-->
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                        <a name="room" icon="fa-solid fa-plus fa-2xl"  type="object" style="font-size: 22px; margin-top-10px;" invisible="status != 'available' or draft == True or status_kerusakan == 'Berat'"/>
-                                        <a name="addroom" icon="fa-cogsfa-regular fa-bookmark fa-2xl" style="color: #F96E2A; font-size: 25px; margin-top-10px;"  type="object"  invisible="status == 'available' and draft == False"/>
+                                        <a name="room" icon="fa-solid fa-plus fa-2xl"  help="Pesan Kamar" type="object" style="font-size: 22px; margin-top-10px;" invisible="status != 'available' or draft == True or status_kerusakan == 'Berat'"/>
+                                        <a name="addroom" icon="fa-cogsfa-regular fa-bookmark fa-2xl" help="Lihat Pesanan Kamar" style="color: #F96E2A; font-size: 25px; margin-top-10px;"  type="object"  invisible="status == 'available' and draft == False"/>
+                                        <!-- <a name="info_cuci_ac" icon="fa-info" help="Sepertinya Kamar Ini sudah waktu nya cuci AC" style="color:#B3C8CF; font-size: 25px; margin-top-10px;"  type="object"/> -->
+                                        <!-- <a name="action_open_price_update_wizard" icon="fa-info" help="Sepertinya Kamar Ini sudah waktu nya cuci AC" style="color:#B3C8CF; font-size: 25px; margin-top-10px;"  type="object"  invisible="cuci_ac == False"/> -->
                                         </div> 
                                        
                                     </div> 
@@ -140,6 +157,7 @@
                     <field name="deposit" readonly="uid not in (2,12)"/>
                     <field name="ket"/>
                     <field name="maintenance"/>
+                    <field name="cuci_ac"/>
                     
                 </group>
                                
@@ -151,6 +169,7 @@
                     <field name="draft"/>
                     <field name="status_kerusakan"/>
                     <field name="terbooking"/>
+                    <field name="terbooking_all"/>
                 </group>
             </group>
             </xpath>
@@ -161,5 +180,43 @@
                  
         </field>
     </record>
+
+    
+    <record id="view_wizard_cuci_ac_form" model="ir.ui.view">
+        <field name="name">cuci.ac.wizard.form</field>
+        <field name="model">cuci.ac.wizard</field>
+        <field name="arch" type="xml">
+            <form string ="Info">
+                <group>
+                    <field name="message" widget='text' readonly="True"/>
+                </group>
+                   
+                <footer>
+                    <button name="action_confirm" type="object" string="Ya, Lanjutkan" class="btn-primary"/>
+                    <button special="cancel" string="Nanti Saja" class="btn-danger"/>
+                    <!-- <button string="Cancel" class="btn-secondary" special="cancel"/> -->
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+
+    <record id="action_wizard_exampleee" model="ir.actions.act_window">
+        <field name="name">Form Manager</field>
+        <field name="res_model">cuci.ac.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="cuci_ac_wizard_access" model="ir.model.access">
+        <field name="name">cuci.ac.wizard access</field>
+        <field name="model_id" ref="model_cuci_ac_wizard"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
       
 </odoo>

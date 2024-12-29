@@ -47,7 +47,7 @@ class RoomBookingTree(models.Model):
                                     default=fields.Datetime.now() + timedelta(
                                         hours=23, minutes=59, seconds=59))
     kamar = fields.Char(string='Room', related='room_line_ids.room_id.name')
-    status_pembayaran = fields.Selection(string='Status Bayar', related='hotel_invoice_id.payment_state')
+    status_pembayaran = fields.Char(string='Status Bayar', compute='byr_state')
     chargeee = fields.Char(string='Status Charge',  compute='chrg_state')
 
     
@@ -104,6 +104,19 @@ class RoomBookingTree(models.Model):
                 dataa.chargeee = 'CHARGE'
             if dataa.chrg_count == 0:
                 dataa.chargeee = False
+    
+    def byr_state(self):
+        """Compute the invoice count"""
+        for dataa in self:
+            # for g in dataa:
+            data_accmove = self.env['account.move'].sudo().search([('ref','=', dataa.name),('journal_id.name','!=', 'CHARGE'),('state','=','posted')])
+            if len(data_accmove) == 1:
+                dataa.status_pembayaran = data_accmove.payment_state
+            elif len(data_accmove) > 1:
+                # data_accmove.filtered(lambda state: state.state == 'posted')
+                dataa.status_pembayaran = data_accmove[-1].payment_state
+            else:
+                dataa.status_pembayaran = 'Tidak Ada Transaksi'
               
    
     
@@ -158,7 +171,7 @@ class RoomBookingTree(models.Model):
         for data in self:
             tes = data.partner_id.name
             if len(tes) > 25:
-                record = data.partner_id.name[:25] + ' ...'
+                record = data.partner_id.name[:23] + ' ...'
             if len(tes) < 25:
                 record = data.partner_id.name
 
@@ -573,7 +586,17 @@ class RoomBookingTree(models.Model):
                             }
         }
         # self.deposit_in = True
+    
+    def action_check_in_ubah(self):
+        if self.state == 'check_out':
+            self.update({'state': "check_in",
+                            })
+            for data in self.room_line_ids.room_id:
+                data.update({'status': "occupied",
+                            })
+
         
+       
     def action_maintenance_request(self):
         """
         Function that handles the maintenance request
