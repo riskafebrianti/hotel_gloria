@@ -72,7 +72,7 @@ class AccountMove(models.Model):
         return fields.Datetime.context_timestamp(self, fields.datetime.now()).strftime('%d %B %Y %H-%M-%S')
     
     def nama(self):
-        loop = self.filtered(lambda pay: pay.move_type == 'out_invoice')
+        loop = self.filtered(lambda pay: pay.move_type == 'out_invoice' and pay.state == 'posted' and pay.payment_state == 'paid')
         data_kamar = {}
         
         for a in loop:
