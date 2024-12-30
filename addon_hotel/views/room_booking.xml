@@ -12,7 +12,10 @@
                 <field name="ktp"/>
                 <field name="state"/>
                 <field name="chargeee"/>
-                
+                    <filter name="filter_active" string="CHARGE" domain="[('chargeee', '=', 'CHARGE')]"/>
+                    <filter name="filter_activeE" string="STATUS PEMBAYARAN"/>
+
+
                 <group string="string">
                     <filter name="fl_draft" string="SHIFT 1"  domain="[('create_uid.id', '=', uid),('datesrc',  '=', True)]"/>
                     <filter name="fl_draft" string="PEMBAYARAN SHIFT 1"  domain="['|',('create_uid.id', '=', uid), ('datesrc',  '=', True),('datepymnt', '=', True),]"/>    
@@ -119,7 +122,7 @@
                 <field name="datepymnt_2" invisible="1"/>
                 <field name="datepymnt_3" invisible="1"/>
                 <field name="status_pembayaran" invisible="1"/>
-                <field name="chargeee" invisible="1"/>
+                <field name="chargeee"/>
                 <!-- <field name="ktp"/> -->
                 <field name="shift_2" invisible="1"/>
                 <field name="shift_3" invisible="1"/>
