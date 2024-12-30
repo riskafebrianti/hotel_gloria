@@ -73,39 +73,47 @@ class AccountMove(models.Model):
     
     def nama(self):
         loop = self.filtered(lambda pay: pay.move_type == 'out_invoice')
-        data_kamar =[]
+        data_kamar = {}
         
         for a in loop:
             datanya = a.line_ids.filtered(lambda pay: pay.display_type == 'product')
             for z in datanya:
-                room= z.name
-                amountnya =z.price_subtotal
-                amount =z.price_total
-                testing = (room,amountnya,amount)
-                data_kamar.append(testing)
-            
-        result = {}
-        for card, value, vol in data_kamar:
-            if card in result:
-                result[card]['total_value'] += result.get('total_value', value)
-                result[card]['amount'] += result.get('amount', vol)
-            else:
-                total = result.get(card, 0) + value
-                total1 = result.get(card, 0) + vol
-            # total1 = result.get(card, 0) + vol
-            # totall =list(total)vol
-            # result[card] = total
-            print(self)
-            result[card] = {
-                "total_value": total,
-                "amount":  total1
-            }
-            result[card]['total_value'] += result.get('total_value', value)
-            result[card]['amount'] += result.get('amount', vol)
-            print(self)
-        hasil = list(result.items())
+                if z.name in data_kamar:
+                    data_kamar[z.name][0] = data_kamar[z.name][0] + z.price_subtotal
+                    data_kamar[z.name][1] = data_kamar[z.name][1] + z.price_total
+                else:
+                    room= z.name
+                    amountnya =z.price_subtotal
+                    amount =z.price_total
+                    # testing = (room,amountnya,amount)
+                    data_kamar[room]=[amountnya,amount]
+        hasil = list(data_kamar.items())
+        # print(data_kamar)
         
         return hasil
+            
+        # result = {}
+        # for card, value, vol in data_kamar:
+        #     if card in result:
+        #         result[card]['total_value'] += result.get('total_value', value)
+        #         result[card]['amount'] += result.get('amount', vol)
+        #     else:
+        #         total = result.get(card, 0) + value
+        #         total1 = result.get(card, 0) + vol
+        #     # total1 = result.get(card, 0) + vol
+        #     # totall =list(total)vol
+        #     # result[card] = total
+        #     print(self)
+        #     result[card] = {
+        #         "total_value": total,
+        #         "amount":  total1
+        #     }
+        #     result[card]['total_value'] += result.get('total_value', value)
+        #     result[card]['amount'] += result.get('amount', vol)
+        #     print(self)
+        # # hasil = list(data_kamar.items())
+        
+        # # return hasil
 
     def periode(self):
 
