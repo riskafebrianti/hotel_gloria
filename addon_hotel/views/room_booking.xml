@@ -11,6 +11,7 @@
                 <field name="kamar"/>
                 <field name="ktp"/>
                 <field name="state"/>
+                <field name="chargeee"/>
                 
                 <group string="string">
                     <filter name="fl_draft" string="SHIFT 1"  domain="[('create_uid.id', '=', uid),('datesrc',  '=', True)]"/>
