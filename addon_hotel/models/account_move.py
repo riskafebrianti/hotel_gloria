@@ -87,7 +87,7 @@ class AccountMove(models.Model):
                     amount =z.price_total
                     # testing = (room,amountnya,amount)
                     data_kamar[room]=[amountnya,amount]
-        hasil = list(data_kamar.items())
+        hasil = sorted(list(data_kamar.items()))
         # print(data_kamar)
         
         return hasil

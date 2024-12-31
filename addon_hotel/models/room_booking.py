@@ -47,8 +47,8 @@ class RoomBookingTree(models.Model):
                                     default=fields.Datetime.now() + timedelta(
                                         hours=23, minutes=59, seconds=59))
     kamar = fields.Char(string='Room', related='room_line_ids.room_id.name')
-    status_pembayaran = fields.Char(string='Status Bayar', compute='byr_state',store=True)
-    chargeee = fields.Char(string='Status Charge',  compute='_chrg_state',store=True)
+    status_pembayaran = fields.Char(string='Status Bayar', compute='byr_state')
+    chargeee = fields.Char(string='Status Charge',  compute='_chrg_state')
 
     
     
@@ -102,22 +102,22 @@ class RoomBookingTree(models.Model):
     #         record.chrg_count = self.env['account.move'].search_count(
     #             [('hotel_booking_id','=', record.id),('journal_id.code','=','CHRG')])
 
-    @api.depends('chrg_count','chargeee','hotel_invoice_id','state','roomsugest')
+    # @api.depends('chrg_count','chargeee','hotel_invoice_id','state','roomsugest')
     def _chrg_state(self):
         """Compute the invoice count"""
-        if self.chrg_count:
-            for dataa in self:
-                data_accmovee = self.env['account.move'].sudo().search([('ref','=', dataa.name),('journal_id.name','=', 'CHARGE'),('state','=','posted')])
-                # for g in dataa:
-                if dataa.chrg_count >= 0:
-                    if data_accmovee:
-                        dataa.chargeee = 'CHARGE'
-                    else:
-                        dataa.chargeee = False
-                if dataa.chrg_count == 0:
+        # if self.chrg_count:
+        for dataa in self:
+            data_accmovee = self.env['account.move'].sudo().search([('ref','=', dataa.name),('journal_id.name','=', 'CHARGE'),('state','=','posted')])
+            # for g in dataa:
+            if dataa.chrg_count >= 0:
+                if data_accmovee:
+                    dataa.chargeee = 'CHARGE'
+                else:
                     dataa.chargeee = False
-                    
-    api.depends('chrg_count','chargeee','hotel_invoice_id','state','roomsugest')
+            if dataa.chrg_count == 0:
+                dataa.chargeee = False
+
+    # api.depends('chrg_count','chargeee','hotel_invoice_id','state','roomsugest')
     def byr_state(self):
         """Compute the invoice count"""
         for dataa in self:
