@@ -47,7 +47,7 @@
                                 <th style="font-size:30px">Date</th>
                                 <th style="font-size:30px">No. Bill</th>
                                 <th style="font-size:30px">Vendor</th>
-                                <th style="font-size:30px">Description</th>
+                                <th style="font-size:30px;width:60%;">Description</th>
                                 <th style="font-size:30px">Amount</th>
                                 
                             </tr>
