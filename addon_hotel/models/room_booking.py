@@ -993,10 +993,15 @@ class RoomBookingTree(models.Model):
 
     def report_charge(self):
         # loop = self.filtered(lambda pay: pay.move_type == 'out_invoice')
+        list_charge = []
         for ini in self:
 
             print(self)
+            data = self.env['account.move.line'].search([('move_id.hotel_booking_id', '=', ini.id),('move_id.journal_id.name','=','CHARGE')]).filtered(lambda pay: pay.product_id and pay.move_id.state =='posted')
+            # data = self.env['account.move'].search([('hotel_booking_id', '=', ini.id),('journal_id.name','=','CHARGE')])
+            for dataa in data:
 
-            data = self.env['account.move'].search([('hotel_booking_id', '=', ini.id),('journal_id.name','=','CHARGE')]).line_ids.filtered(lambda pay: pay.product_id and pay.move_id.state =='posted')
-        print(self)
-        return list(data)
+            # data = self.env['account.move'].search([('hotel_booking_id', '=', ini.id),('journal_id.name','=','CHARGE')]).line_ids
+                list_charge.append(dataa)
+            print(self)
+        return list(list_charge)
