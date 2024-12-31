@@ -12,8 +12,8 @@
                 <field name="ktp"/>
                 <field name="state"/>
                 <field name="chargeee"/>
-                    <filter name="filter_active" string="CHARGE" domain="[('chargeee', '=', 'CHARGE')]"/>
-                    <filter name="filter_activeE" string="STATUS PEMBAYARAN"/>
+                    <!-- <filter name="filter_active" string="CHARGE" domain="[('chargeee', '=', 'CHARGE')]"/>
+                    <filter name="filter_activeE" string="STATUS PEMBAYARAN"/> -->
 
 
                 <group string="string">
