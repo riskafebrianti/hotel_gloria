@@ -40,15 +40,15 @@
                     
                     <h2 style="font-size:60px">Ringkasan Daftar Pembayaran</h2>
                     <br/>
-                    <table class="table table-bordered" style="page-break-inside: avoid; position:relative;">
+                    <table class="table table-bordered" style="page-break-inside: avoid; position:relative;border-color:black;">
                         <thead>
                             <tr>
                                 <th style="font-size:30px; width:1%;">No.</th>
-                                <th style="font-size:30px">Date</th>
-                                <th style="font-size:30px">No. Bill</th>
-                                <th style="font-size:30px">Vendor</th>
-                                <th style="font-size:30px;width:60%;">Description</th>
-                                <th style="font-size:30px;width:10%;">Amount</th>
+                                <th style="font-size:30px; width:7%;">Date</th>
+                                <th style="font-size:30px; width:10%;">No. Bill</th>
+                                <th style="font-size:30px; width:10%;">Vendor</th>
+                                <th style="font-size:30px;width:50%;">Description</th>
+                                <th style="font-size:30px;width:14%;">Amount</th>
                                 
                             </tr>
                         </thead>
@@ -95,7 +95,7 @@
                         </t>
                         <tr>
                             <td colspan="5" align="right"  style= "font-size:30px;">Total</td>
-                            <td align="center" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.amount_total for line in docs.filtered(lambda r: r.name))))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
+                            <td align="left" style= "font-size:25px; color:black; font-weight: bold;"><span>Rp. </span><span t-esc="'{0:,.2f}'.format(int(sum(line.amount_total for line in docs.filtered(lambda r: r.name))))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}' /></td>
                            
                        </tr>
                        <strong>

@@ -41,7 +41,7 @@
                     <br/>
                     <span>Periode: <t t-esc="docs.periode().strftime('%d %B %Y')"/> s/d <t t-esc="docs.periodee().strftime('%d %B %Y')"/> </span>
                     <br/><br/>
-                    <table class="table table-bordered" style="page-break-inside: auto; position:relative;">
+                    <table class="table table-bordered" style="page-break-inside: auto; position:relative;border-color:black;">
                         <thead>
                             <tr>
                                 <th style="width:1%;">No.</th>
