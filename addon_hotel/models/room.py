@@ -151,7 +151,7 @@ class room(models.Model):
     def _terbooking(self):
             
         for order in self:
-            date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else (12, datetime.now().year-1)
+            date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else datetime.now().replace(year=datetime.now().year - 1, month=12, day=1)
             jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', order.id),('booking_id.state', 'not in', ['draft', 'cancel']),('checkin_date','>',date_begin), ('checkin_date','<',datetime.now())])
             order.terbooking = len(jumpes)
             print(order)
@@ -160,7 +160,7 @@ class room(models.Model):
     def _terbooking_all(self):
             
         for dataa in self:
-            # date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else (12, datetime.now().year-1)
+            date_begin = datetime.now().replace(datetime.now().year, datetime.now().month, day=1).strftime('%Y-%m-%d') if datetime.now().month != 1 else datetime.now().replace(year=datetime.now().year - 1, month=12, day=1)
             jumpes = self.env['room.booking.line'].sudo().search([('room_id','=', dataa.id),('booking_id.state', 'not in', ['draft', 'cancel'])])
             dataa.terbooking_all = len(jumpes)
 
