@@ -147,7 +147,7 @@ class room(models.Model):
         
     
 
-    @api.depends('booking_line_id','booking_line_id.booking_id.state','terbooking')
+    @api.depends('booking_line_id','terbooking')
     def _terbooking(self):
             
         for order in self:
@@ -156,7 +156,7 @@ class room(models.Model):
             order.terbooking = len(jumpes)
             print(order)
     
-    @api.depends('booking_line_id','booking_line_id.booking_id.state','terbooking_all')
+    @api.depends('booking_line_id','terbooking_all')
     def _terbooking_all(self):
             
         for dataa in self:
