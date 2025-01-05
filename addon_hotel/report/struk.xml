@@ -188,7 +188,7 @@
                                  <td colspan="4" style="border-bottom: 1px solid white; border-left: 1px solid white;"></td>
                                 <!-- <td></td> -->
                                 <td align="center" style="font-size:15px; letter-spacing: 1px color:black; font-weight: bold;">Bayar</td>
-                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.2f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
+                                <td align="left" style= "font-size:15px; color:black; font-weight: bold;"><span>Rp. <t t-esc="'{0:,.0f}'.format(int(line.booking_id.paymnt()))" t-field-options='{"widget": "monetary", "display_currency": x.currency_id}'/></span></td>
 
                             </tr>
                            <tr>

@@ -455,22 +455,28 @@ class RoomBookingTree(models.Model):
                 ('payment_state','=','paid'),
                 # ('hotel_booking_id.date_order','=', hasil)
                 ])
-            hasil = b.hotel_invoice_id.date
-            if a:
-                for pay in a:
-                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
-                    d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == hasil.strftime('%d/%m/%y'):
-                    # Jika tanggal sama, ambil total amount dari transaksi terkait
-                    if len(data) >= 1:
-                        d = data[-1].amount_total  # Ambil total amount dari elemen terakhir
-                    else:
-                        d = data.amount_total
-
-            if not a:
+            hasil = b.hotel_invoice_id.invoice_date
+            if not hasil:
                 d = 0
+                return d 
+            if hasil:
+                if a:
+                    for pay in a:
+                        data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
+                        d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') == hasil.strftime('%d/%m/%y'):
+                        # Jika tanggal sama, ambil total amount dari transaksi terkait
+                        if len(data) >= 1:
+                            d = data[-1].amount_total  # Ambil total amount dari elemen terakhir
+                        else:
+                            d = data.amount_total
+                    
+
+                if not a:
+                    d = 0      
+                               
             return d
         
     def paymnttotal(self):
@@ -483,25 +489,30 @@ class RoomBookingTree(models.Model):
                 ('payment_state','=','paid')
                 ])
             tgl = b.hotel_invoice_id.date
-            if a:
-                for pay in a:
-                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+            if not tgl:
+                d = 0
+                return d 
+            if tgl:
+            
+                if a:
+                    for pay in a:
+                        data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
 
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != tgl.strftime('%d/%m/%y'):
-                    hasil = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == tgl.strftime('%d/%m/%y'):
-                    # Jika tanggal sama, ambil total amount dari transaksi terkait
-                    if len(data) >= 1:
-                        hasil= sum(data.mapped('amount_total'))  # Ambil total amount dari elemen terakhir
-                    else:
-                        hasil= sum(data.mapped('amount_total'))
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') != tgl.strftime('%d/%m/%y'):
+                        hasil = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') == tgl.strftime('%d/%m/%y'):
+                        # Jika tanggal sama, ambil total amount dari transaksi terkait
+                        if len(data) >= 1:
+                            hasil= sum(data.mapped('amount_total'))  # Ambil total amount dari elemen terakhir
+                        else:
+                            hasil= sum(data.mapped('amount_total'))
 
-                    # hasil= sum(data.mapped('amount_total'))
-            if not a:
-                hasil= 0
-                   
-                print(self)
-            return hasil
+                        # hasil= sum(data.mapped('amount_total'))
+                if not a:
+                    hasil= 0
+                    
+                    print(self)
+                return hasil
         
         # payment pelunasan qwqeb
 
@@ -517,22 +528,26 @@ class RoomBookingTree(models.Model):
                 # ('hotel_booking_id.date_order','=', hasil)
                 ])
             hasil = b.hotel_invoice_id.date
-            if a:
-                for pay in a:
-                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
-
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == hasil.strftime('%d/%m/%y'):
-                    d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
-                    # Jika tanggal sama, ambil total amount dari transaksi terkait
-                    if len(data) >= 1:
-                        d = data[-1].amount_total  # Ambil total amount dari elemen terakhir
-                    else:
-                        d = data.amount_total
-
-            if not a:
+            if not hasil:
                 d = 0
-            return d
+                return d 
+            if hasil:
+                if a:
+                    for pay in a:
+                        data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') == hasil.strftime('%d/%m/%y'):
+                        d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
+                        # Jika tanggal sama, ambil total amount dari transaksi terkait
+                        if len(data) >= 1:
+                            d = data[-1].amount_total  # Ambil total amount dari elemen terakhir
+                        else:
+                            d = data.amount_total
+
+                if not a:
+                    d = 0
+                return d
         
     def paymnttotallns(self):
         # tgl = fields.datetime.now()
@@ -544,25 +559,29 @@ class RoomBookingTree(models.Model):
                 ('payment_state','=','paid')
                 ])
             tgl = b.hotel_invoice_id.date
-            if a:
-                for pay in a:
-                    data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+            if not tgl:
+                d = 0
+                return d 
+            if tgl :
+                if a:
+                    for pay in a:
+                        data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
 
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') == tgl.strftime('%d/%m/%y'):
-                    hasil = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
-                if pay.hotel_booking_id.date_order.strftime('%d/%m/%y') != tgl.strftime('%d/%m/%y'):
-                    # Jika tanggal sama, ambil total amount dari transaksi terkait
-                    if len(data) >= 1:
-                        hasil= sum(data.mapped('amount_total'))  # Ambil total amount dari elemen terakhir
-                    else:
-                        hasil= sum(data.mapped('amount_total'))
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') == tgl.strftime('%d/%m/%y'):
+                        hasil = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
+                    if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') != tgl.strftime('%d/%m/%y'):
+                        # Jika tanggal sama, ambil total amount dari transaksi terkait
+                        if len(data) >= 1:
+                            hasil= sum(data.mapped('amount_total'))  # Ambil total amount dari elemen terakhir
+                        else:
+                            hasil= sum(data.mapped('amount_total'))
 
-                    # hasil= sum(data.mapped('amount_total'))
-            if not a:
-                hasil= 0
-                   
-                print(self)
-            return hasil
+                        # hasil= sum(data.mapped('amount_total'))
+                if not a:
+                    hasil= 0
+                    
+                    print(self)
+                return hasil        
                 
         
 
@@ -648,7 +667,7 @@ class RoomBookingTree(models.Model):
                 'status': 'available',
                 'is_room_avail': True
             })
-            room.write({'checkout_date': datetime.today()})
+            # room.write({'checkout_date': datetime.today()})
         # self.deposit_out = True
         # print(self)
         return{
