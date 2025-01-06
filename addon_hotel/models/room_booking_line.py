@@ -28,8 +28,10 @@ class RoomBookingLineee(models.Model):
                                    required=True, default=fields.Datetime.now())
     checkout_date = fields.Datetime(string="Check Out",
                                     help="You can choose the date,"
-                                         " Otherwise sets to current Date", default=fields.Datetime.now() + timedelta(
-                                        hours=23, minutes=59, seconds=49))
+                                         " Otherwise sets to current Date", 
+                                        #  default=fields.Datetime.now() + timedelta(
+                                        # hours=23, minutes=59, seconds=49)
+                                        )
     uom_qty = fields.Float(string="Duratioon",
                         help="The quantity converted into the UoM used by"
                             "the product", readonly=False)
@@ -64,7 +66,7 @@ class RoomBookingLineee(models.Model):
                     qty = qty + 1
             
 
-            if diffdate.days > 1:
+            if diffdate.days >= 1:
                 qty = qty - 1 
                
 
@@ -206,7 +208,7 @@ class RoomBookingLineee(models.Model):
         if self.checkin_date == False:
            self.write({'checkin_date': fields.Datetime.now()})
         if self.checkout_date == False:
-           self.write({'checkout_date': fields.Datetime.now() + timedelta(hours=22, minutes=59, seconds=59)})
+           self.write({'checkout_date': (fields.Datetime.now() + timedelta(hours=22, minutes=59, seconds=59)).replace(hour=4,minute=58, second=0)})
         print(self)
    
     
