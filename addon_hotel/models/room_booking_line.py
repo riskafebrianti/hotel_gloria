@@ -208,7 +208,7 @@ class RoomBookingLineee(models.Model):
         if self.checkin_date == False:
            self.write({'checkin_date': fields.Datetime.now()})
         if self.checkout_date == False:
-           self.write({'checkout_date': (fields.Datetime.now() + timedelta(hours=22, minutes=59, seconds=59)).replace(hour=4,minute=58, second=0)})
+           self.write({'checkout_date': (fields.Datetime.now() + timedelta(hours=22, minutes=59, seconds=59)).replace(hour=4,minute=0, second=0)})
         print(self)
    
     
