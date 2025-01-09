@@ -6,11 +6,16 @@
             <field name="model">maintenance.request</field>
             <field name="inherit_id" ref="hotel_management_odoo.maintenance_request_view_form"/>
             <field name="arch" type="xml">
+                <header>
+                    <button name="action_cancel" string="Cancel"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="state == 'done' or state == 'cancel'"/>
+                </header>
                 <xpath expr="//field[@name='room_maintenance_ids']" position="after">
                     <field name="kerusakan_berat" invisible="type != 'room'"/>
                      <field name="catatan" invisible="state in ('ongoing','support','done')"/>
                 </xpath>
-                
             </field>
         </record>
 

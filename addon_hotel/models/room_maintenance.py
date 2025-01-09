@@ -41,6 +41,11 @@ class Maintenance(models.Model):
             self.room_maintenance_ids.maintenance= 'Need Support Maintenance'
         else:
             raise ValidationError(_('Please enter the reason'))
+        
+    def action_cancel(self):
+        """Button action for changing the state to cancel"""
+        self.state = 'cancel'
+        self.room_maintenance_ids.maintenance = None
 
     def action_complete(self):
         """Button action for changing the state to verify"""

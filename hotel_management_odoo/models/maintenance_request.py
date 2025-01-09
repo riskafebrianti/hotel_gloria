@@ -138,13 +138,6 @@ class MaintenanceRequest(models.Model):
         else:
             raise ValidationError(_('Please Add remark'))
         
-    def action_cancel(self):
-        """Button action for changing the state to cancel"""
-        self.state = 'cancel'
-        if self.room_maintenance_ids:
-            for room_maintenance in self.room_maintenance_ids:
-                room_maintenance.maintenance = None
-
     def action_assign_support(self):
         """Button action for changing the state to ongoing"""
         if self.support_team_ids:

@@ -40,10 +40,6 @@
                             invisible="state != 'support'"
                             type="object"
                             class="btn-primary"/>
-                    <button name="action_cancel" string="Cancel"
-                            type="object"
-                            class="btn-secondary"
-                            invisible="state == 'done' or state == 'cancel'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,ongoing,done"/>
                 </header>
