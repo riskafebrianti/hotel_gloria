@@ -137,7 +137,7 @@ class MaintenanceRequest(models.Model):
             self.state = 'verify'
         else:
             raise ValidationError(_('Please Add remark'))
-
+        
     def action_assign_support(self):
         """Button action for changing the state to ongoing"""
         if self.support_team_ids:
