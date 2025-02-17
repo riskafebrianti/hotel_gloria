@@ -40,6 +40,7 @@
                     
                     <h2 style="font-size:60px">Ringkasan Daftar Pembayaran</h2>
                     <br/>
+                    <span  style="font-size:25px;">Periode :<t t-esc="docs.periode().strftime('%d %B %Y')"/> s/d <t t-esc="docs.periodee().strftime('%d %B %Y')"/> </span>
                     <table class="table table-bordered" style="page-break-inside: avoid; position:relative;border-color:black;">
                         <thead>
                             <tr>
