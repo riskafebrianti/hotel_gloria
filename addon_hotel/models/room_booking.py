@@ -497,7 +497,7 @@ class RoomBookingTree(models.Model):
             if hasil:
                 if a:
                     for pay in a:
-                        data = self.env['account.move'].sudo().search([('ref','=', pay.name)])
+                        data = self.env['account.move'].sudo().search([('ref','=', pay.name),('state','!=','cancel')])
 
                     # if fields.Datetime.context_timestamp(self,  pay.hotel_booking_id.date_order).strftime('%d/%m/%y') != hasil.strftime('%d/%m/%y'):
                     #     d = 0  # Set d ke 0 jika tanggal order berbeda dengan hasil
