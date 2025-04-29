@@ -326,7 +326,7 @@ class WizardExample(models.TransientModel):
             amount_taxed_room += sum(room_lines.mapped('price_tax'))
             amount_total_room += sum(room_lines.mapped('price_total'))
             for room in room_lines:
-                booking_dict = {'name': room.room_id.name,
+                booking_dict = {'name': 'Kamar '+room.room_id.name,
                                 'tax_ids': room.tax_ids,
                                 'quantity': self.uom_qty,
                                 'diskon': room.diskon,
@@ -343,7 +343,7 @@ class WizardExample(models.TransientModel):
                                     'price_unit'] and booking_dict['quantity']\
                                         != rec['quantity']:
                                     booking_list.append(
-                                        {'name': room.room_id.name,
+                                        {'name': 'Kamar '+room.room_id.name,
                                          "quantity": booking_dict[
                                                          'quantity'] - rec[
                                                          'quantity'],
@@ -496,7 +496,7 @@ class WizardExample(models.TransientModel):
                         for a in invcc:
                             if a.display_type == 'product':
                                 a.update({
-                                    'name': self.room_id.name,  
+                                    'name': 'Kamar '+self.room_id.name,  
                                 })
         
         if order_line.checkout_date != self.checkout_date and order_line.price_subtotal > self.price_total:
@@ -541,7 +541,7 @@ class WizardExample(models.TransientModel):
                 }])
                 for rec in order_line:
                    account_move.line_ids.create([{
-                        'name': rec['room_id'].name,
+                        'name': 'Kamar '+rec['room_id'].name,
                         'quantity': self.uom_qty,
                         'price_unit': rec['room_id'].list_price,
                         # 'tax_ids': rec['tax_ids'],
@@ -605,7 +605,7 @@ class WizardExample(models.TransientModel):
                     for a in invc:
                         if a.display_type == 'product':
                             a.write({
-                                'name': self.room_id.name,  
+                                'name': 'Kamar '+self.room_id.name,  
                             })
                    
             # return {'type': 'ir.actions.act_window_close'}
