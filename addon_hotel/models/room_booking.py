@@ -46,7 +46,8 @@ class RoomBookingTree(models.Model):
                                     help="Date of Checkout", tracking=True,
                                     default=fields.Datetime.now() + timedelta(
                                         hours=23, minutes=59, seconds=59))
-    kamar = fields.Char(string='Room', related='room_line_ids.room_id.name')
+    kamar = fields.Char(string='Room', related='room_line_ids.room_id.name', store=True,)
+    durasi = fields.Float(string='Duration', related='room_line_ids.uom_qty',store=True,)
     status_pembayaran = fields.Char(string='Status Bayar', compute='byr_state')
     chargeee = fields.Char(string='Status Charge',  compute='_chrg_state')
 

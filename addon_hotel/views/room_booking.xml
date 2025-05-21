@@ -12,6 +12,9 @@
                 <field name="ktp"/>
                 <field name="state"/>
                 <field name="chargeee"/>
+                
+
+                
                     <!-- <filter name="filter_active" string="CHARGE" domain="[('chargeee', '=', 'CHARGE')]"/>
                     <filter name="filter_activeE" string="STATUS PEMBAYARAN"/> -->
 
@@ -28,6 +31,9 @@
                     <filter name="fl_draft" string="SHIFT 3"  domain="[('create_uid.id', '=', uid),('shift_3',  '=', True)]"/>  
                     <filter name="fl_draft" string="PEMBAYARAN SHIFT 3"  domain="['|',('create_uid.id', '=', uid), ('shift_3',  '=', True),('datepymnt_3', '=', True),]"/>  
                 </group>
+                <group name="name" string="string">
+                    <filter name="group_by_customer" string="Customer" context="{'group_by': 'kamar'}"/>
+                </group>
                 
 
             </search>
@@ -43,6 +49,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="ktp" optional="hide"/>
                     <field name="kamar"/>
+                    <field name="durasi" sum="Amount total" widget="monetary" decoration-bf="1"/>
                     <field name="create_uid"/>
                 
                 </xpath>
