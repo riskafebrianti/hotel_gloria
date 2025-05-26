@@ -46,6 +46,10 @@
             <field name="model">room.booking</field>
             <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_tree"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="delete">0</attribute>
+                </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="ktp" optional="hide"/>
                     <field name="kamar"/>
@@ -78,7 +82,10 @@
         <field name="model">room.booking</field>
         <field name="inherit_id" ref="hotel_management_odoo.room_booking_view_form"/>
         <field name="arch" type="xml">
-         
+
+            <xpath expr="//form" position="attributes">
+                    <attribute name="delete">0</attribute>
+                </xpath>
             <xpath expr="//field[@name='uom_id']" position="after">
                 <field name="jumlah" />
                 <field name="jumlahanak" width="150px" optional="hide"/>                
