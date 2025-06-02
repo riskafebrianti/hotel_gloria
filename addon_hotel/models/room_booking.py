@@ -9,10 +9,10 @@ from collections import OrderedDict
 class RoomBookingTree(models.Model):
     _inherit = 'room.booking'
 
-    ktp = fields.Char(string='KTP', related='partner_id.ktp',)
+    ktp = fields.Char(string='KTP', related='partner_id.ktp',tracking=True,)
     partner_id = fields.Many2one('res.partner', string="Customer",
                                  help="Customers of hotel",
-                                 required=True, index=True, tracking=1,
+                                 required=True, index=True, tracking=True,
                                  domain="[('type', '!=', 'private'),"
                                         " ('company_id', 'in', "
                                         "(False, company_id))]"
@@ -21,7 +21,7 @@ class RoomBookingTree(models.Model):
                                 string="Pricelist",
                                 compute='_compute_pricelist_id',
                                 store=True, readonly=False,
-                                tracking=1,
+                                tracking=True,
                                 help="If you change the pricelist,"
                                     " only newly added lines"
                                     " will be affected.")
@@ -29,10 +29,11 @@ class RoomBookingTree(models.Model):
                                  string='Room',
                                  store=True,)
     
-    deposit_in = fields.Boolean(string='deposit_in', default=False, compute='_compute_invsb')
-    deposit_out = fields.Boolean(string='deposit_out', compute='_compute_invsb', default=False)
-    charge = fields.Boolean(string='charge', compute='_compute_invsb', default=False)
-    deposit_sisa = fields.Float(string='Deposit',store=True, compute='depoSisa',)
+    deposit_in = fields.Boolean(string='deposit_in', tracking=True, default=False, compute='_compute_invsb')
+    deposit_out = fields.Boolean(string='deposit_out',tracking=True, compute='_compute_invsb', default=False)
+    charge = fields.Boolean(string='charge', tracking=True,compute='_compute_invsb', default=False)
+    deposit_sisa = fields.Float(string='Deposit',store=True, tracking=True, compute='depoSisa',)
+    deposit = fields.Float(string='Deposit', related='room_line_ids.deposit', tracking=True,)
     datepymnt = fields.Date(string='pyshift1', search = '_search_paymnt1', store=False,)
     datepymnt_2 = fields.Date(string='pyshift2', search = '_search_paymnt2', store=False,)
     datepymnt_3 = fields.Date(string='pyshift3', search = '_search_paymnt3', store=False,)
@@ -70,7 +71,7 @@ class RoomBookingTree(models.Model):
                                 compute='_compute_pricelist_id',
                                 store=True, readonly=False,
                                 required=False,
-                                tracking=1,
+                                tracking=True,
                                 help="If you change the pricelist,"
                                     " only newly added lines"
                                     " will be affected.")

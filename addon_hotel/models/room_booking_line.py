@@ -14,25 +14,25 @@ class RoomBookingLineee(models.Model):
                             help="Indicates the Room",
                             required=True,  tracking=1,)
     jumlah = fields.Integer(string='Dewasa',store=True,)
-    jumlahanak = fields.Integer(string='Anak',store=True,)
-    deposit = fields.Float(string='Deposit',required=True,store=True,)
+    jumlahanak = fields.Integer(string='Anak',store=True,tracking=True,)
+    deposit = fields.Float(string='Deposit',required=True, store=True, tracking=1)
     diskon = fields.Float(string='Diskon', tracking=True, force_save='1',readonly=False, store=True,)
-    ket = fields.Char(string='Keterangan', force_save='1', store=True, readonly=True)
+    ket = fields.Char(string='Keterangan', force_save='1', tracking=1, store=True, readonly=True)
     
     price_unit = fields.Float(string='Rent',
                               digits='Product Price',
-                              help="The rent price of the selected room.", readonly=True)
+                              help="The rent price of the selected room.", tracking=1,readonly=True)
     checkin_date = fields.Datetime(string="Check In",
                                    help="You can choose the date,"
                                         " Otherwise sets to current Date",
-                                   required=True, default=fields.Datetime.now())
-    checkout_date = fields.Datetime(string="Check Out",
+                                   required=True, tracking=1, default=fields.Datetime.now())
+    checkout_date = fields.Datetime(string="Check Out",tracking=1,
                                     help="You can choose the date,"
                                          " Otherwise sets to current Date", 
                                         #  default=fields.Datetime.now() + timedelta(
                                         # hours=23, minutes=59, seconds=49)
                                         )
-    uom_qty = fields.Float(string="Duratioon",
+    uom_qty = fields.Float(string="Duratioon", tracking=1,
                         help="The quantity converted into the UoM used by"
                             "the product", readonly=False)
     #  checkin_date = fields.Datetime(string="Check In",
