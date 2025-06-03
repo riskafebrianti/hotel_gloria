@@ -9,9 +9,32 @@
                 <xpath expr="//field[@name='purchase_vendor_bill_id']" position="after">
                     <field name="deskripsi" invisible="move_type !='in_invoice'"/>
                 </xpath>
+                
             </field>
         </record>
-
+     
+        <record model="ir.ui.view" id="nama_model_form_accmove">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+               <xpath expr="//button[@name='button_cancel'][2]" position="replace">
+                    <button name="button_cancel" string="Cancel" type="object"
+                            groups="hotel_management_odoo.hotel_group_admin"
+                            data-hotkey="x"
+                            invisible="not id or state != 'draft' or move_type == 'entry'"/>
+                </xpath>
+                <xpath expr="//button[@name='button_draft']" position="replace">
+                    <button name="button_draft" string="Reset to Draft" type="object" groups="hotel_management_odoo.hotel_group_admin"
+                                invisible="not show_reset_to_draft_button" data-hotkey="r" />
+                </xpath>
+                <xpath expr="//form" position="attributes">
+                    <attribute name="delete">0</attribute>
+                </xpath>
+                
+            </field>
+        </record>
+            
         <record model="ir.ui.view" id="room_booking_tree">
             <field name="name">account.move.tree</field>
             <field name="model">account.move</field>
