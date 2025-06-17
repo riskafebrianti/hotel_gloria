@@ -29,7 +29,7 @@ class room(models.Model):
     
     status_kerusakan = fields.Char(
         string='status_kerusakan',
-        store=True, help='Akan Terisi Jika kerusakan berat',
+        help='Akan Terisi Jika kerusakan berat',
         compute='_maintenance',
     )
     
@@ -194,6 +194,8 @@ class room(models.Model):
             search = self.env['maintenance.request'].sudo().search([('room_maintenance_ids','=', tea.id),('state','!=','done'),('kerusakan_berat','=', True)])
             if search:
                 tea.status_kerusakan = 'Berat'
+            elif not search:
+                tea.status_kerusakan =  False
     
    
   
