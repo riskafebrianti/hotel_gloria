@@ -33,7 +33,7 @@
                         <img t-if="docs.company_id.logo" t-att-src="image_data_uri(docs.company_id.logo)" alt="Logo" style="height:150px;"/>
                     </div>
                    
-                <div style="line-height: 3.1em; border-bottom-style: double; border: 1px solid black;"></div>
+                <div style="line-height: 0.1px; border-bottom-style: double; border: 1px solid black;"></div>
 
             <br/>
             
@@ -59,6 +59,7 @@
                                 <th  style="font-size:30px">Piutang</th>
                                 <th  style="font-size:30px">Bayar</th>
                                 <th  style="font-size:30px">Pelunasan</th>
+                                <th  style="font-size:30px">Pembayaran</th>
                                 <th  style="font-size:30px">Dibuat</th>
                             </tr>
                         </thead>
@@ -149,6 +150,10 @@
                                         <span> - </span>
                                     </td> 
                                 </t>  
+
+                                <td style="font-size:25px">
+                                    <t t-esc="line.booking_id.jurnal()"/>
+                                </td>
 
                           
                                  <td style="font-size:25px">
