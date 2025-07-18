@@ -611,7 +611,7 @@ class RoomBookingTree(models.Model):
                 ])
             hasil = b.hotel_invoice_id.date
             if not hasil:
-                d = 0
+                d = ''
                 return d 
             if hasil:
                 if a:
@@ -628,7 +628,7 @@ class RoomBookingTree(models.Model):
                             d = data.journal_id.name
 
                 if not a:
-                    d = 0
+                    d = ''
                 return d
         
     def paymnttotallns(self):
