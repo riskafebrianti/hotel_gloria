@@ -242,9 +242,12 @@ class RoomBooking(models.Model):
     @api.model
     def create(self, vals_list):
         """Sequence Generation"""
+
+        # if vals_list.get('name', 'New') == 'New':
+            # vals_list['name'] = self.env['ir.sequence'].next_by_code(
+            #     'room.booking')
         if vals_list.get('name', 'New') == 'New':
-            vals_list['name'] = self.env['ir.sequence'].next_by_code(
-                'room.booking')
+            vals_list['name'] = 'Draft'
         return super().create(vals_list)
 
     @api.depends('partner_id')
@@ -635,6 +638,7 @@ class RoomBooking(models.Model):
         """
         @param self: object pointer
         """
+        
         if not self.room_line_ids:
             raise ValidationError(_("Please Enter Room Details"))
         else:

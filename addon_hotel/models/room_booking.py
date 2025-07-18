@@ -104,6 +104,15 @@ class RoomBookingTree(models.Model):
     #         record.chrg_count = self.env['account.move'].search_count(
     #             [('hotel_booking_id','=', record.id),('journal_id.code','=','CHRG')])
 
+    @api.model_create_multi
+    def create(self, vals):
+        # logika sebelum create
+        if vals.get('state') == 'ci':
+            vals['name'] = self.env['ir.sequence'].next_by_code('room.booking')
+
+        # panggil method create asli (super)
+        return super(RoomBookingTree, self).create(vals)
+
     # @api.depends('chrg_count','chargeee','hotel_invoice_id','state','roomsugest')
     def _chrg_state(self):
         """Compute the invoice count"""
@@ -1045,25 +1054,29 @@ class RoomBookingTree(models.Model):
         """
         @param self: object pointer
         """
-        if not self.room_line_ids:
-            raise ValidationError(_("Please Enter Room Details"))
-        else:
-            for room in self.room_line_ids:
-                room.room_id.write({
-                    'status': 'occupied',
-                     'draft': False
-                })
-                room.room_id.is_room_avail = False
-            self.write({"state": "check_in"})
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'type': 'success',
-                    'message': "Booking Checked In Successfully!",
-                    'next': {'type': 'ir.actions.act_window_close'},
+        if self.name == 'Draft':
+            print(self)
+            self.name = self.env['ir.sequence'].next_by_code(
+                'room.booking')
+            if not self.room_line_ids:
+                raise ValidationError(_("Please Enter Room Details"))
+            else:
+                for room in self.room_line_ids:
+                    room.room_id.write({
+                        'status': 'occupied',
+                        'draft': False
+                    })
+                    room.room_id.is_room_avail = False
+                self.write({"state": "check_in"})
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'type': 'success',
+                        'message': "Booking Checked In Successfully!",
+                        'next': {'type': 'ir.actions.act_window_close'},
+                    }
                 }
-            }
     def action_reserve(self):
         """Button Reserve Function"""
         if self.state == 'reserved':
