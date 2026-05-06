@@ -146,7 +146,7 @@
             <xpath expr="//button[@name='action_invoice']" position="replace">
                 <button name="action_invoice" string="Create Invoice"
                             type="object" class="btn-primary"
-                            invisible="state not in ('check_in','draft', 'check_out') or invoice_button_visible == True or deposit_in != True"/>
+                            invisible="state not in ('check_in', 'check_out') or invoice_button_visible == True or deposit_in != True"/>
                 
             </xpath>
             <!-- <xpath expr="//button[@name='action_checkin']" position="replace">
